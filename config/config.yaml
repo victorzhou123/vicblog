@@ -1,0 +1,12 @@
+common:
+  log:
+    level: "DEBUG"
+    flush_time: 5
+    run_writer:
+      file_path: "../log/run/run.log"
+      max_size: 100
+      max_age: 7
+      max_backups: 15
+      local_time: true
+      compress: false
+      std_print: true
