@@ -26,25 +26,25 @@ func (cfg *Config) configItems() []interface{} {
 }
 
 type configSetDefault interface {
-	setDefault()
+	SetDefault()
 }
 
 func (cfg *Config) setDefault() {
 	for _, interf := range cfg.configItems() {
 		if o, ok := interf.(configSetDefault); ok {
-			o.setDefault()
+			o.SetDefault()
 		}
 	}
 }
 
 type configValidate interface {
-	validate() error
+	Validate() error
 }
 
 func (cfg *Config) validate() error {
 	for _, interf := range cfg.configItems() {
 		if o, ok := interf.(configValidate); ok {
-			if err := o.validate(); err != nil {
+			if err := o.Validate(); err != nil {
 				return err
 			}
 		}

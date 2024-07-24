@@ -6,6 +6,6 @@ type Config struct {
 	Log log.Config
 }
 
-func (cfg *Config) setDefault() {
+func (cfg *Config) SetDefault() {
 	cfg.Log.SetDefault()
 }
