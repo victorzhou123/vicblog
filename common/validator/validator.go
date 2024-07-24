@@ -8,7 +8,7 @@ import (
 
 const (
 	regexUsername = `^[a-zA-Z0-9_]{3,8}$`
-	regexPassword = `^.{8,14}$` // #nosec G101
+	regexPassword = `^.{8,14}$` //#nosec G101
 	regexEmail    = `^\w+(-+.\w+)*@\w+(-.\w+)*.\w+(-.\w+)*$`
 )
 

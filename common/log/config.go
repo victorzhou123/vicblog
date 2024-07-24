@@ -1,29 +1,32 @@
 package log
 
 type Config struct {
-	Level string
+	Level     string
+	FlushTime int // unit second
 
-	InterfaceWriter Writer
-	RunWriter       Writer
+	InterfaceWriter WriterConfig
+	RunWriter       WriterConfig
 }
 
 func (cfg *Config) SetDefault() {
 	cfg.Level = LevelInfo
+	cfg.FlushTime = 5
 
 	cfg.InterfaceWriter.setDefault()
 	cfg.RunWriter.setDefault()
 }
 
-type Writer struct {
+type WriterConfig struct {
 	FilePath   string
-	MaxSize    int
-	MaxAge     int
-	MaxBackups int
+	MaxSize    int // unit MB
+	MaxAge     int // unit day
+	MaxBackups int // max backup logs
 	LocalTime  bool
-	Compress   bool
+	Compress   bool // compress historical log
+	StdPrint   bool // if print to os.Stdout
 }
 
-func (w *Writer) setDefault() {
+func (w *WriterConfig) setDefault() {
 	if w.FilePath == "" {
 		w.FilePath = "./log/std.log"
 	}
