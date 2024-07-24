@@ -43,11 +43,11 @@ func syncFlush(t int, exitSignal chan struct{}) {
 		for {
 			select {
 			case <-t.C:
-				runSugarLogger.Sync()
+				runSugarLogger.Sync() // #nosec G104
 			case <-exitSignal:
 				// sync log data before goroutine exit
 				fmt.Println("receive exit signal")
-				runSugarLogger.Sync()
+				runSugarLogger.Sync() // #nosec G104
 				return
 			}
 

@@ -13,7 +13,9 @@ func main() {
 
 	// config
 	cfg := new(config.Config)
-	config.LoadConfig("./config/config.yaml", cfg)
+	if err := config.LoadConfig("./config/config.yaml", cfg); err != nil {
+		return
+	}
 
 	// log
 	log.Init(&cfg.Common.Log, exitSig)
