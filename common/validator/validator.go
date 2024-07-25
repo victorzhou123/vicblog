@@ -29,15 +29,15 @@ type validateCmd struct {
 	issue string
 }
 
-func Username(v string) error {
+func IsUsername(v string) error {
 	return validate(&validateCmd{v, regexCompUsername, "username"})
 }
 
-func Password(v string) error {
+func IsPassword(v string) error {
 	return validate(&validateCmd{v, regexCompPassword, "password"})
 }
 
-func Email(v string) error {
+func IsEmail(v string) error {
 	return validate(&validateCmd{v, regexCompEmail, "email"})
 }
 

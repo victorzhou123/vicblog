@@ -12,7 +12,7 @@ type Username interface {
 }
 
 func NewUsername(v string) (Username, error) {
-	if err := validator.Username(v); err != nil {
+	if err := validator.IsUsername(v); err != nil {
 		return nil, err
 	}
 
@@ -31,7 +31,7 @@ type Password interface {
 }
 
 func NewPassword(v string) (Password, error) {
-	if err := validator.Password(v); err != nil {
+	if err := validator.IsPassword(v); err != nil {
 		return nil, err
 	}
 
@@ -50,7 +50,7 @@ type Email interface {
 }
 
 func NewEmail(v string) (Email, error) {
-	if err := validator.Email(v); err != nil {
+	if err := validator.IsEmail(v); err != nil {
 		return nil, err
 	}
 
