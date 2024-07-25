@@ -27,7 +27,7 @@ var runSugarLogger *zap.SugaredLogger
 func Init(cfg *Config, exitSig chan struct{}) {
 	// init run logger
 	logger := zap.New(zapcore.NewCore(
-		getEncoder(), newWriter(&cfg.RunWriter), logLevelMap(cfg.Level),
+		getEncoder(), newSyncWriterWithConfig(&cfg.RunWriter), logLevelMap(cfg.Level),
 	))
 	runSugarLogger = logger.Sugar()
 
@@ -64,8 +64,23 @@ func getEncoder() zapcore.Encoder {
 	return zapcore.NewConsoleEncoder(encodeConfig)
 }
 
-func newWriter(cfg *WriterConfig) zapcore.WriteSyncer {
-	writer := &lumberjack.Logger{
+func newSyncWriterWithConfig(cfg *WriterConfig) zapcore.WriteSyncer {
+	if cfg.StdPrint {
+		return newSyncWriter(
+			newLumberjackLogger(cfg),
+			os.Stdout,
+		)
+	}
+
+	return newSyncWriter(newLumberjackLogger(cfg))
+}
+
+func newSyncWriter(writers ...io.Writer) zapcore.WriteSyncer {
+	return zapcore.AddSync(io.MultiWriter(writers...))
+}
+
+func newLumberjackLogger(cfg *WriterConfig) *lumberjack.Logger {
+	return &lumberjack.Logger{
 		Filename:   cfg.FilePath,
 		MaxSize:    cfg.MaxSize,
 		MaxAge:     cfg.MaxAge,
@@ -73,15 +88,6 @@ func newWriter(cfg *WriterConfig) zapcore.WriteSyncer {
 		LocalTime:  cfg.LocalTime,
 		Compress:   cfg.Compress,
 	}
-
-	var ws io.Writer
-	if cfg.StdPrint {
-		ws = io.MultiWriter(writer, os.Stdout)
-	} else {
-		ws = io.MultiWriter(writer)
-	}
-
-	return zapcore.AddSync(ws)
 }
 
 // logLevelMap: mapping severity level to standard log level of zap
