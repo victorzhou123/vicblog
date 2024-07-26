@@ -3,7 +3,7 @@ package util
 import (
 	"os"
 
-	"gopkg.in/yaml.v3"
+	"sigs.k8s.io/yaml"
 )
 
 func LoadFromYAML(path string, cfg interface{}) error {
