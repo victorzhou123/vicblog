@@ -6,22 +6,31 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
+
+	userapp "victorzhou123/vicblog/user/app"
+	userctl "victorzhou123/vicblog/user/controller"
+	userauth "victorzhou123/vicblog/user/domain/auth"
+	userrepo "victorzhou123/vicblog/user/domain/repository"
 )
 
-func StartWebServer(port int, timeout time.Duration) {
+const BasePath = "/api"
+
+func StartWebServer(cfg *Config) error {
 	engine := gin.New()
 	engine.Use(gin.Recovery())
-	engine.Use(logRequest())
-	engine.TrustedPlatform = "x-real-ip"
 
 	engine.UseRawPath = true
 
-	_ = &http.Server{
-		Addr:    fmt.Sprintf(":%d", port),
-		Handler: engine,
-		ReadHeaderTimeout: 1 * time.Second,
+	setRouter(engine)
+
+	server := &http.Server{
+		Addr:              fmt.Sprintf(":%d", cfg.Port),
+		Handler:           engine,
+		ReadTimeout:       time.Duration(cfg.ReadTimeout) * time.Millisecond,
+		ReadHeaderTimeout: time.Duration(cfg.ReadHeaderTimeout) * time.Millisecond,
 	}
+
+	return server.ListenAndServe()
 }
 
 func logRequest() gin.HandlerFunc {
