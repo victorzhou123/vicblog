@@ -1,11 +1,11 @@
 package log
 
 type Config struct {
-	Level     string
-	FlushTime int // unit second
+	Level     string `json:"level"`
+	FlushTime int    `json:"flush_time"` // unit second
 
-	InterfaceWriter WriterConfig
-	RunWriter       WriterConfig
+	InterfaceWriter WriterConfig `json:"interface_writer"`
+	RunWriter       WriterConfig `json:"run_writer"`
 }
 
 func (cfg *Config) SetDefault() {
@@ -17,13 +17,13 @@ func (cfg *Config) SetDefault() {
 }
 
 type WriterConfig struct {
-	FilePath   string
-	MaxSize    int // unit MB
-	MaxAge     int // unit day
-	MaxBackups int // max backup logs
-	LocalTime  bool
-	Compress   bool // compress historical log
-	StdPrint   bool // if print to os.Stdout
+	FilePath   string `json:"file_path"`
+	MaxSize    int    `json:"max_size"`    // unit MB
+	MaxAge     int    `json:"max_age"`     // unit day
+	MaxBackups int    `json:"max_backups"` // max backup logs
+	LocalTime  bool   `json:"local_time"`
+	Compress   bool   `json:"compress"`  // compress historical log
+	StdPrint   bool   `json:"std_print"` // if print to os.Stdout
 }
 
 func (w *WriterConfig) setDefault() {
