@@ -16,7 +16,7 @@ func LoadConfig(path string, cfg *Config) error {
 }
 
 type Config struct {
-	Common common.Config
+	Common common.Config `json:"common"`
 }
 
 func (cfg *Config) configItems() []interface{} {
