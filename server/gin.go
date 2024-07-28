@@ -6,51 +6,50 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
+
+	userapp "victorzhou123/vicblog/user/app"
+	userctl "victorzhou123/vicblog/user/controller"
+	userauth "victorzhou123/vicblog/user/domain/auth"
+	userrepo "victorzhou123/vicblog/user/domain/repository"
 )
 
-func StartWebServer(port int, timeout time.Duration) {
+const BasePath = "/api"
+
+func StartWebServer(cfg *Config) error {
 	engine := gin.New()
 	engine.Use(gin.Recovery())
-	engine.Use(logRequest())
-	engine.TrustedPlatform = "x-real-ip"
 
 	engine.UseRawPath = true
 
-	_ = &http.Server{
-		Addr:    fmt.Sprintf(":%d", port),
-		Handler: engine,
-		ReadHeaderTimeout: 1 * time.Second,
+	setRouter(engine)
+
+	server := &http.Server{
+		Addr:              fmt.Sprintf(":%d", cfg.Port),
+		Handler:           engine,
+		ReadTimeout:       time.Duration(cfg.ReadTimeout) * time.Millisecond,
+		ReadHeaderTimeout: time.Duration(cfg.ReadHeaderTimeout) * time.Millisecond,
 	}
+
+	return server.ListenAndServe()
 }
 
-func logRequest() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		startTime := time.Now()
+func setRouter(engine *gin.Engine) {
 
-		c.Next()
+	// infrastructure: following are the implement of domain
+	// ...
 
-		endTime := time.Now()
+	// domain: following are the dependencies of app service
+	var userRepo userrepo.User = nil
+	var auth userauth.Auth = nil
 
-		errmsg := ""
-		for _, ginErr := range c.Errors {
-			if errmsg != "" {
-				errmsg += ","
-			}
-			errmsg = fmt.Sprintf("%s%s", errmsg, ginErr.Error())
-		}
+	// app: following are app services
+	loginService := userapp.NewLoginService(userRepo, auth)
 
-		log := fmt.Sprintf(
-			"| %d | %d | %s | %s ",
-			c.Writer.Status(),
-			endTime.Sub(startTime),
-			c.Request.Method,
-			c.Request.RequestURI,
+	// controller: add routers
+	v1 := engine.Group(BasePath)
+	{
+		userctl.AddRouterForLoginController(
+			v1, loginService,
 		)
-		if errmsg != "" {
-			log += fmt.Sprintf("| %s ", errmsg)
-		}
-
-		logrus.Info(log)
 	}
 }

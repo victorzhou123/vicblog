@@ -1,3 +1,7 @@
+server:
+  port: 8080
+  read_timeout: 10000
+  read_header_timeout: 2000
 common:
   log:
     level: "DEBUG"

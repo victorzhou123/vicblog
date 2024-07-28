@@ -1,12 +1,8 @@
 package domain
 
+import "victorzhou123/vicblog/common/domain/primitive"
+
 type User struct {
-	Email Email
-
-	Account Account
-}
-
-type Account struct {
-	Username Username
-	Password Password
+	Username primitive.Username
+	Email    Email
 }

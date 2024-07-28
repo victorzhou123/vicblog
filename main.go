@@ -5,6 +5,7 @@ import (
 
 	"victorzhou123/vicblog/common/log"
 	"victorzhou123/vicblog/config"
+	"victorzhou123/vicblog/server"
 )
 
 func main() {
@@ -22,4 +23,8 @@ func main() {
 
 	// log
 	log.Init(&cfg.Common.Log, exitSig)
+
+	if err := server.StartWebServer(&cfg.Server); err != nil {
+		log.Fatalf("start web server error: %s", err.Error())
+	}
 }
