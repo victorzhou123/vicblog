@@ -3,6 +3,7 @@ package config
 import (
 	"victorzhou123/vicblog/common"
 	"victorzhou123/vicblog/common/util"
+	"victorzhou123/vicblog/server"
 )
 
 func LoadConfig(path string, cfg *Config) error {
@@ -16,12 +17,14 @@ func LoadConfig(path string, cfg *Config) error {
 }
 
 type Config struct {
+	Server server.Config `json:"server"`
 	Common common.Config `json:"common"`
 }
 
 func (cfg *Config) configItems() []interface{} {
 	return []interface{}{
 		&cfg.Common,
+		&cfg.Server,
 	}
 }
 
@@ -30,8 +33,8 @@ type configSetDefault interface {
 }
 
 func (cfg *Config) setDefault() {
-	for _, interf := range cfg.configItems() {
-		if o, ok := interf.(configSetDefault); ok {
+	for _, intf := range cfg.configItems() {
+		if o, ok := intf.(configSetDefault); ok {
 			o.SetDefault()
 		}
 	}
@@ -42,8 +45,8 @@ type configValidate interface {
 }
 
 func (cfg *Config) validate() error {
-	for _, interf := range cfg.configItems() {
-		if o, ok := interf.(configValidate); ok {
+	for _, intf := range cfg.configItems() {
+		if o, ok := intf.(configValidate); ok {
 			if err := o.Validate(); err != nil {
 				return err
 			}

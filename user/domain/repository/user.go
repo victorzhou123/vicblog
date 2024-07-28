@@ -1,7 +1,10 @@
 package repository
 
-import "victorzhou123/vicblog/user/domain"
+import (
+	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
+	"victorzhou123/vicblog/user/domain"
+)
 
 type User interface {
-	GetAccountInfo() (domain.Account, error)
+	GetAccountInfo(user cmprimitive.Username) (domain.User, error)
 }
