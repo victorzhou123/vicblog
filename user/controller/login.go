@@ -30,9 +30,9 @@ type LoginController struct {
 // @Success  201   {object}  app.UserAndTokenDto
 // @Router   /v1/login [post]
 func (ctl *LoginController) Login(ctx *gin.Context) {
-	var req *reqLogin
+	var req reqLogin
 
-	if err := ctx.ShouldBindJSON(req); err != nil {
+	if err := ctx.ShouldBindJSON(&req); err != nil {
 		cmctl.SendBadRequestBody(ctx, err)
 
 		return
