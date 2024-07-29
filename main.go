@@ -8,6 +8,14 @@ import (
 	"victorzhou123/vicblog/server"
 )
 
+//    @title            vicBlog server API
+//    @version        1.0
+//
+//    @contact.name    VictorZhou
+//    @contact.email    victorzhoux@163.com
+//
+//    @host        localhost:8080
+//    @BasePath    /api
 func main() {
 	exitSig := make(chan struct{})
 	defer func() {

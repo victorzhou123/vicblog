@@ -1,0 +1,47 @@
+basePath: /api
+definitions:
+  app.UserAndTokenDto:
+    properties:
+      email:
+        type: string
+      token:
+        type: string
+      username:
+        type: string
+    type: object
+  controller.reqLogin:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: victorzhoux@163.com
+    name: VictorZhou
+  title: vicBlog server API
+  version: "1.0"
+paths:
+  /v1/login:
+    post:
+      consumes:
+      - application/json
+      description: login
+      parameters:
+      - description: body of login
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/controller.reqLogin'
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/app.UserAndTokenDto'
+      summary: Login
+      tags:
+      - Login
+swagger: "2.0"
