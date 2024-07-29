@@ -6,7 +6,10 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 
+	_ "victorzhou123/vicblog/docs"
 	userapp "victorzhou123/vicblog/user/app"
 	userctl "victorzhou123/vicblog/user/controller"
 	userauth "victorzhou123/vicblog/user/domain/auth"
@@ -48,8 +51,14 @@ func setRouter(engine *gin.Engine) {
 	// controller: add routers
 	v1 := engine.Group(BasePath)
 	{
+		addRouterForSwaggo(v1)
+
 		userctl.AddRouterForLoginController(
 			v1, loginService,
 		)
 	}
+}
+
+func addRouterForSwaggo(rg *gin.RouterGroup) {
+	rg.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 }
