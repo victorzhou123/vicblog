@@ -29,7 +29,7 @@ func (r *runLog) setFromLogItem(item *runLogItem) {
 func newDefaultRunLog() *runLog {
 	return &runLog{
 		Time:     util.TimeNowBaseSecond(),
-		Severity: LevelInfo,
+		Severity: levelInfo,
 		Service:  constant.ServerName,
 		Position: util.GetCallStackInfo(4),
 	}
@@ -56,7 +56,7 @@ func writeRunLog(item *runLogItem) {
 
 func Debug(TraceID, template string, args ...any) {
 	writeRunLog(&runLogItem{
-		Level:   LevelDebug,
+		Level:   levelDebug,
 		TraceID: TraceID,
 		Info:    fmt.Sprintf(template, args...),
 	})
@@ -64,7 +64,7 @@ func Debug(TraceID, template string, args ...any) {
 
 func Info(TraceID, template string, args ...any) {
 	writeRunLog(&runLogItem{
-		Level:   LevelInfo,
+		Level:   levelInfo,
 		TraceID: TraceID,
 		Info:    fmt.Sprintf(template, args...),
 	})
@@ -72,7 +72,7 @@ func Info(TraceID, template string, args ...any) {
 
 func Warn(TraceID, template string, args ...any) {
 	writeRunLog(&runLogItem{
-		Level:   LevelWarn,
+		Level:   levelWarn,
 		TraceID: TraceID,
 		Info:    fmt.Sprintf(template, args...),
 	})
@@ -80,7 +80,7 @@ func Warn(TraceID, template string, args ...any) {
 
 func Error(TraceID, template string, args ...any) {
 	writeRunLog(&runLogItem{
-		Level:   LevelError,
+		Level:   levelError,
 		TraceID: TraceID,
 		Info:    fmt.Sprintf(template, args...),
 	})
@@ -88,7 +88,7 @@ func Error(TraceID, template string, args ...any) {
 
 func Panic(TraceID, template string, args ...any) {
 	writeRunLog(&runLogItem{
-		Level:   LevelPanic,
+		Level:   levelPanic,
 		TraceID: TraceID,
 		Info:    fmt.Sprintf(template, args...),
 	})
@@ -96,7 +96,7 @@ func Panic(TraceID, template string, args ...any) {
 
 func Fatal(TraceID, template string, args ...any) {
 	writeRunLog(&runLogItem{
-		Level:   LevelFatal,
+		Level:   levelFatal,
 		TraceID: TraceID,
 		Info:    fmt.Sprintf(template, args...),
 	})
@@ -104,7 +104,7 @@ func Fatal(TraceID, template string, args ...any) {
 
 func Debugf(template string, args ...any) {
 	writeRunLog(&runLogItem{
-		Level:   LevelDebug,
+		Level:   levelDebug,
 		TraceID: "",
 		Info:    fmt.Sprintf(template, args...),
 	})
@@ -112,7 +112,7 @@ func Debugf(template string, args ...any) {
 
 func Infof(template string, args ...any) {
 	writeRunLog(&runLogItem{
-		Level:   LevelInfo,
+		Level:   levelInfo,
 		TraceID: "",
 		Info:    fmt.Sprintf(template, args...),
 	})
@@ -120,7 +120,7 @@ func Infof(template string, args ...any) {
 
 func Warnf(template string, args ...any) {
 	writeRunLog(&runLogItem{
-		Level:   LevelWarn,
+		Level:   levelWarn,
 		TraceID: "",
 		Info:    fmt.Sprintf(template, args...),
 	})
@@ -128,7 +128,7 @@ func Warnf(template string, args ...any) {
 
 func Errorf(template string, args ...any) {
 	writeRunLog(&runLogItem{
-		Level:   LevelError,
+		Level:   levelError,
 		TraceID: "",
 		Info:    fmt.Sprintf(template, args...),
 	})
@@ -136,7 +136,7 @@ func Errorf(template string, args ...any) {
 
 func Panicf(template string, args ...any) {
 	writeRunLog(&runLogItem{
-		Level:   LevelPanic,
+		Level:   levelPanic,
 		TraceID: "",
 		Info:    fmt.Sprintf(template, args...),
 	})
@@ -144,7 +144,7 @@ func Panicf(template string, args ...any) {
 
 func Fatalf(template string, args ...any) {
 	writeRunLog(&runLogItem{
-		Level:   LevelFatal,
+		Level:   levelFatal,
 		TraceID: "",
 		Info:    fmt.Sprintf(template, args...),
 	})
