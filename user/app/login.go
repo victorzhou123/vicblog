@@ -27,18 +27,20 @@ type loginService struct {
 
 // Login return token if login success
 func (s *loginService) Login(cmd *AccountCmd) (UserAndTokenDto, error) {
-	account, err := s.userrepo.GetAccountInfo(cmd.Username)
+	account := cmd.toAccount()
+
+	user, err := s.userrepo.GetUserInfo(&account)
 	if err != nil {
 		return UserAndTokenDto{}, cmdmerror.New(
 			cmdmerror.ErrorCodeAccessCertificateInvalid, msgUserNameOrPassWordError,
 		)
 	}
 
-	token := s.auth.GenToken(&auth.JWTPayload{UserName: account.Username})
+	token := s.auth.GenToken(&auth.JWTPayload{UserName: user.Username})
 
 	return UserAndTokenDto{
-		Username: account.Username.Username(),
-		Email:    account.Email.Email(),
+		Username: user.Username.Username(),
+		Email:    user.Email.Email(),
 		Token:    token,
 	}, nil
 }

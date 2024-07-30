@@ -5,6 +5,11 @@ import (
 	"victorzhou123/vicblog/user/domain"
 )
 
+type Account struct {
+	Username cmprimitive.Username
+	Password domain.Password
+}
+
 type User interface {
-	GetAccountInfo(user cmprimitive.Username) (domain.User, error)
+	GetUserInfo(*Account) (domain.User, error)
 }
