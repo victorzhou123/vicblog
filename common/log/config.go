@@ -9,7 +9,7 @@ type Config struct {
 }
 
 func (cfg *Config) SetDefault() {
-	cfg.Level = LevelInfo
+	cfg.Level = levelInfo
 	cfg.FlushTime = 5
 
 	cfg.InterfaceWriter.setDefault()

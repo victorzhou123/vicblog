@@ -14,12 +14,12 @@ import (
 )
 
 const (
-	LevelDebug = "DEBUG"
-	LevelInfo  = "INFO"
-	LevelWarn  = "WARN"
-	LevelError = "ERROR"
-	LevelPanic = "PANIC"
-	LevelFatal = "FATAL"
+	levelDebug = "DEBUG"
+	levelInfo  = "INFO"
+	levelWarn  = "WARN"
+	levelError = "ERROR"
+	levelPanic = "PANIC"
+	levelFatal = "FATAL"
 )
 
 var runSugarLogger *zap.SugaredLogger
@@ -93,15 +93,15 @@ func newLumberjackLogger(cfg *WriterConfig) *lumberjack.Logger {
 // logLevelMap: mapping severity level to standard log level of zap
 func logLevelMap(level string) zapcore.Level {
 	switch level {
-	case LevelDebug:
+	case levelDebug:
 		return zapcore.DebugLevel
-	case LevelInfo:
+	case levelInfo:
 		return zapcore.InfoLevel
-	case LevelWarn:
+	case levelWarn:
 		return zapcore.WarnLevel
-	case LevelPanic:
+	case levelPanic:
 		return zapcore.ErrorLevel
-	case LevelFatal:
+	case levelFatal:
 		return zapcore.PanicLevel
 	default:
 		return zapcore.InfoLevel
@@ -122,17 +122,17 @@ func toLog(r any) string {
 
 func writeLog(logger *zap.SugaredLogger, level string, info any) {
 	switch level {
-	case LevelDebug:
+	case levelDebug:
 		logger.Debug(info)
-	case LevelInfo:
+	case levelInfo:
 		logger.Info(info)
-	case LevelWarn:
+	case levelWarn:
 		logger.Warn(info)
-	case LevelError:
+	case levelError:
 		logger.Error(info)
-	case LevelPanic:
+	case levelPanic:
 		logger.Panic(info)
-	case LevelFatal:
+	case levelFatal:
 		logger.Fatal(info)
 	default:
 		logger.Info(info)

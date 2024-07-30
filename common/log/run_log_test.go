@@ -17,7 +17,7 @@ var (
 func init() {
 	// log init
 	logger := zap.New(zapcore.NewCore(
-		getEncoder(), newSyncWriter(buf), logLevelMap(LevelDebug),
+		getEncoder(), newSyncWriter(buf), logLevelMap(levelDebug),
 	))
 	runSugarLogger = logger.Sugar()
 }
