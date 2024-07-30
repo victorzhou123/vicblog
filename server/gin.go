@@ -9,14 +9,19 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
+	cminframysql "victorzhou123/vicblog/common/infrastructure/mysql"
 	_ "victorzhou123/vicblog/docs"
 	userapp "victorzhou123/vicblog/user/app"
 	userctl "victorzhou123/vicblog/user/controller"
 	userauth "victorzhou123/vicblog/user/domain/auth"
-	userrepo "victorzhou123/vicblog/user/domain/repository"
+	userrepoimpl "victorzhou123/vicblog/user/infrastructure/repositoryimpl"
 )
 
-const BasePath = "/api"
+const (
+	BasePath = "/api"
+
+	tableNameUser = "user"
+)
 
 func StartWebServer(cfg *Config) error {
 	engine := gin.New()
@@ -38,11 +43,11 @@ func StartWebServer(cfg *Config) error {
 
 func setRouter(engine *gin.Engine) {
 
-	// infrastructure: following are the implement of domain
-	// ...
+	// infrastructure: following are the instance of DAO
+	userTable := cminframysql.DAO(tableNameUser)
 
 	// domain: following are the dependencies of app service
-	var userRepo userrepo.User = nil
+	userRepo := userrepoimpl.NewUserRepo(userTable)
 	var auth userauth.Auth = nil
 
 	// app: following are app services

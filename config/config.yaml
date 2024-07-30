@@ -14,3 +14,9 @@ common:
       local_time: true
       compress: false
       std_print: true
+  mysql:
+    host: 127.0.0.1
+    port: 3306
+    username: "root"
+    password: "Password@1"
+    db_name: "vicblog"
