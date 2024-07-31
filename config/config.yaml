@@ -20,3 +20,8 @@ common:
     username: "root"
     password: "Password@1"
     db_name: "vicblog"
+user:
+  infra:
+    auth:
+      secret_key: "~&bBD(92$8~JE^XZ"
+      expire_time: 300

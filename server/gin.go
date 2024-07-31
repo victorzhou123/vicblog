@@ -10,10 +10,12 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 
 	cminframysql "victorzhou123/vicblog/common/infrastructure/mysql"
+	cmutil "victorzhou123/vicblog/common/util"
+	mconfig "victorzhou123/vicblog/config"
 	_ "victorzhou123/vicblog/docs"
 	userapp "victorzhou123/vicblog/user/app"
 	userctl "victorzhou123/vicblog/user/controller"
-	userauth "victorzhou123/vicblog/user/domain/auth"
+	userauthimpl "victorzhou123/vicblog/user/infrastructure/authimpl"
 	userrepoimpl "victorzhou123/vicblog/user/infrastructure/repositoryimpl"
 )
 
@@ -23,32 +25,33 @@ const (
 	tableNameUser = "user"
 )
 
-func StartWebServer(cfg *Config) error {
+func StartWebServer(cfg *mconfig.Config) error {
 	engine := gin.New()
 	engine.Use(gin.Recovery())
 
 	engine.UseRawPath = true
 
-	setRouter(engine)
+	setRouter(engine, cfg)
 
 	server := &http.Server{
-		Addr:              fmt.Sprintf(":%d", cfg.Port),
+		Addr:              fmt.Sprintf(":%d", cfg.Server.Port),
 		Handler:           engine,
-		ReadTimeout:       time.Duration(cfg.ReadTimeout) * time.Millisecond,
-		ReadHeaderTimeout: time.Duration(cfg.ReadHeaderTimeout) * time.Millisecond,
+		ReadTimeout:       time.Duration(cfg.Server.ReadTimeout) * time.Millisecond,
+		ReadHeaderTimeout: time.Duration(cfg.Server.ReadHeaderTimeout) * time.Millisecond,
 	}
 
 	return server.ListenAndServe()
 }
 
-func setRouter(engine *gin.Engine) {
+func setRouter(engine *gin.Engine, cfg *mconfig.Config) {
 
-	// infrastructure: following are the instance of DAO
+	// infrastructure: following are the instance of infrastructure components
+	timeCreator := cmutil.NewTimerCreator()
 	userTable := cminframysql.DAO(tableNameUser)
 
 	// domain: following are the dependencies of app service
 	userRepo := userrepoimpl.NewUserRepo(userTable)
-	var auth userauth.Auth = nil
+	auth := userauthimpl.NewSignJwt(&timeCreator, &cfg.User.Infra.Auth)
 
 	// app: following are app services
 	loginService := userapp.NewLoginService(userRepo, auth)

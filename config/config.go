@@ -3,7 +3,7 @@ package config
 import (
 	"victorzhou123/vicblog/common"
 	"victorzhou123/vicblog/common/util"
-	"victorzhou123/vicblog/server"
+	"victorzhou123/vicblog/user"
 )
 
 func LoadConfig(path string, cfg *Config) error {
@@ -17,14 +17,16 @@ func LoadConfig(path string, cfg *Config) error {
 }
 
 type Config struct {
-	Server server.Config `json:"server"`
+	Server Server        `json:"server"`
 	Common common.Config `json:"common"`
+	User   user.Config   `json:"user"`
 }
 
 func (cfg *Config) configItems() []interface{} {
 	return []interface{}{
 		&cfg.Common,
 		&cfg.Server,
+		&cfg.User,
 	}
 }
 
@@ -54,4 +56,25 @@ func (cfg *Config) validate() error {
 	}
 
 	return nil
+}
+
+// server config
+type Server struct {
+	Port              int `json:"port"`
+	ReadTimeout       int `json:"read_timeout"`        // unit Millisecond
+	ReadHeaderTimeout int `json:"read_header_timeout"` // unit Millisecond
+}
+
+func (cfg *Server) SetDefault() {
+	if cfg.Port == 0 {
+		cfg.Port = 8080
+	}
+
+	if cfg.ReadTimeout == 0 {
+		cfg.ReadHeaderTimeout = 10000
+	}
+
+	if cfg.ReadHeaderTimeout == 0 {
+		cfg.ReadHeaderTimeout = 2000
+	}
 }
