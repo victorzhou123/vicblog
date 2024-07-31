@@ -36,7 +36,10 @@ func (s *loginService) Login(cmd *AccountCmd) (UserAndTokenDto, error) {
 		)
 	}
 
-	token := s.auth.GenToken(&auth.JWTPayload{UserName: user.Username})
+	token, err := s.auth.GenToken(&auth.Payload{UserName: user.Username})
+	if err != nil {
+		return UserAndTokenDto{}, err
+	}
 
 	return UserAndTokenDto{
 		Username: user.Username.Username(),

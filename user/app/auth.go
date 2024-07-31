@@ -36,8 +36,8 @@ func (m *Auth) VerifyToken(ctx *gin.Context) {
 		return
 	}
 
-	ok, username := m.auth.TokenValid(token)
-	if !ok {
+	username, err := m.auth.TokenValid(token)
+	if err != nil {
 		cmctl.SendError(ctx, cmdmerror.New(
 			cmdmerror.ErrorCodeTokenInvalid, "",
 		))

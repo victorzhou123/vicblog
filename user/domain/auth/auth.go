@@ -2,11 +2,11 @@ package auth
 
 import cmprimitive "victorzhou123/vicblog/common/domain/primitive"
 
-type JWTPayload struct {
+type Payload struct {
 	UserName cmprimitive.Username
 }
 
 type Auth interface {
-	GenToken(*JWTPayload) string
-	TokenValid(string) (bool, cmprimitive.Username)
+	GenToken(*Payload) (string, error)
+	TokenValid(string) (cmprimitive.Username, error)
 }
