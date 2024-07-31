@@ -38,7 +38,7 @@ func main() {
 		log.Warnf("mysql init failed, error: %s", err.Error())
 	}
 
-	if err := server.StartWebServer(&cfg.Server); err != nil {
+	if err := server.StartWebServer(cfg); err != nil {
 		log.Fatalf("start web server error: %s", err.Error())
 	}
 }
