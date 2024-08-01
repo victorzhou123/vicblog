@@ -9,8 +9,11 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
-	cminframysql "victorzhou123/vicblog/common/infrastructure/mysql"
+	articleapp "victorzhou123/vicblog/article/app"
+	articlectl "victorzhou123/vicblog/article/controller"
+	cmapp "victorzhou123/vicblog/common/app"
 	cminfraauthimpl "victorzhou123/vicblog/common/infrastructure/authimpl"
+	cminframysql "victorzhou123/vicblog/common/infrastructure/mysql"
 	cmutil "victorzhou123/vicblog/common/util"
 	mconfig "victorzhou123/vicblog/config"
 	_ "victorzhou123/vicblog/docs"
@@ -50,11 +53,13 @@ func setRouter(engine *gin.Engine, cfg *mconfig.Config) {
 	userTable := cminframysql.DAO(tableNameUser)
 
 	// domain: following are the dependencies of app service
-	userRepo := userrepoimpl.NewUserRepo(userTable)
 	auth := cminfraauthimpl.NewSignJwt(&timeCreator, &cfg.Common.Infra.Auth)
+	userRepo := userrepoimpl.NewUserRepo(userTable)
 
 	// app: following are app services
+	authMiddleware := cmapp.NewAuthMiddleware(auth)
 	loginService := userapp.NewLoginService(userRepo, auth)
+	articleService := articleapp.NewArticleService(nil)
 
 	// controller: add routers
 	v1 := engine.Group(BasePath)
@@ -63,6 +68,10 @@ func setRouter(engine *gin.Engine, cfg *mconfig.Config) {
 
 		userctl.AddRouterForLoginController(
 			v1, loginService,
+		)
+
+		articlectl.AddRouterForArticleController(
+			v1, authMiddleware, articleService,
 		)
 	}
 }

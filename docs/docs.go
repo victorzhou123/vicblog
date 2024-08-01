@@ -18,6 +18,29 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/v1/admin/article/list": {
+            "post": {
+                "description": "list all articles of request user",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Article"
+                ],
+                "summary": "List articles",
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/app.ArticleListDto"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/v1/login": {
             "post": {
                 "description": "login",
@@ -51,6 +74,29 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "app.ArticleListDto": {
+            "type": "object",
+            "properties": {
+                "cover": {
+                    "type": "string"
+                },
+                "createTime": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "isPublish": {
+                    "type": "boolean"
+                },
+                "isTop": {
+                    "type": "boolean"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
         "app.UserAndTokenDto": {
             "type": "object",
             "properties": {

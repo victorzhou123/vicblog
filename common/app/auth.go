@@ -4,13 +4,13 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"victorzhou123/vicblog/common/controller"
+	"victorzhou123/vicblog/common/domain/auth"
 	cmdmerror "victorzhou123/vicblog/common/domain/error"
 	"victorzhou123/vicblog/common/domain/primitive"
-	"victorzhou123/vicblog/common/domain/auth"
 )
 
 const (
-	headerAuthorization = "Authorization"
+	cookieFieldAuthorization = "Authorization"
 
 	ContextKeyUsername = "Username"
 )
@@ -20,13 +20,19 @@ type AuthMiddleware interface {
 	GetUser(*gin.Context) (primitive.Username, error)
 }
 
-type Auth struct {
+type authMiddleware struct {
 	auth auth.Auth
 }
 
-func (m *Auth) VerifyToken(ctx *gin.Context) {
-	token := ctx.GetHeader(headerAuthorization)
-	if token == "" {
+func NewAuthMiddleware(auth auth.Auth) AuthMiddleware {
+	return &authMiddleware{
+		auth: auth,
+	}
+}
+
+func (m *authMiddleware) VerifyToken(ctx *gin.Context) {
+	token, err := ctx.Cookie(cookieFieldAuthorization)
+	if err != nil || token == "" {
 		controller.SendError(ctx, cmdmerror.New(
 			cmdmerror.ErrorCodeTokenNotFound, "",
 		))
@@ -53,11 +59,11 @@ func (m *Auth) VerifyToken(ctx *gin.Context) {
 	ctx.Next()
 }
 
-func (m *Auth) GetUser(ctx *gin.Context) (primitive.Username, error) {
-	username := ctx.GetHeader(ContextKeyUsername)
-	if username == "" {
+func (m *authMiddleware) GetUser(ctx *gin.Context) (primitive.Username, error) {
+	username, exist := ctx.Get(ContextKeyUsername)
+	if !exist || username.(string) == "" {
 		return nil, cmdmerror.New(cmdmerror.ErrorCodeUserNotFound, "")
 	}
 
-	return primitive.NewUsername(username)
+	return primitive.NewUsername(username.(string))
 }

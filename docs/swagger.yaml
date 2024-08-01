@@ -1,5 +1,20 @@
 basePath: /api
 definitions:
+  app.ArticleListDto:
+    properties:
+      cover:
+        type: string
+      createTime:
+        type: string
+      id:
+        type: string
+      isPublish:
+        type: boolean
+      isTop:
+        type: boolean
+      title:
+        type: string
+    type: object
   app.UserAndTokenDto:
     properties:
       email:
@@ -24,6 +39,21 @@ info:
   title: vicBlog server API
   version: "1.0"
 paths:
+  /v1/admin/article/list:
+    post:
+      consumes:
+      - application/json
+      description: list all articles of request user
+      responses:
+        "201":
+          description: Created
+          schema:
+            items:
+              $ref: '#/definitions/app.ArticleListDto'
+            type: array
+      summary: List articles
+      tags:
+      - Article
   /v1/login:
     post:
       consumes:
