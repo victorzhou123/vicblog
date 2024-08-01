@@ -14,14 +14,13 @@ common:
       local_time: true
       compress: false
       std_print: true
-  mysql:
-    host: 127.0.0.1
-    port: 3306
-    username: "root"
-    password: "Password@1"
-    db_name: "vicblog"
-user:
   infra:
     auth:
       secret_key: "~&bBD(92$8~JE^XZ"
       expire_time: 300
+    mysql:
+      host: 127.0.0.1
+      port: 3306
+      username: "root"
+      password: "Password@1"
+      db_name: "vicblog"

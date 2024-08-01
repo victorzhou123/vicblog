@@ -1,16 +1,16 @@
 package common
 
 import (
-	"victorzhou123/vicblog/common/infrastructure/mysql"
+	"victorzhou123/vicblog/common/infrastructure"
 	"victorzhou123/vicblog/common/log"
 )
 
 type Config struct {
-	Log   log.Config   `json:"log"`
-	Mysql mysql.Config `json:"mysql"`
+	Log   log.Config            `json:"log"`
+	Infra infrastructure.Config `json:"infra"`
 }
 
 func (cfg *Config) SetDefault() {
 	cfg.Log.SetDefault()
-	cfg.Mysql.SetDefault()
+	cfg.Infra.SetDefault()
 }

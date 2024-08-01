@@ -1,12 +1,14 @@
 package auth
 
-import cmprimitive "victorzhou123/vicblog/common/domain/primitive"
+import (
+	cmdmauth "victorzhou123/vicblog/common/domain/auth"
+	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
+)
 
 type Payload struct {
 	UserName cmprimitive.Username
 }
 
 type Auth interface {
-	GenToken(*Payload) (string, error)
-	TokenValid(string) (cmprimitive.Username, error)
+	GenToken(*cmdmauth.Payload) (string, error)
 }

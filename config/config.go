@@ -3,7 +3,6 @@ package config
 import (
 	"victorzhou123/vicblog/common"
 	"victorzhou123/vicblog/common/util"
-	"victorzhou123/vicblog/user"
 )
 
 func LoadConfig(path string, cfg *Config) error {
@@ -19,14 +18,12 @@ func LoadConfig(path string, cfg *Config) error {
 type Config struct {
 	Server Server        `json:"server"`
 	Common common.Config `json:"common"`
-	User   user.Config   `json:"user"`
 }
 
 func (cfg *Config) configItems() []interface{} {
 	return []interface{}{
 		&cfg.Common,
 		&cfg.Server,
-		&cfg.User,
 	}
 }
 
