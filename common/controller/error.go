@@ -53,6 +53,9 @@ func httpError(err error) (int, string) {
 			case cmerror.ErrorCodeAccessCertificateInvalid:
 				sc = http.StatusUnauthorized
 
+			case cmerror.ErrorCodeResourceNotFound:
+				sc = http.StatusNotFound
+
 			default:
 				sc = http.StatusBadRequest
 			}

@@ -13,6 +13,8 @@ const (
 
 	ErrorCodeAccessCertificateInvalid = "access_certificate_invalid"
 
+	ErrorCodeResourceNotFound = "resource_not_found"
+
 	errorCodeInvalidParam = "invalid_param"
 )
 
