@@ -1,6 +1,7 @@
 package app
 
 import (
+	cmdmauth "victorzhou123/vicblog/common/domain/auth"
 	cmdmerror "victorzhou123/vicblog/common/domain/error"
 	"victorzhou123/vicblog/user/domain/auth"
 	"victorzhou123/vicblog/user/domain/repository"
@@ -36,7 +37,7 @@ func (s *loginService) Login(cmd *AccountCmd) (UserAndTokenDto, error) {
 		)
 	}
 
-	token, err := s.auth.GenToken(&auth.Payload{UserName: user.Username})
+	token, err := s.auth.GenToken(&cmdmauth.Payload{UserName: user.Username})
 	if err != nil {
 		return UserAndTokenDto{}, err
 	}

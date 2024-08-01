@@ -10,12 +10,12 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 
 	cminframysql "victorzhou123/vicblog/common/infrastructure/mysql"
+	cminfraauthimpl "victorzhou123/vicblog/common/infrastructure/authimpl"
 	cmutil "victorzhou123/vicblog/common/util"
 	mconfig "victorzhou123/vicblog/config"
 	_ "victorzhou123/vicblog/docs"
 	userapp "victorzhou123/vicblog/user/app"
 	userctl "victorzhou123/vicblog/user/controller"
-	userauthimpl "victorzhou123/vicblog/user/infrastructure/authimpl"
 	userrepoimpl "victorzhou123/vicblog/user/infrastructure/repositoryimpl"
 )
 
@@ -51,7 +51,7 @@ func setRouter(engine *gin.Engine, cfg *mconfig.Config) {
 
 	// domain: following are the dependencies of app service
 	userRepo := userrepoimpl.NewUserRepo(userTable)
-	auth := userauthimpl.NewSignJwt(&timeCreator, &cfg.User.Infra.Auth)
+	auth := cminfraauthimpl.NewSignJwt(&timeCreator, &cfg.Common.Infra.Auth)
 
 	// app: following are app services
 	loginService := userapp.NewLoginService(userRepo, auth)
