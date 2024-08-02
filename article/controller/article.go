@@ -6,6 +6,7 @@ import (
 	"victorzhou123/vicblog/article/app"
 	cmapp "victorzhou123/vicblog/common/app"
 	cmctl "victorzhou123/vicblog/common/controller"
+	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
 )
 
 func AddRouterForArticleController(
@@ -19,6 +20,7 @@ func AddRouterForArticleController(
 	}
 
 	rg.POST("/v1/admin/article/list", auth.VerifyToken, ctl.List)
+	rg.DELETE("/v1/admin/article/:id", auth.VerifyToken, ctl.Delete)
 }
 
 type ArticleController struct {
@@ -49,4 +51,28 @@ func (ctl *ArticleController) List(ctx *gin.Context) {
 	}
 
 	cmctl.SendRespOfPost(ctx, dto)
+}
+
+// @Summary  delete article
+// @Description  delete one article of request user
+// @Tags     Article
+// @Param	id	path	int	true	"article ID"
+// @Success  204
+// @Router   /v1/admin/article/{id} [delete]
+func (ctl *ArticleController) Delete(ctx *gin.Context) {
+
+	user, err := ctl.GetUser(ctx)
+	if err != nil {
+		cmctl.SendError(ctx, err)
+
+		return
+	}
+
+	if err := ctl.article.Delete(user, cmprimitive.NewId(ctx.Param("id"))); err != nil {
+		cmctl.SendRespOfDelete(ctx)
+
+		return
+	}
+
+	cmctl.SendRespOfDelete(ctx)
 }

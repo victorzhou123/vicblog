@@ -7,4 +7,5 @@ import (
 
 type Article interface {
 	GetArticles(cmprimitive.Username) ([]domain.Article, error)
+	Delete(cmprimitive.Username, cmprimitive.Id) error
 }

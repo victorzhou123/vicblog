@@ -10,6 +10,7 @@ const msgCannotFoundTheArticle = "can not found the article"
 
 type ArticleService interface {
 	GetArticleList(cmprimitive.Username) ([]ArticleListDto, error)
+	Delete(cmprimitive.Username, cmprimitive.Id) error
 }
 
 type articleService struct {
@@ -36,4 +37,12 @@ func (s *articleService) GetArticleList(user cmprimitive.Username) ([]ArticleLis
 	}
 
 	return dtos, nil
+}
+
+func (s *articleService) Delete(user cmprimitive.Username, id cmprimitive.Id) error {
+	if err := s.repo.Delete(user, id); err != nil {
+		return cmdmerror.NewNoPermission("")
+	}
+
+	return nil
 }

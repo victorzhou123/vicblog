@@ -41,6 +41,29 @@ const docTemplate = `{
                 }
             }
         },
+        "/v1/admin/article/{id}": {
+            "delete": {
+                "description": "delete one article of request user",
+                "tags": [
+                    "Article"
+                ],
+                "summary": "delete article",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "article ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            }
+        },
         "/v1/login": {
             "post": {
                 "description": "login",
@@ -84,7 +107,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "id": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "isPublish": {
                     "type": "boolean"
