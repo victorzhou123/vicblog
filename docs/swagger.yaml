@@ -7,7 +7,7 @@ definitions:
       createTime:
         type: string
       id:
-        type: string
+        type: integer
       isPublish:
         type: boolean
       isTop:
@@ -39,6 +39,21 @@ info:
   title: vicBlog server API
   version: "1.0"
 paths:
+  /v1/admin/article/{id}:
+    delete:
+      description: delete one article of request user
+      parameters:
+      - description: article ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: No Content
+      summary: delete article
+      tags:
+      - Article
   /v1/admin/article/list:
     post:
       consumes:

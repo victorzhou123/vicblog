@@ -14,7 +14,7 @@ var tableNameArticle string
 type ArticleDO struct {
 	gorm.Model
 
-	Owner     string `gorm:"column:owner;uniqueIndex:owner_index;size:255"`
+	Owner     string `gorm:"column:owner;index:owner_index;size:255"`
 	Title     string `gorm:"column:title;size:255"`
 	Content   string `gorm:"column:content;type:text;size:40000"`
 	Cover     string `gorm:"column:cover;size:255"`

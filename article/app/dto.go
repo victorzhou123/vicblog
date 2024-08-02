@@ -3,7 +3,7 @@ package app
 import "victorzhou123/vicblog/article/domain"
 
 type ArticleListDto struct {
-	Id        uint64 `json:"id"`
+	Id        uint   `json:"id"`
 	Title     string `json:"title"`
 	Cover     string `json:"cover"`
 	IsPublish bool   `json:"isPublish"`

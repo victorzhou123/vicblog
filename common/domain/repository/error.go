@@ -27,6 +27,15 @@ func NewErrorConcurrentUpdating(err error) ErrorConcurrentUpdating {
 	return ErrorConcurrentUpdating{err}
 }
 
+// ErrorConstraintViolated
+type ErrorConstraintViolated struct {
+	error
+}
+
+func NewErrorConstraintViolated(err error) ErrorConstraintViolated {
+	return ErrorConstraintViolated{err}
+}
+
 // helper
 
 func IsErrorResourceNotExists(err error) bool {

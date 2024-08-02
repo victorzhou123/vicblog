@@ -44,3 +44,11 @@ func (impl *articleRepoImpl) GetArticles(owner cmprimitive.Username) ([]domain.A
 
 	return dmArticles, nil
 }
+
+func (impl *articleRepoImpl) Delete(user cmprimitive.Username, id cmprimitive.Id) error {
+	articleDo := &ArticleDO{}
+	articleDo.Owner = user.Username()
+	articleDo.ID = id.IdNum()
+
+	return impl.Impl.Delete(&ArticleDO{}, &articleDo)
+}
