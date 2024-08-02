@@ -8,12 +8,13 @@ import (
 )
 
 const (
-	regexUsername       = `^[a-zA-Z0-9_]{3,8}$`
-	regexPassword       = `^.{8,14}$` // #nosec G101
-	regexEmail          = `^\w+(-+.\w+)*@\w+(-.\w+)*.\w+(-.\w+)*$`
-	regexTitle          = `^.{8,255}$`   // #nosec G101
-	regexArticleContent = `^.{1,40000}$` // #nosec G101
+	regexUsername = `^[a-zA-Z0-9_]{3,8}$`
+	regexPassword = `^.{8,14}$` // #nosec G101
+	regexEmail    = `^\w+(-+.\w+)*@\w+(-.\w+)*.\w+(-.\w+)*$`
+	regexTitle    = `^.{8,255}$` // #nosec G101
 )
+
+const articleContentLengthLimit = 40000
 
 var (
 	// username: letters, digitals or underline only and 3 to 8 characters allowed
@@ -25,8 +26,6 @@ var (
 	regexCompEmail = regexp.MustCompile(regexEmail)
 
 	regexCompTitle = regexp.MustCompile(regexTitle)
-
-	regexCompArticleContent = regexp.MustCompile(regexArticleContent)
 )
 
 type validateCmd struct {
@@ -52,7 +51,11 @@ func IsTitle(v string) error {
 }
 
 func IsArticleContent(v string) error {
-	return validate(&validateCmd{v, regexCompArticleContent, "article content"})
+	if len(v) > articleContentLengthLimit {
+		return fmt.Errorf("article content must less than %d", articleContentLengthLimit)
+	}
+
+	return nil
 }
 
 func validate(cmd *validateCmd) error {
