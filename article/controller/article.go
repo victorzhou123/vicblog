@@ -43,7 +43,7 @@ func (ctl *ArticleController) List(ctx *gin.Context) {
 
 	dto, err := ctl.article.GetArticleList(user)
 	if err != nil {
-		cmctl.SendBadRequestBody(ctx, err)
+		cmctl.SendRespOfPost(ctx, dto)
 
 		return
 	}

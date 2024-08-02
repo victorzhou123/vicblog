@@ -11,6 +11,7 @@ import (
 
 	articleapp "victorzhou123/vicblog/article/app"
 	articlectl "victorzhou123/vicblog/article/controller"
+	articlerepoimpl "victorzhou123/vicblog/article/infrastructure/repositoryimpl"
 	cmapp "victorzhou123/vicblog/common/app"
 	cminfraauthimpl "victorzhou123/vicblog/common/infrastructure/authimpl"
 	cminframysql "victorzhou123/vicblog/common/infrastructure/mysql"
@@ -25,7 +26,8 @@ import (
 const (
 	BasePath = "/api"
 
-	tableNameUser = "user"
+	tableNameUser    = "user"
+	tableNameArticle = "article"
 )
 
 func StartWebServer(cfg *mconfig.Config) error {
@@ -51,15 +53,17 @@ func setRouter(engine *gin.Engine, cfg *mconfig.Config) {
 	// infrastructure: following are the instance of infrastructure components
 	timeCreator := cmutil.NewTimerCreator()
 	userTable := cminframysql.DAO(tableNameUser)
+	articleTable := cminframysql.DAO(tableNameArticle)
 
 	// domain: following are the dependencies of app service
 	auth := cminfraauthimpl.NewSignJwt(&timeCreator, &cfg.Common.Infra.Auth)
 	userRepo := userrepoimpl.NewUserRepo(userTable)
+	articleRepo := articlerepoimpl.NewArticleRepo(articleTable)
 
 	// app: following are app services
 	authMiddleware := cmapp.NewAuthMiddleware(auth)
 	loginService := userapp.NewLoginService(userRepo, auth)
-	articleService := articleapp.NewArticleService(nil)
+	articleService := articleapp.NewArticleService(articleRepo)
 
 	// controller: add routers
 	v1 := engine.Group(BasePath)

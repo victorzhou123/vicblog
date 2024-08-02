@@ -14,6 +14,8 @@ const (
 	regexTitle    = `^.{8,255}$` // #nosec G101
 )
 
+const articleContentLengthLimit = 40000
+
 var (
 	// username: letters, digitals or underline only and 3 to 8 characters allowed
 	regexCompUsername = regexp.MustCompile(regexUsername)
@@ -23,7 +25,7 @@ var (
 
 	regexCompEmail = regexp.MustCompile(regexEmail)
 
-	regexCompTitle = regexp.MustCompile(regexEmail)
+	regexCompTitle = regexp.MustCompile(regexTitle)
 )
 
 type validateCmd struct {
@@ -46,6 +48,14 @@ func IsEmail(v string) error {
 
 func IsTitle(v string) error {
 	return validate(&validateCmd{v, regexCompTitle, "title"})
+}
+
+func IsArticleContent(v string) error {
+	if len(v) > articleContentLengthLimit {
+		return fmt.Errorf("article content must less than %d", articleContentLengthLimit)
+	}
+
+	return nil
 }
 
 func validate(cmd *validateCmd) error {

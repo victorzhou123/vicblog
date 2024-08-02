@@ -1,6 +1,7 @@
 package primitive
 
 import (
+	"strconv"
 	"time"
 	"victorzhou123/vicblog/common/validator"
 )
@@ -10,6 +11,7 @@ const timeFormatYearToSecond = "2006-01-02 15:04:05"
 // id
 type Id interface {
 	Id() string
+	IdNum() uint64
 }
 
 type id string
@@ -20,6 +22,16 @@ func NewId(v string) Id {
 
 func (r id) Id() string {
 	return string(r)
+}
+
+// IdNum return an uint type ID.
+// return 0 if it is unable to convert
+func (r id) IdNum() uint64 {
+	if num, err := strconv.ParseUint(r.Id(), 10, 64); err == nil {
+		return num
+	}
+
+	return 0
 }
 
 // time
