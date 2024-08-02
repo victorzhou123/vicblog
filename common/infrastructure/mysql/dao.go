@@ -10,15 +10,25 @@ import (
 )
 
 type Impl interface {
+	DB() *gorm.DB
+	TableName() string
+
+	// Query
 	GetRecord(filter, result interface{}) error
 	GetByPrimaryKey(row interface{}) error
+
+	// Update
+	Update(filter, values interface{}) error
+
+	// Delete
+	Delete(model, filter interface{}) error
 	DeleteByPrimaryKey(row interface{}) error
+
+	// util interface
 	EqualQuery(field string) string
 	NotEqualQuery(field string) string
 	OrderByDesc(field string) string
 	InFilter(field string) string
-	DB() *gorm.DB
-	TableName() string
 }
 
 func DAO(table string) *daoImpl {
@@ -49,6 +59,30 @@ func (dao *daoImpl) GetRecord(filter, result interface{}) error {
 
 func (dao *daoImpl) GetByPrimaryKey(row interface{}) error {
 	err := dao.DB().First(row).Error
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return repository.NewErrorResourceNotExists(errors.New("not found"))
+	}
+
+	return err
+}
+
+func (dao *daoImpl) Update(filter, values interface{}) error {
+	err := dao.DB().Where(filter).Updates(values).Error
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return repository.NewErrorResourceNotExists(errors.New("not found"))
+	}
+
+	if errors.Is(err, gorm.ErrCheckConstraintViolated) {
+		return repository.NewErrorConstraintViolated(err)
+	}
+
+	return err
+}
+
+func (dao *daoImpl) Delete(model, filter interface{}) error {
+	err := dao.DB().Delete(model, filter).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return repository.NewErrorResourceNotExists(errors.New("not found"))
