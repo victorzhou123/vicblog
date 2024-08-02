@@ -8,10 +8,11 @@ import (
 )
 
 const (
-	regexUsername = `^[a-zA-Z0-9_]{3,8}$`
-	regexPassword = `^.{8,14}$` // #nosec G101
-	regexEmail    = `^\w+(-+.\w+)*@\w+(-.\w+)*.\w+(-.\w+)*$`
-	regexTitle    = `^.{8,255}$` // #nosec G101
+	regexUsername       = `^[a-zA-Z0-9_]{3,8}$`
+	regexPassword       = `^.{8,14}$` // #nosec G101
+	regexEmail          = `^\w+(-+.\w+)*@\w+(-.\w+)*.\w+(-.\w+)*$`
+	regexTitle          = `^.{8,255}$`   // #nosec G101
+	regexArticleContent = `^.{1,40000}$` // #nosec G101
 )
 
 var (
@@ -24,6 +25,8 @@ var (
 	regexCompEmail = regexp.MustCompile(regexEmail)
 
 	regexCompTitle = regexp.MustCompile(regexTitle)
+
+	regexCompArticleContent = regexp.MustCompile(regexArticleContent)
 )
 
 type validateCmd struct {
@@ -46,6 +49,10 @@ func IsEmail(v string) error {
 
 func IsTitle(v string) error {
 	return validate(&validateCmd{v, regexCompTitle, "title"})
+}
+
+func IsArticleContent(v string) error {
+	return validate(&validateCmd{v, regexCompArticleContent, "article content"})
 }
 
 func validate(cmd *validateCmd) error {
