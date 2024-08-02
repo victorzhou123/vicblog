@@ -25,7 +25,7 @@ func NewArticleService(repo repository.Article) ArticleService {
 func (s *articleService) GetArticleList(user cmprimitive.Username) ([]ArticleListDto, error) {
 	articles, err := s.repo.GetArticles(user)
 	if err != nil {
-		return nil, cmdmerror.New(
+		return []ArticleListDto{}, cmdmerror.New(
 			cmdmerror.ErrorCodeResourceNotFound, msgCannotFoundTheArticle,
 		)
 	}
