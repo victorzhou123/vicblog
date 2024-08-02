@@ -23,7 +23,7 @@ var (
 
 	regexCompEmail = regexp.MustCompile(regexEmail)
 
-	regexCompTitle = regexp.MustCompile(regexEmail)
+	regexCompTitle = regexp.MustCompile(regexTitle)
 )
 
 type validateCmd struct {
