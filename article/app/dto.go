@@ -1,6 +1,6 @@
 package app
 
-import "victorzhou123/vicblog/article/domain"
+import "victorzhou123/vicblog/article/domain/article/entity"
 
 type ArticleListDto struct {
 	Id        uint   `json:"id"`
@@ -11,7 +11,7 @@ type ArticleListDto struct {
 	CreatedAt string `json:"createTime"`
 }
 
-func toArticleListDto(v domain.Article) ArticleListDto {
+func toArticleListDto(v entity.Article) ArticleListDto {
 	return ArticleListDto{
 		Id:        v.Id.IdNum(),
 		Title:     v.Title.Text(),

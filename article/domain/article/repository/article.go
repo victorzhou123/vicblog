@@ -1,11 +1,11 @@
 package repository
 
 import (
-	"victorzhou123/vicblog/article/domain"
+	"victorzhou123/vicblog/article/domain/article/entity"
 	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
 )
 
 type Article interface {
-	GetArticles(cmprimitive.Username) ([]domain.Article, error)
+	GetArticles(cmprimitive.Username) ([]entity.Article, error)
 	Delete(cmprimitive.Username, cmprimitive.Id) error
 }
