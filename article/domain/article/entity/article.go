@@ -1,4 +1,4 @@
-package domain
+package entity
 
 import cmprimitive "victorzhou123/vicblog/common/domain/primitive"
 

@@ -1,7 +1,7 @@
 package app
 
 import (
-	"victorzhou123/vicblog/article/domain/repository"
+	"victorzhou123/vicblog/article/domain/article/repository"
 	cmdmerror "victorzhou123/vicblog/common/domain/error"
 	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
 )

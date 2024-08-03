@@ -1,8 +1,8 @@
 package repositoryimpl
 
 import (
-	"victorzhou123/vicblog/article/domain"
-	"victorzhou123/vicblog/article/domain/repository"
+	"victorzhou123/vicblog/article/domain/article/entity"
+	"victorzhou123/vicblog/article/domain/article/repository"
 	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
 	"victorzhou123/vicblog/common/infrastructure/mysql"
 )
@@ -21,7 +21,7 @@ type articleRepoImpl struct {
 	mysql.Impl
 }
 
-func (impl *articleRepoImpl) GetArticles(owner cmprimitive.Username) ([]domain.Article, error) {
+func (impl *articleRepoImpl) GetArticles(owner cmprimitive.Username) ([]entity.Article, error) {
 	articleDo := &ArticleDO{}
 	articleDo.Owner = owner.Username()
 
@@ -33,7 +33,7 @@ func (impl *articleRepoImpl) GetArticles(owner cmprimitive.Username) ([]domain.A
 
 	// convert []ArticleDO to []domain.Article
 	var err error
-	dmArticles := make([]domain.Article, len(articlesDo))
+	dmArticles := make([]entity.Article, len(articlesDo))
 	for i := range articlesDo {
 
 		if dmArticles[i], err = articlesDo[i].toArticle(); err != nil {

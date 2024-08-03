@@ -5,7 +5,7 @@ import (
 
 	"gorm.io/gorm"
 
-	"victorzhou123/vicblog/article/domain"
+	"victorzhou123/vicblog/article/domain/article/entity"
 	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
 )
 
@@ -22,7 +22,7 @@ type ArticleDO struct {
 	IsTop     bool   `gorm:"column:is_top"`
 }
 
-func (do *ArticleDO) toArticle() (article domain.Article, err error) {
+func (do *ArticleDO) toArticle() (article entity.Article, err error) {
 
 	if article.Owner, err = cmprimitive.NewUsername(do.Owner); err != nil {
 		return
