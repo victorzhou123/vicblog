@@ -26,8 +26,9 @@ import (
 const (
 	BasePath = "/api"
 
-	tableNameUser    = "user"
-	tableNameArticle = "article"
+	tableNameUser     = "user"
+	tableNameArticle  = "article"
+	tableNameCategory = "category"
 )
 
 func StartWebServer(cfg *mconfig.Config) error {
@@ -54,16 +55,19 @@ func setRouter(engine *gin.Engine, cfg *mconfig.Config) {
 	timeCreator := cmutil.NewTimerCreator()
 	userTable := cminframysql.DAO(tableNameUser)
 	articleTable := cminframysql.DAO(tableNameArticle)
+	categoryTable := cminframysql.DAO(tableNameCategory)
 
 	// domain: following are the dependencies of app service
 	auth := cminfraauthimpl.NewSignJwt(&timeCreator, &cfg.Common.Infra.Auth)
 	userRepo := userrepoimpl.NewUserRepo(userTable)
 	articleRepo := articlerepoimpl.NewArticleRepo(articleTable)
+	categoryRepo := articlerepoimpl.NewCategoryRepo(categoryTable)
 
 	// app: following are app services
 	authMiddleware := cmapp.NewAuthMiddleware(auth)
 	loginService := userapp.NewLoginService(userRepo, auth)
 	articleService := articleapp.NewArticleService(articleRepo)
+	categoryService := articleapp.NewCategoryService(categoryRepo)
 
 	// controller: add routers
 	v1 := engine.Group(BasePath)
@@ -76,6 +80,10 @@ func setRouter(engine *gin.Engine, cfg *mconfig.Config) {
 
 		articlectl.AddRouterForArticleController(
 			v1, authMiddleware, articleService,
+		)
+
+		articlectl.AddRouterForCategoryController(
+			v1, authMiddleware, categoryService,
 		)
 	}
 }

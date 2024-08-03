@@ -17,6 +17,9 @@ type Impl interface {
 	GetRecord(filter, result interface{}) error
 	GetByPrimaryKey(row interface{}) error
 
+	// Add
+	Add(value interface{}) error
+
 	// Update
 	Update(filter, values interface{}) error
 
@@ -65,6 +68,12 @@ func (dao *daoImpl) GetByPrimaryKey(row interface{}) error {
 	}
 
 	return err
+}
+
+func (dao *daoImpl) Add(value interface{}) error {
+	err := dao.DB().Create(value).Error
+
+	return repository.NewErrorConstraintViolated(err)
 }
 
 func (dao *daoImpl) Update(filter, values interface{}) error {

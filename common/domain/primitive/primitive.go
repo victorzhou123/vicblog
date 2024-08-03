@@ -20,6 +20,10 @@ func NewId(v string) Id {
 	return id(v)
 }
 
+func NewIdByUint(v uint) Id {
+	return NewId(strconv.FormatUint(uint64(v), 10))
+}
+
 func (r id) Id() string {
 	return string(r)
 }

@@ -14,7 +14,10 @@ const (
 	regexTitle    = `^.{8,255}$` // #nosec G101
 )
 
-const articleContentLengthLimit = 40000
+const (
+	articleContentLengthLimit = 40000
+	categoryNameLengthLimit   = 60
+)
 
 var (
 	// username: letters, digitals or underline only and 3 to 8 characters allowed
@@ -53,6 +56,14 @@ func IsTitle(v string) error {
 func IsArticleContent(v string) error {
 	if len(v) > articleContentLengthLimit {
 		return fmt.Errorf("article content must less than %d", articleContentLengthLimit)
+	}
+
+	return nil
+}
+
+func IsCategoryName(v string) error {
+	if len(v) > categoryNameLengthLimit {
+		return fmt.Errorf("category name length must less than %d", articleContentLengthLimit)
 	}
 
 	return nil
