@@ -64,6 +64,30 @@ const docTemplate = `{
                 }
             }
         },
+        "/v1/admin/category/add": {
+            "post": {
+                "description": "add a category item",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Category"
+                ],
+                "summary": "Add category",
+                "parameters": [
+                    {
+                        "description": "body of add category",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.reqCategory"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/v1/login": {
             "post": {
                 "description": "login",
@@ -130,6 +154,14 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "controller.reqCategory": {
+            "type": "object",
+            "properties": {
+                "name": {
                     "type": "string"
                 }
             }

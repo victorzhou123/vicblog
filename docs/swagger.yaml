@@ -24,6 +24,11 @@ definitions:
       username:
         type: string
     type: object
+  controller.reqCategory:
+    properties:
+      name:
+        type: string
+    type: object
   controller.reqLogin:
     properties:
       password:
@@ -69,6 +74,22 @@ paths:
       summary: List articles
       tags:
       - Article
+  /v1/admin/category/add:
+    post:
+      consumes:
+      - application/json
+      description: add a category item
+      parameters:
+      - description: body of add category
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/controller.reqCategory'
+      responses: {}
+      summary: Add category
+      tags:
+      - Category
   /v1/login:
     post:
       consumes:
