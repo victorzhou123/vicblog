@@ -6,11 +6,16 @@ import (
 	"gorm.io/gorm"
 
 	"victorzhou123/vicblog/article/domain/article/entity"
+	categoryent "victorzhou123/vicblog/article/domain/category/entity"
 	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
 )
 
-var tableNameArticle string
+var (
+	tableNameArticle  string
+	tableNameCategory string
+)
 
+// article
 type ArticleDO struct {
 	gorm.Model
 
@@ -55,4 +60,26 @@ func (do *ArticleDO) toArticle() (article entity.Article, err error) {
 
 func (do *ArticleDO) TableName() string {
 	return tableNameArticle
+}
+
+// category
+type CategoryDO struct {
+	gorm.Model
+
+	Name string `gorm:"column:name;unique;size:60"`
+}
+
+func (do *CategoryDO) toCategory() (category categoryent.Category, err error) {
+
+	if category.Name, err = categoryent.NewCategoryName(do.Name); err != nil {
+		return
+	}
+
+	category.Id = cmprimitive.NewIdByUint(do.ID)
+
+	return
+}
+
+func (do *CategoryDO) TableName() string {
+	return tableNameCategory
 }
