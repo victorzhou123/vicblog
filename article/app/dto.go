@@ -60,7 +60,7 @@ type CategoryListDto struct {
 }
 
 func toCategoryListDto(cates []categoryett.Category, cmd *CategoryListCmd, total int) CategoryListDto {
-	pageCount := total / cmd.PageSize
+	pageCount := total / cmd.PageSize + 1
 	categoryDos := make([]CategoryDto, len(cates))
 	for i := range cates {
 		categoryDos[i] = toCategoryDto(cates[i])
