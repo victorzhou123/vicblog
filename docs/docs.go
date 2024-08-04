@@ -64,6 +64,30 @@ const docTemplate = `{
                 }
             }
         },
+        "/v1/admin/category": {
+            "get": {
+                "description": "list category with pagination",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Category"
+                ],
+                "summary": "List category",
+                "parameters": [
+                    {
+                        "description": "body of list categories",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.reqCategoryList"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/v1/admin/category/add": {
             "post": {
                 "description": "add a category item",
@@ -163,6 +187,17 @@ const docTemplate = `{
             "properties": {
                 "name": {
                     "type": "string"
+                }
+            }
+        },
+        "controller.reqCategoryList": {
+            "type": "object",
+            "properties": {
+                "current": {
+                    "type": "integer"
+                },
+                "size": {
+                    "type": "integer"
                 }
             }
         },

@@ -29,6 +29,13 @@ definitions:
       name:
         type: string
     type: object
+  controller.reqCategoryList:
+    properties:
+      current:
+        type: integer
+      size:
+        type: integer
+    type: object
   controller.reqLogin:
     properties:
       password:
@@ -74,6 +81,22 @@ paths:
       summary: List articles
       tags:
       - Article
+  /v1/admin/category:
+    get:
+      consumes:
+      - application/json
+      description: list category with pagination
+      parameters:
+      - description: body of list categories
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/controller.reqCategoryList'
+      responses: {}
+      summary: List category
+      tags:
+      - Category
   /v1/admin/category/add:
     post:
       consumes:

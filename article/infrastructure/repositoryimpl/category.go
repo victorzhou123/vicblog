@@ -3,6 +3,7 @@ package repositoryimpl
 import (
 	"victorzhou123/vicblog/article/domain/category/entity"
 	"victorzhou123/vicblog/article/domain/category/repository"
+	cmrepo "victorzhou123/vicblog/common/domain/repository"
 	"victorzhou123/vicblog/common/infrastructure/mysql"
 )
 
@@ -25,4 +26,27 @@ func (impl *categoryRepoImpl) AddCategory(name entity.CategoryName) error {
 	categoryDo.Name = name.CategoryName()
 
 	return impl.Add(&categoryDo)
+}
+
+func (impl *categoryRepoImpl) GetCategoryList(opt cmrepo.PageListOpt) ([]entity.Category, int, error) {
+	categoryDos := []CategoryDO{}
+
+	options := mysql.PaginationOpt{
+		CurPage:  opt.CurPage,
+		PageSize: opt.PageSize,
+	}
+
+	total, err := impl.GetRecordByPagination(&CategoryDO{}, &categoryDos, options)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	cates := make([]entity.Category, len(categoryDos))
+	for i := range categoryDos {
+		if cates[i], err = (categoryDos)[i].toCategory(); err != nil {
+			return nil, 0, err
+		}
+	}
+
+	return cates, total, nil
 }

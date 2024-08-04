@@ -62,8 +62,8 @@ func IsArticleContent(v string) error {
 }
 
 func IsCategoryName(v string) error {
-	if len(v) > categoryNameLengthLimit {
-		return fmt.Errorf("category name length must less than %d", articleContentLengthLimit)
+	if len(v) > categoryNameLengthLimit || len(v) <= 0 {
+		return fmt.Errorf("category name length must bigger than 0 and less than %d", categoryNameLengthLimit)
 	}
 
 	return nil

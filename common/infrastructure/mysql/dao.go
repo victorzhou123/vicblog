@@ -15,6 +15,7 @@ type Impl interface {
 
 	// Query
 	GetRecord(filter, result interface{}) error
+	GetRecordByPagination(filter, result interface{}, opt PaginationOpt) (int, error)
 	GetByPrimaryKey(row interface{}) error
 
 	// Add
@@ -58,6 +59,18 @@ func (dao *daoImpl) GetRecord(filter, result interface{}) error {
 	}
 
 	return err
+}
+
+func (dao *daoImpl) GetRecordByPagination(filter, result interface{}, opt PaginationOpt) (int, error) {
+	var total int64
+
+	err := dao.DB().Where(filter).Count(&total).Offset((opt.CurPage - 1) * opt.PageSize).Limit(opt.PageSize).Find(result).Error
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return 0, repository.NewErrorResourceNotExists(errors.New("not found"))
+	}
+
+	return int(total), err
 }
 
 func (dao *daoImpl) GetByPrimaryKey(row interface{}) error {
