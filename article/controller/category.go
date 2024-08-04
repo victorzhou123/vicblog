@@ -6,6 +6,7 @@ import (
 	"victorzhou123/vicblog/article/app"
 	cmapp "victorzhou123/vicblog/common/app"
 	cmctl "victorzhou123/vicblog/common/controller"
+	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
 )
 
 func AddRouterForCategoryController(
@@ -20,6 +21,7 @@ func AddRouterForCategoryController(
 
 	rg.POST("/v1/admin/category", auth.VerifyToken, ctl.Add)
 	rg.GET("/v1/admin/category", auth.VerifyToken, ctl.List)
+	rg.DELETE("/v1/admin/category/:id", auth.VerifyToken, ctl.Delete)
 }
 
 type categoryController struct {
@@ -87,4 +89,23 @@ func (ctl *categoryController) List(ctx *gin.Context) {
 	}
 
 	cmctl.SendRespOfGet(ctx, dto)
+}
+
+// @Summary  Delete category
+// @Description  delete one category
+// @Tags     Category
+// @Accept   json
+// @Param    id  path  int  true  "id of category, which user want to delete"
+// @Success  204
+// @Router   /v1/admin/category/{id} [delete]
+func (ctl *categoryController) Delete(ctx *gin.Context) {
+
+	id := cmprimitive.NewId(ctx.Param("id"))
+	if err := ctl.category.DelCategory(id); err != nil {
+		cmctl.SendError(ctx, err)
+
+		return
+	}
+
+	cmctl.SendRespOfDelete(ctx)
 }

@@ -3,6 +3,8 @@ package repositoryimpl
 import (
 	"victorzhou123/vicblog/article/domain/category/entity"
 	"victorzhou123/vicblog/article/domain/category/repository"
+	cmdmerror "victorzhou123/vicblog/common/domain/error"
+	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
 	cmrepo "victorzhou123/vicblog/common/domain/repository"
 	"victorzhou123/vicblog/common/infrastructure/mysql"
 )
@@ -49,4 +51,15 @@ func (impl *categoryRepoImpl) GetCategoryList(opt cmrepo.PageListOpt) ([]entity.
 	}
 
 	return cates, total, nil
+}
+
+func (impl *categoryRepoImpl) DelCategory(id cmprimitive.Id) error {
+	do := &CategoryDO{}
+	do.ID = id.IdNum()
+
+	if err := impl.Delete(&CategoryDO{}, &do); err != nil {
+		return cmdmerror.New(cmdmerror.ErrorCodeResourceNotFound, "")
+	}
+
+	return nil
 }
