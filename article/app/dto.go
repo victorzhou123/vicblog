@@ -60,7 +60,7 @@ type CategoryListDto struct {
 }
 
 func toCategoryListDto(cates []categoryett.Category, cmd *CategoryListCmd, total int) CategoryListDto {
-	pageCount := total / cmd.PageSize + 1
+	pageCount := total/cmd.PageSize + 1
 	categoryDos := make([]CategoryDto, len(cates))
 	for i := range cates {
 		categoryDos[i] = toCategoryDto(cates[i])
@@ -76,12 +76,14 @@ func toCategoryListDto(cates []categoryett.Category, cmd *CategoryListCmd, total
 }
 
 type CategoryDto struct {
+	Id        string `json:"id"`
 	Name      string `json:"name"`
 	CreatedAt string `json:"createTime"`
 }
 
 func toCategoryDto(cate categoryett.Category) CategoryDto {
 	return CategoryDto{
+		Id:        cate.Id.Id(),
 		Name:      cate.Name.CategoryName(),
 		CreatedAt: cate.CreatedAt.TimeYearToSecond(),
 	}
