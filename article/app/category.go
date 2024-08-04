@@ -4,11 +4,13 @@ import (
 	"victorzhou123/vicblog/article/domain/category/entity"
 	"victorzhou123/vicblog/article/domain/category/repository"
 	cmdmerror "victorzhou123/vicblog/common/domain/error"
+	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
 )
 
 type CategoryService interface {
 	AddCategory(entity.CategoryName) error
 	ListCategory(*CategoryListCmd) (CategoryListDto, error)
+	DelCategory(cmprimitive.Id) error
 }
 
 type categoryService struct {
@@ -37,4 +39,8 @@ func (s *categoryService) ListCategory(cmd *CategoryListCmd) (CategoryListDto, e
 	}
 
 	return toCategoryListDto(cates, cmd, total), nil
+}
+
+func (s *categoryService) DelCategory(id cmprimitive.Id) error {
+	return s.repo.DelCategory(id)
 }
