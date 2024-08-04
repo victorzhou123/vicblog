@@ -57,7 +57,7 @@ func (impl *categoryRepoImpl) DelCategory(id cmprimitive.Id) error {
 	do := &CategoryDO{}
 	do.ID = id.IdNum()
 
-	if err := impl.Delete(&CategoryDO{}, &do); err != nil {
+	if err := impl.DeleteByPrimaryKey(&do); err != nil {
 		return cmdmerror.New(cmdmerror.ErrorCodeResourceNotFound, "")
 	}
 

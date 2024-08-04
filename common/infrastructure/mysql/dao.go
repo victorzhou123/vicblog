@@ -104,7 +104,7 @@ func (dao *daoImpl) Update(filter, values interface{}) error {
 }
 
 func (dao *daoImpl) Delete(model, filter interface{}) error {
-	err := dao.DB().Delete(model, filter).Error
+	err := dao.DB().Unscoped().Delete(model, filter).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return repository.NewErrorResourceNotExists(errors.New("not found"))
@@ -114,7 +114,7 @@ func (dao *daoImpl) Delete(model, filter interface{}) error {
 }
 
 func (dao *daoImpl) DeleteByPrimaryKey(row interface{}) error {
-	err := dao.DB().Delete(row).Error
+	err := dao.DB().Unscoped().Delete(row).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return repository.NewErrorResourceNotExists(errors.New("not found"))

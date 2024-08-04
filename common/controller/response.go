@@ -76,7 +76,7 @@ func SendRespOfPost(ctx *gin.Context, data interface{}) {
 }
 
 func SendRespOfDelete(ctx *gin.Context) {
-	ctx.JSON(http.StatusNoContent, newResponseCodeMsg("", "success"))
+	ctx.JSON(http.StatusOK, newResponseCodeMsg("", "success"))
 }
 
 func SendError(ctx *gin.Context, err error) {
