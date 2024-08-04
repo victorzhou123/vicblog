@@ -76,19 +76,32 @@ const docTemplate = `{
                 "summary": "List category",
                 "parameters": [
                     {
-                        "description": "body of list categories",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/controller.reqCategoryList"
-                        }
+                        "type": "integer",
+                        "description": "current page of user queried",
+                        "name": "current",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "single page size of user queried",
+                        "name": "size",
+                        "in": "query",
+                        "required": true
                     }
                 ],
-                "responses": {}
-            }
-        },
-        "/v1/admin/category/add": {
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/app.ArticleListDto"
+                            }
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "add a category item",
                 "consumes": [
@@ -110,6 +123,32 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {}
+            }
+        },
+        "/v1/admin/category/{id}": {
+            "delete": {
+                "description": "delete one category",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Category"
+                ],
+                "summary": "Delete category",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id of category, which user want to delete",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
             }
         },
         "/v1/login": {
@@ -187,17 +226,6 @@ const docTemplate = `{
             "properties": {
                 "name": {
                     "type": "string"
-                }
-            }
-        },
-        "controller.reqCategoryList": {
-            "type": "object",
-            "properties": {
-                "current": {
-                    "type": "integer"
-                },
-                "size": {
-                    "type": "integer"
                 }
             }
         },

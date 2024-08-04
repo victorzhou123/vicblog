@@ -29,13 +29,6 @@ definitions:
       name:
         type: string
     type: object
-  controller.reqCategoryList:
-    properties:
-      current:
-        type: integer
-      size:
-        type: integer
-    type: object
   controller.reqLogin:
     properties:
       password:
@@ -87,17 +80,26 @@ paths:
       - application/json
       description: list category with pagination
       parameters:
-      - description: body of list categories
-        in: body
-        name: body
+      - description: current page of user queried
+        in: query
+        name: current
         required: true
-        schema:
-          $ref: '#/definitions/controller.reqCategoryList'
-      responses: {}
+        type: integer
+      - description: single page size of user queried
+        in: query
+        name: size
+        required: true
+        type: integer
+      responses:
+        "201":
+          description: Created
+          schema:
+            items:
+              $ref: '#/definitions/app.ArticleListDto'
+            type: array
       summary: List category
       tags:
       - Category
-  /v1/admin/category/add:
     post:
       consumes:
       - application/json
@@ -111,6 +113,23 @@ paths:
           $ref: '#/definitions/controller.reqCategory'
       responses: {}
       summary: Add category
+      tags:
+      - Category
+  /v1/admin/category/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: delete one category
+      parameters:
+      - description: id of category, which user want to delete
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: No Content
+      summary: Delete category
       tags:
       - Category
   /v1/login:
