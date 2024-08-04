@@ -32,7 +32,7 @@ type categoryController struct {
 // @Tags     Category
 // @Param    body  body  reqCategory  true  "body of add category"
 // @Accept   json
-// @Router   /v1/admin/category/add [post]
+// @Router   /v1/admin/category [post]
 func (ctl *categoryController) Add(ctx *gin.Context) {
 	var req reqCategory
 
