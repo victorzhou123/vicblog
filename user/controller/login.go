@@ -25,8 +25,8 @@ type LoginController struct {
 // @Summary  Login
 // @Description  login
 // @Tags     Login
-// @Param    body  body  reqLogin  true  "body of login"
 // @Accept   json
+// @Param    body  body  reqLogin  true  "body of login"
 // @Success  201   {object}  app.UserAndTokenDto
 // @Router   /v1/login [post]
 func (ctl *LoginController) Login(ctx *gin.Context) {
