@@ -77,6 +77,8 @@ func (do *CategoryDO) toCategory() (category categoryent.Category, err error) {
 
 	category.Id = cmprimitive.NewIdByUint(do.ID)
 
+	category.CreatedAt = cmprimitive.NewTimeXWithUnix(do.CreatedAt.Unix())
+
 	return
 }
 

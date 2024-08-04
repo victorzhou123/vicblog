@@ -3,6 +3,7 @@ package entity
 import cmprimitive "victorzhou123/vicblog/common/domain/primitive"
 
 type Category struct {
-	Id   cmprimitive.Id
-	Name CategoryName
+	Id        cmprimitive.Id
+	Name      CategoryName
+	CreatedAt cmprimitive.Timex
 }

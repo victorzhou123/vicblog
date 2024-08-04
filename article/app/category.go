@@ -3,10 +3,12 @@ package app
 import (
 	"victorzhou123/vicblog/article/domain/category/entity"
 	"victorzhou123/vicblog/article/domain/category/repository"
+	cmdmerror "victorzhou123/vicblog/common/domain/error"
 )
 
 type CategoryService interface {
 	AddCategory(entity.CategoryName) error
+	ListCategory(*CategoryListCmd) (CategoryListDto, error)
 }
 
 type categoryService struct {
@@ -21,4 +23,18 @@ func NewCategoryService(repo repository.Category) CategoryService {
 
 func (s *categoryService) AddCategory(category entity.CategoryName) error {
 	return s.repo.AddCategory(category)
+}
+
+func (s *categoryService) ListCategory(cmd *CategoryListCmd) (CategoryListDto, error) {
+
+	cates, total, err := s.repo.GetCategoryList(cmd.toPageListOpt())
+	if err != nil {
+		if cmdmerror.IsNotFound(err) {
+			return CategoryListDto{}, nil
+		}
+
+		return CategoryListDto{}, err
+	}
+
+	return toCategoryListDto(cates, cmd, total), nil
 }
