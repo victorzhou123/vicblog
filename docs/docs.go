@@ -151,6 +151,30 @@ const docTemplate = `{
                 }
             }
         },
+        "/v1/admin/tag": {
+            "post": {
+                "description": "add a tag item",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Tag"
+                ],
+                "summary": "Add tag",
+                "parameters": [
+                    {
+                        "description": "body of add tag",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.reqTag"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/v1/login": {
             "post": {
                 "description": "login",
@@ -237,6 +261,17 @@ const docTemplate = `{
                 },
                 "username": {
                     "type": "string"
+                }
+            }
+        },
+        "controller.reqTag": {
+            "type": "object",
+            "properties": {
+                "names": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         }
