@@ -36,6 +36,13 @@ definitions:
       username:
         type: string
     type: object
+  controller.reqTag:
+    properties:
+      names:
+        items:
+          type: string
+        type: array
+    type: object
 host: localhost:8080
 info:
   contact:
@@ -132,6 +139,22 @@ paths:
       summary: Delete category
       tags:
       - Category
+  /v1/admin/tag:
+    post:
+      consumes:
+      - application/json
+      description: add a tag item
+      parameters:
+      - description: body of add tag
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/controller.reqTag'
+      responses: {}
+      summary: Add tag
+      tags:
+      - Tag
   /v1/login:
     post:
       consumes:

@@ -17,6 +17,7 @@ const (
 const (
 	articleContentLengthLimit = 40000
 	categoryNameLengthLimit   = 60
+	tagNameLengthLimit        = 60
 )
 
 var (
@@ -64,6 +65,14 @@ func IsArticleContent(v string) error {
 func IsCategoryName(v string) error {
 	if len(v) > categoryNameLengthLimit || len(v) <= 0 {
 		return fmt.Errorf("category name length must bigger than 0 and less than %d", categoryNameLengthLimit)
+	}
+
+	return nil
+}
+
+func IsTagName(v string) error {
+	if len(v) > tagNameLengthLimit || len(v) <= 0 {
+		return fmt.Errorf("tag name length must bigger than 0 and less than %d", tagNameLengthLimit)
 	}
 
 	return nil

@@ -29,6 +29,7 @@ const (
 	tableNameUser     = "user"
 	tableNameArticle  = "article"
 	tableNameCategory = "category"
+	tableNameTag      = "tag"
 )
 
 func StartWebServer(cfg *mconfig.Config) error {
@@ -56,18 +57,21 @@ func setRouter(engine *gin.Engine, cfg *mconfig.Config) {
 	userTable := cminframysql.DAO(tableNameUser)
 	articleTable := cminframysql.DAO(tableNameArticle)
 	categoryTable := cminframysql.DAO(tableNameCategory)
+	tagTable := cminframysql.DAO(tableNameTag)
 
 	// domain: following are the dependencies of app service
 	auth := cminfraauthimpl.NewSignJwt(&timeCreator, &cfg.Common.Infra.Auth)
 	userRepo := userrepoimpl.NewUserRepo(userTable)
 	articleRepo := articlerepoimpl.NewArticleRepo(articleTable)
 	categoryRepo := articlerepoimpl.NewCategoryRepo(categoryTable)
+	tagRepo := articlerepoimpl.NewTagRepo(tagTable)
 
 	// app: following are app services
 	authMiddleware := cmapp.NewAuthMiddleware(auth)
 	loginService := userapp.NewLoginService(userRepo, auth)
 	articleService := articleapp.NewArticleService(articleRepo)
 	categoryService := articleapp.NewCategoryService(categoryRepo)
+	tagService := articleapp.NewTagService(tagRepo)
 
 	// controller: add routers
 	v1 := engine.Group(BasePath)
@@ -84,6 +88,10 @@ func setRouter(engine *gin.Engine, cfg *mconfig.Config) {
 
 		articlectl.AddRouterForCategoryController(
 			v1, authMiddleware, categoryService,
+		)
+
+		articlectl.AddRouterForTagController(
+			v1, authMiddleware, tagService,
 		)
 	}
 }

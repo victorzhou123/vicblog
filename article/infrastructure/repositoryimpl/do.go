@@ -13,6 +13,7 @@ import (
 var (
 	tableNameArticle  string
 	tableNameCategory string
+	tableNameTag      string
 )
 
 // article
@@ -84,4 +85,15 @@ func (do *CategoryDO) toCategory() (category categoryent.Category, err error) {
 
 func (do *CategoryDO) TableName() string {
 	return tableNameCategory
+}
+
+// tag
+type TagDO struct {
+	gorm.Model
+
+	Name string `gorm:"column:name;unique;size:60"`
+}
+
+func (do *TagDO) TableName() string {
+	return tableNameTag
 }
