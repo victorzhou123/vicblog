@@ -7,6 +7,7 @@ import (
 
 type TagService interface {
 	AddTags(repository.TagNames) error
+	GetTagList(*TagListCmd) (TagListDto, error)
 }
 
 type tagService struct {
@@ -25,4 +26,18 @@ func (s *tagService) AddTags(names repository.TagNames) error {
 	}
 
 	return s.repo.AddBatches(names)
+}
+
+func (s *tagService) GetTagList(cmd *TagListCmd) (TagListDto, error) {
+
+	tags, total, err := s.repo.GetTagList(cmd.ToPageListOpt())
+	if err != nil {
+		if cmdmerror.IsNotFound(err) {
+			return TagListDto{}, nil
+		}
+
+		return TagListDto{}, err
+	}
+
+	return toTagListDto(tags, cmd, total), nil
 }

@@ -54,3 +54,24 @@ func (req *reqTag) toTagNames() (repository.TagNames, error) {
 
 	return repository.TagNames{Names: tagNames}, nil
 }
+
+type reqTagList struct {
+	CurPage  string `json:"current"`
+	PageSize string `json:"size"`
+}
+
+func (req *reqTagList) toCmd() (cmd app.TagListCmd, err error) {
+	if cmd.CurPage, err = strconv.Atoi(req.CurPage); err != nil {
+		return
+	}
+
+	if cmd.PageSize, err = strconv.Atoi(req.PageSize); err != nil {
+		return
+	}
+
+	if err = cmd.Validate(); err != nil {
+		return
+	}
+
+	return
+}

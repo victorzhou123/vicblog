@@ -7,6 +7,7 @@ import (
 
 	"victorzhou123/vicblog/article/domain/article/entity"
 	categoryent "victorzhou123/vicblog/article/domain/category/entity"
+	tagent "victorzhou123/vicblog/article/domain/tag/entity"
 	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
 )
 
@@ -92,6 +93,18 @@ type TagDO struct {
 	gorm.Model
 
 	Name string `gorm:"column:name;unique;size:60"`
+}
+
+func (do *TagDO) toTag() (tag tagent.Tag, err error) {
+	if tag.Name, err = tagent.NewTagName(do.Name); err != nil {
+		return
+	}
+
+	tag.Id = cmprimitive.NewIdByUint(do.ID)
+
+	tag.CreatedAt = cmprimitive.NewTimeXWithUnix(do.CreatedAt.Unix())
+
+	return
 }
 
 func (do *TagDO) TableName() string {

@@ -1,11 +1,11 @@
 package controller
 
 import (
+	"github.com/gin-gonic/gin"
+
 	"victorzhou123/vicblog/article/app"
 	cmapp "victorzhou123/vicblog/common/app"
 	cmctl "victorzhou123/vicblog/common/controller"
-
-	"github.com/gin-gonic/gin"
 )
 
 func AddRouterForTagController(
@@ -19,6 +19,7 @@ func AddRouterForTagController(
 	}
 
 	rg.POST("/v1/admin/tag", auth.VerifyToken, ctl.AddBatches)
+	rg.GET("/v1/admin/tag", auth.VerifyToken, ctl.List)
 }
 
 type tagController struct {
@@ -55,4 +56,35 @@ func (ctl *tagController) AddBatches(ctx *gin.Context) {
 	}
 
 	cmctl.SendRespOfPost(ctx, nil)
+}
+
+// @Summary  List tag
+// @Description  list tag with pagination
+// @Tags     Tag
+// @Accept   json
+// @Param    current  query  int  true  "current page of user queried"
+// @Param    size  query  int  true  "single page size of user queried"
+// @Success  201   {array}  app.TagListDto
+// @Router   /v1/admin/tag [get]
+func (ctl *tagController) List(ctx *gin.Context) {
+	var req = reqTagList{
+		CurPage:  ctx.Query("current"),
+		PageSize: ctx.Query("size"),
+	}
+
+	cmd, err := req.toCmd()
+	if err != nil {
+		cmctl.SendBadRequestBody(ctx, err)
+
+		return
+	}
+
+	dto, err := ctl.tag.GetTagList(&cmd)
+	if err != nil {
+		cmctl.SendError(ctx, err)
+
+		return
+	}
+
+	cmctl.SendRespOfGet(ctx, dto)
 }
