@@ -10,7 +10,7 @@ import (
 var db *gorm.DB
 
 func Init(cfg *Config) error {
-	dbInst, err := gorm.Open(mysql.Open(cfg.toDSN()), &gorm.Config{})
+	dbInst, err := gorm.Open(mysql.Open(cfg.toDSN()), &gorm.Config{TranslateError: true})
 	if err != nil {
 		return err
 	}
