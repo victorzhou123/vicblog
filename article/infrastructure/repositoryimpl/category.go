@@ -24,7 +24,7 @@ type categoryRepoImpl struct {
 }
 
 func (impl *categoryRepoImpl) AddCategory(name entity.CategoryName) error {
-	categoryDo := &CategoryDO{}
+	categoryDo := CategoryDO{}
 	categoryDo.Name = name.CategoryName()
 
 	return impl.Add(&categoryDo)

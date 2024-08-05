@@ -85,8 +85,15 @@ func (dao *daoImpl) GetByPrimaryKey(row interface{}) error {
 
 func (dao *daoImpl) Add(value interface{}) error {
 	err := dao.DB().Create(value).Error
+	if errors.Is(err, gorm.ErrCheckConstraintViolated) {
+		return repository.NewErrorConstraintViolated(err)
+	}
 
-	return repository.NewErrorConstraintViolated(err)
+	if errors.Is(err, gorm.ErrDuplicatedKey) {
+		return repository.NewErrorDuplicateCreating(err)
+	}
+
+	return err
 }
 
 func (dao *daoImpl) Update(filter, values interface{}) error {
