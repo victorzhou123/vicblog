@@ -42,23 +42,33 @@ func httpError(err error) (int, string) {
 		if _, ok := err.(errorNotFound); ok {
 			sc = http.StatusNotFound
 
-		} else if _, ok := err.(errorNoPermission); ok {
+			return sc, code
+		}
+
+		if _, ok := err.(errorNoPermission); ok {
 			sc = http.StatusForbidden
 
-		} else {
-			switch code {
-			case cmerror.ErrorCodeTokenInvalid:
-				sc = http.StatusUnauthorized
+			return sc, code
+		}
 
-			case cmerror.ErrorCodeAccessCertificateInvalid:
-				sc = http.StatusUnauthorized
+		if cmerror.IsInvalidParamError(err) {
+			sc = http.StatusBadRequest
 
-			case cmerror.ErrorCodeResourceNotFound:
-				sc = http.StatusNotFound
+			return sc, code
+		}
 
-			default:
-				sc = http.StatusBadRequest
-			}
+		switch code {
+		case cmerror.ErrorCodeTokenInvalid:
+			sc = http.StatusUnauthorized
+
+		case cmerror.ErrorCodeAccessCertificateInvalid:
+			sc = http.StatusUnauthorized
+
+		case cmerror.ErrorCodeResourceNotFound:
+			sc = http.StatusNotFound
+
+		default:
+			sc = http.StatusBadRequest
 		}
 	}
 

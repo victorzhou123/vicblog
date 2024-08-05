@@ -55,3 +55,9 @@ func IsErrorConcurrentUpdating(err error) bool {
 
 	return ok
 }
+
+func IsErrorConstraintViolated(err error) bool {
+	_, ok := err.(ErrorConstraintViolated)
+
+	return ok
+}

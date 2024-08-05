@@ -79,6 +79,22 @@ func NewNoPermission(msg string) noPermissionError {
 	return noPermissionError{New(errorCodeNoPermission, msg)}
 }
 
-func NewInvalidParam(msg string) errorImpl {
-	return New(errorCodeInvalidParam, msg)
+type invalidParamError struct {
+	errorImpl
+}
+
+func NewInvalidParam(msg string) invalidParamError {
+	return invalidParamError{New(errorCodeInvalidParam, msg)}
+}
+
+func IsInvalidParamError(err error) bool {
+	if err == nil {
+		return false
+	}
+
+	if _, ok := err.(invalidParamError); ok {
+		return true
+	}
+
+	return false
 }
