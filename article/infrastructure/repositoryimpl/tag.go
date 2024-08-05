@@ -1,6 +1,7 @@
 package repositoryimpl
 
 import (
+	"victorzhou123/vicblog/article/domain/tag/entity"
 	"victorzhou123/vicblog/article/domain/tag/repository"
 	cmdmerror "victorzhou123/vicblog/common/domain/error"
 	cmrepo "victorzhou123/vicblog/common/domain/repository"
@@ -35,4 +36,31 @@ func (impl *tagRepoImpl) AddBatches(tagNames repository.TagNames) error {
 	}
 
 	return err
+}
+
+func (impl *tagRepoImpl) GetTagList(opt cmrepo.PageListOpt) ([]entity.Tag, int, error) {
+	dos := []TagDO{}
+
+	options := mysql.PaginationOpt{
+		CurPage:  opt.CurPage,
+		PageSize: opt.PageSize,
+	}
+
+	total, err := impl.GetRecordByPagination(&TagDO{}, &dos, options)
+	if err != nil {
+		if cmrepo.IsErrorResourceNotExists(err) {
+			return nil, 0, cmdmerror.NewNotFound(cmdmerror.ErrorCodeResourceNotFound, "")
+		}
+
+		return nil, 0, err
+	}
+
+	tags := make([]entity.Tag, len(dos))
+	for i := range dos {
+		if tags[i], err = dos[i].toTag(); err != nil {
+			return nil, 0, err
+		}
+	}
+
+	return tags, total, nil
 }

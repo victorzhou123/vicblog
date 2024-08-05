@@ -1,6 +1,9 @@
 package repository
 
-import "victorzhou123/vicblog/article/domain/tag/entity"
+import (
+	"victorzhou123/vicblog/article/domain/tag/entity"
+	cmrepo "victorzhou123/vicblog/common/domain/repository"
+)
 
 type TagNames struct {
 	Names []entity.TagName
@@ -20,4 +23,5 @@ func (t *TagNames) NoDuplication() bool {
 
 type Tag interface {
 	AddBatches(TagNames) error
+	GetTagList(cmrepo.PageListOpt) ([]entity.Tag, int, error)
 }
