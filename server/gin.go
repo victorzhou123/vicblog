@@ -9,8 +9,10 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
-	articleapp "victorzhou123/vicblog/article/app"
 	articlectl "victorzhou123/vicblog/article/controller"
+	articlesvc "victorzhou123/vicblog/article/domain/article/service"
+	categorysvc "victorzhou123/vicblog/article/domain/category/service"
+	tagsvc "victorzhou123/vicblog/article/domain/tag/service"
 	articlerepoimpl "victorzhou123/vicblog/article/infrastructure/repositoryimpl"
 	cmapp "victorzhou123/vicblog/common/app"
 	cminfraauthimpl "victorzhou123/vicblog/common/infrastructure/authimpl"
@@ -59,19 +61,21 @@ func setRouter(engine *gin.Engine, cfg *mconfig.Config) {
 	categoryTable := cminframysql.DAO(tableNameCategory)
 	tagTable := cminframysql.DAO(tableNameTag)
 
-	// domain: following are the dependencies of app service
+	// repo: following are the dependencies of service
 	auth := cminfraauthimpl.NewSignJwt(&timeCreator, &cfg.Common.Infra.Auth)
 	userRepo := userrepoimpl.NewUserRepo(userTable)
 	articleRepo := articlerepoimpl.NewArticleRepo(articleTable)
 	categoryRepo := articlerepoimpl.NewCategoryRepo(categoryTable)
 	tagRepo := articlerepoimpl.NewTagRepo(tagTable)
 
+	// domain: following are domain services
+	tagService := tagsvc.NewTagService(tagRepo)
+	articleService := articlesvc.NewArticleService(articleRepo)
+	categoryService := categorysvc.NewCategoryService(categoryRepo)
+
 	// app: following are app services
 	authMiddleware := cmapp.NewAuthMiddleware(auth)
 	loginService := userapp.NewLoginService(userRepo, auth)
-	articleService := articleapp.NewArticleService(articleRepo)
-	categoryService := articleapp.NewCategoryService(categoryRepo)
-	tagService := articleapp.NewTagService(tagRepo)
 
 	// controller: add routers
 	v1 := engine.Group(BasePath)
