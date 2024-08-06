@@ -56,7 +56,7 @@ func (impl *categoryRepoImpl) GetCategoryList(opt cmrepo.PageListOpt) ([]entity.
 func (impl *categoryRepoImpl) GetAllCategoryList() ([]entity.Category, error) {
 	dos := []CategoryDO{}
 
-	if err := impl.GetRecord(&CategoryDO{}, &dos); err != nil {
+	if err := impl.GetRecords(&CategoryDO{}, &dos); err != nil {
 		if cmdmerror.IsNotFound(err) {
 			return []entity.Category{}, nil
 		}

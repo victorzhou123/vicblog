@@ -27,7 +27,7 @@ func (impl *articleRepoImpl) GetArticles(owner cmprimitive.Username) ([]entity.A
 
 	articlesDo := []ArticleDO{}
 
-	if err := impl.GetRecord(&articleDo, &articlesDo); err != nil {
+	if err := impl.GetRecords(&articleDo, &articlesDo); err != nil {
 		return nil, err
 	}
 
