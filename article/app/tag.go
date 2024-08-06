@@ -3,11 +3,13 @@ package app
 import (
 	"victorzhou123/vicblog/article/domain/tag/repository"
 	cmdmerror "victorzhou123/vicblog/common/domain/error"
+	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
 )
 
 type TagService interface {
 	AddTags(repository.TagNames) error
 	GetTagList(*TagListCmd) (TagListDto, error)
+	Delete(cmprimitive.Id) error
 }
 
 type tagService struct {
@@ -40,4 +42,8 @@ func (s *tagService) GetTagList(cmd *TagListCmd) (TagListDto, error) {
 	}
 
 	return toTagListDto(tags, cmd, total), nil
+}
+
+func (s *tagService) Delete(id cmprimitive.Id) error {
+	return s.repo.Delete(id)
 }

@@ -4,6 +4,7 @@ import (
 	"victorzhou123/vicblog/article/domain/tag/entity"
 	"victorzhou123/vicblog/article/domain/tag/repository"
 	cmdmerror "victorzhou123/vicblog/common/domain/error"
+	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
 	cmrepo "victorzhou123/vicblog/common/domain/repository"
 	"victorzhou123/vicblog/common/infrastructure/mysql"
 )
@@ -63,4 +64,16 @@ func (impl *tagRepoImpl) GetTagList(opt cmrepo.PageListOpt) ([]entity.Tag, int, 
 	}
 
 	return tags, total, nil
+}
+
+func (impl *tagRepoImpl) Delete(id cmprimitive.Id) error {
+	do := TagDO{}
+	do.ID = id.IdNum()
+
+	err := impl.Impl.Delete(&TagDO{}, &do)
+	if cmrepo.IsErrorResourceNotExists(err) {
+		return cmdmerror.NewNotFound(cmdmerror.ErrorCodeResourceNotFound, "")
+	}
+
+	return err
 }

@@ -6,6 +6,7 @@ import (
 	"victorzhou123/vicblog/article/app"
 	cmapp "victorzhou123/vicblog/common/app"
 	cmctl "victorzhou123/vicblog/common/controller"
+	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
 )
 
 func AddRouterForTagController(
@@ -20,6 +21,7 @@ func AddRouterForTagController(
 
 	rg.POST("/v1/admin/tag", auth.VerifyToken, ctl.AddBatches)
 	rg.GET("/v1/admin/tag", auth.VerifyToken, ctl.List)
+	rg.DELETE("/v1/admin/tag/:id", auth.VerifyToken, ctl.Delete)
 }
 
 type tagController struct {
@@ -87,4 +89,24 @@ func (ctl *tagController) List(ctx *gin.Context) {
 	}
 
 	cmctl.SendRespOfGet(ctx, dto)
+}
+
+// @Summary  Delete tag
+// @Description  delete a tag item
+// @Tags     Tag
+// @Param    path  body  reqTag  true  "body of add tag"
+// @Accept   json
+// @Success 200
+// @Router   /v1/admin/tag [delete]
+func (ctl *tagController) Delete(ctx *gin.Context) {
+
+	id := cmprimitive.NewId(ctx.Param("id"))
+
+	if err := ctl.tag.Delete(id); err != nil {
+		cmctl.SendError(ctx, err)
+
+		return
+	}
+
+	cmctl.SendRespOfDelete(ctx)
 }
