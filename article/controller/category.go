@@ -3,7 +3,7 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 
-	"victorzhou123/vicblog/article/app"
+	"victorzhou123/vicblog/article/domain/category/service"
 	cmapp "victorzhou123/vicblog/common/app"
 	cmctl "victorzhou123/vicblog/common/controller"
 	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
@@ -12,7 +12,7 @@ import (
 func AddRouterForCategoryController(
 	rg *gin.RouterGroup,
 	auth cmapp.AuthMiddleware,
-	category app.CategoryService,
+	category service.CategoryService,
 ) {
 	ctl := categoryController{
 		AuthMiddleware: auth,
@@ -26,7 +26,7 @@ func AddRouterForCategoryController(
 
 type categoryController struct {
 	cmapp.AuthMiddleware
-	category app.CategoryService
+	category service.CategoryService
 }
 
 // @Summary  Add category

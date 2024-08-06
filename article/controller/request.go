@@ -2,10 +2,12 @@ package controller
 
 import (
 	"strconv"
-	"victorzhou123/vicblog/article/app"
+
 	"victorzhou123/vicblog/article/domain/category/entity"
+	categorysvc "victorzhou123/vicblog/article/domain/category/service"
 	tagent "victorzhou123/vicblog/article/domain/tag/entity"
 	"victorzhou123/vicblog/article/domain/tag/repository"
+	tagsvc "victorzhou123/vicblog/article/domain/tag/service"
 )
 
 type reqCategory struct {
@@ -21,7 +23,7 @@ type reqCategoryList struct {
 	PageSize string `json:"size"`
 }
 
-func (req *reqCategoryList) toCmd() (cmd app.CategoryListCmd, err error) {
+func (req *reqCategoryList) toCmd() (cmd categorysvc.CategoryListCmd, err error) {
 	if cmd.CurPage, err = strconv.Atoi(req.CurPage); err != nil {
 		return
 	}
@@ -60,7 +62,7 @@ type reqTagList struct {
 	PageSize string `json:"size"`
 }
 
-func (req *reqTagList) toCmd() (cmd app.TagListCmd, err error) {
+func (req *reqTagList) toCmd() (cmd tagsvc.TagListCmd, err error) {
 	if cmd.CurPage, err = strconv.Atoi(req.CurPage); err != nil {
 		return
 	}

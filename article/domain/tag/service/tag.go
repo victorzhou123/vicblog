@@ -1,4 +1,4 @@
-package app
+package service
 
 import (
 	"victorzhou123/vicblog/article/domain/tag/repository"

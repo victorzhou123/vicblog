@@ -3,7 +3,7 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 
-	"victorzhou123/vicblog/article/app"
+	"victorzhou123/vicblog/article/domain/article/service"
 	cmapp "victorzhou123/vicblog/common/app"
 	cmctl "victorzhou123/vicblog/common/controller"
 	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
@@ -12,7 +12,7 @@ import (
 func AddRouterForArticleController(
 	rg *gin.RouterGroup,
 	auth cmapp.AuthMiddleware,
-	article app.ArticleService,
+	article service.ArticleService,
 ) {
 	ctl := ArticleController{
 		AuthMiddleware: auth,
@@ -25,7 +25,7 @@ func AddRouterForArticleController(
 
 type ArticleController struct {
 	cmapp.AuthMiddleware
-	article app.ArticleService
+	article service.ArticleService
 }
 
 // @Summary  List articles
