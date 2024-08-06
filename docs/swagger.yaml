@@ -134,12 +134,29 @@ paths:
         required: true
         type: integer
       responses:
-        "204":
-          description: No Content
+        "200":
+          description: OK
       summary: Delete category
       tags:
       - Category
   /v1/admin/tag:
+    delete:
+      consumes:
+      - application/json
+      description: delete a tag item
+      parameters:
+      - description: body of add tag
+        in: body
+        name: path
+        required: true
+        schema:
+          $ref: '#/definitions/controller.reqTag'
+      responses:
+        "200":
+          description: OK
+      summary: Delete tag
+      tags:
+      - Tag
     post:
       consumes:
       - application/json
