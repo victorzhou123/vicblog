@@ -96,7 +96,7 @@ func (ctl *categoryController) List(ctx *gin.Context) {
 // @Tags     Category
 // @Accept   json
 // @Param    id  path  int  true  "id of category, which user want to delete"
-// @Success  204
+// @Success  200
 // @Router   /v1/admin/category/{id} [delete]
 func (ctl *categoryController) Delete(ctx *gin.Context) {
 
