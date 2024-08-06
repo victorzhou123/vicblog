@@ -16,6 +16,7 @@ const (
 
 const (
 	articleContentLengthLimit = 40000
+	articleSummaryLengthLimit = 140
 	categoryNameLengthLimit   = 60
 	tagNameLengthLimit        = 60
 )
@@ -57,6 +58,14 @@ func IsTitle(v string) error {
 func IsArticleContent(v string) error {
 	if len(v) > articleContentLengthLimit {
 		return fmt.Errorf("article content must less than %d", articleContentLengthLimit)
+	}
+
+	return nil
+}
+
+func IsArticleSummary(v string) error {
+	if len(v) > articleSummaryLengthLimit {
+		return fmt.Errorf("article summary must less than %d", articleSummaryLengthLimit)
 	}
 
 	return nil

@@ -22,9 +22,11 @@ type ArticleDO struct {
 	gorm.Model
 
 	Owner     string `gorm:"column:owner;index:owner_index;size:255"`
+	Summary   string `gorm:"column:summary;size:255"`
 	Title     string `gorm:"column:title;size:255"`
 	Content   string `gorm:"column:content;type:text;size:40000"`
 	Cover     string `gorm:"column:cover;size:255"`
+	ReadTimes int    `gorm:"column:read_times;size:11"`
 	IsPublish bool   `gorm:"column:is_publish"`
 	IsTop     bool   `gorm:"column:is_top"`
 }
@@ -36,6 +38,10 @@ func (do *ArticleDO) toArticle() (article entity.Article, err error) {
 	}
 
 	if article.Title, err = cmprimitive.NewTitle(do.Title); err != nil {
+		return
+	}
+
+	if article.Summary, err = entity.NewArticleSummary(do.Summary); err != nil {
 		return
 	}
 
@@ -52,6 +58,8 @@ func (do *ArticleDO) toArticle() (article entity.Article, err error) {
 	article.CreatedAt = cmprimitive.NewTimeXWithUnix(do.CreatedAt.Unix())
 
 	article.UpdatedAt = cmprimitive.NewTimeXWithUnix(do.UpdatedAt.Unix())
+
+	article.ReadTimes = do.ReadTimes
 
 	article.IsPublish = do.IsPublish
 
