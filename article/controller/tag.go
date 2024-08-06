@@ -74,21 +74,34 @@ func (ctl *tagController) List(ctx *gin.Context) {
 		PageSize: ctx.Query("size"),
 	}
 
-	cmd, err := req.toCmd()
-	if err != nil {
-		cmctl.SendBadRequestBody(ctx, err)
+	if req.emptyValue() {
+		// list all tags
+		dtos, err := ctl.tag.ListAllTag()
+		if err != nil {
+			cmctl.SendError(ctx, err)
 
-		return
+			return
+		}
+
+		cmctl.SendRespOfGet(ctx, dtos)
+	} else {
+		// list tags by pagination
+		cmd, err := req.toCmd()
+		if err != nil {
+			cmctl.SendBadRequestBody(ctx, err)
+
+			return
+		}
+
+		dto, err := ctl.tag.GetTagList(&cmd)
+		if err != nil {
+			cmctl.SendError(ctx, err)
+
+			return
+		}
+
+		cmctl.SendRespOfGet(ctx, dto)
 	}
-
-	dto, err := ctl.tag.GetTagList(&cmd)
-	if err != nil {
-		cmctl.SendError(ctx, err)
-
-		return
-	}
-
-	cmctl.SendRespOfGet(ctx, dto)
 }
 
 // @Summary  Delete tag

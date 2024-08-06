@@ -25,5 +25,6 @@ func (t *TagNames) NoDuplication() bool {
 type Tag interface {
 	AddBatches(TagNames) error
 	GetTagList(cmrepo.PageListOpt) ([]entity.Tag, int, error)
+	GetAllTagList() ([]entity.Tag, error)
 	Delete(primitive.Id) error
 }

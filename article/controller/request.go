@@ -66,6 +66,10 @@ type reqTagList struct {
 	PageSize string `json:"size"`
 }
 
+func (req *reqTagList) emptyValue() bool {
+	return req.CurPage == "" && req.PageSize == ""
+}
+
 func (req *reqTagList) toCmd() (cmd tagsvc.TagListCmd, err error) {
 	if cmd.CurPage, err = strconv.Atoi(req.CurPage); err != nil {
 		return
