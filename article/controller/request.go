@@ -23,6 +23,10 @@ type reqCategoryList struct {
 	PageSize string `json:"size"`
 }
 
+func (req *reqCategoryList) emptyValue() bool {
+	return req.CurPage == "" && req.PageSize == ""
+}
+
 func (req *reqCategoryList) toCmd() (cmd categorysvc.CategoryListCmd, err error) {
 	if cmd.CurPage, err = strconv.Atoi(req.CurPage); err != nil {
 		return

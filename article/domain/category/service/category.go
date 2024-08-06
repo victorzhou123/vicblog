@@ -10,6 +10,7 @@ import (
 type CategoryService interface {
 	AddCategory(entity.CategoryName) error
 	ListCategory(*CategoryListCmd) (CategoryListDto, error)
+	ListAllCategory() ([]CategoryDto, error)
 	DelCategory(cmprimitive.Id) error
 }
 
@@ -39,6 +40,21 @@ func (s *categoryService) ListCategory(cmd *CategoryListCmd) (CategoryListDto, e
 	}
 
 	return toCategoryListDto(cates, cmd, total), nil
+}
+
+func (s *categoryService) ListAllCategory() ([]CategoryDto, error) {
+
+	cates, err := s.repo.GetAllCategoryList()
+	if err != nil {
+		return nil, err
+	}
+
+	dtos := make([]CategoryDto, len(cates))
+	for i := range cates {
+		dtos[i] = toCategoryDto(cates[i])
+	}
+
+	return dtos, nil
 }
 
 func (s *categoryService) DelCategory(id cmprimitive.Id) error {
