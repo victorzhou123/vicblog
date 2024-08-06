@@ -53,6 +53,29 @@ func (impl *categoryRepoImpl) GetCategoryList(opt cmrepo.PageListOpt) ([]entity.
 	return cates, total, nil
 }
 
+func (impl *categoryRepoImpl) GetAllCategoryList() ([]entity.Category, error) {
+	dos := []CategoryDO{}
+
+	if err := impl.GetRecord(&CategoryDO{}, &dos); err != nil {
+		if cmdmerror.IsNotFound(err) {
+			return []entity.Category{}, nil
+		}
+
+		return nil, err
+	}
+
+	cates := make([]entity.Category, len(dos))
+
+	var err error
+	for i := range dos {
+		if cates[i], err = dos[i].toCategory(); err != nil {
+			return nil, err
+		}
+	}
+
+	return cates, err
+}
+
 func (impl *categoryRepoImpl) DelCategory(id cmprimitive.Id) error {
 	do := &CategoryDO{}
 	do.ID = id.IdNum()
