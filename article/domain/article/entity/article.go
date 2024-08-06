@@ -6,8 +6,10 @@ type Article struct {
 	Id        cmprimitive.Id
 	Owner     cmprimitive.Username
 	Title     cmprimitive.Text
+	Summary   ArticleSummary
 	Content   cmprimitive.Text
 	Cover     cmprimitive.Urlx
+	ReadTimes int
 	IsPublish bool
 	IsTop     bool
 	UpdatedAt cmprimitive.Timex
