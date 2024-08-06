@@ -15,6 +15,7 @@ type Impl interface {
 
 	// Query
 	GetRecord(filter, result interface{}) error
+	GetRecords(filter, result interface{}) error
 	GetRecordByPagination(filter, result interface{}, opt PaginationOpt) (int, error)
 	GetByPrimaryKey(row interface{}) error
 
@@ -53,6 +54,16 @@ func (dao *daoImpl) DB() *gorm.DB {
 
 func (dao *daoImpl) GetRecord(filter, result interface{}) error {
 	err := dao.DB().Where(filter).First(result).Error
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return repository.NewErrorResourceNotExists(errors.New("not found"))
+	}
+
+	return err
+}
+
+func (dao *daoImpl) GetRecords(filter, result interface{}) error {
+	err := dao.DB().Where(filter).Find(result).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return repository.NewErrorResourceNotExists(errors.New("not found"))

@@ -9,6 +9,7 @@ import (
 type TagService interface {
 	AddTags(repository.TagNames) error
 	GetTagList(*TagListCmd) (TagListDto, error)
+	ListAllTag() ([]TagDto, error)
 	Delete(cmprimitive.Id) error
 }
 
@@ -42,6 +43,21 @@ func (s *tagService) GetTagList(cmd *TagListCmd) (TagListDto, error) {
 	}
 
 	return toTagListDto(tags, cmd, total), nil
+}
+
+func (s *tagService) ListAllTag() ([]TagDto, error) {
+
+	tags, err := s.repo.GetAllTagList()
+	if err != nil {
+		return nil, err
+	}
+
+	dtos := make([]TagDto, len(tags))
+	for i := range tags {
+		dtos[i] = toTagDto(tags[i])
+	}
+
+	return dtos, nil
 }
 
 func (s *tagService) Delete(id cmprimitive.Id) error {

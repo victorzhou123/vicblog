@@ -66,6 +66,29 @@ func (impl *tagRepoImpl) GetTagList(opt cmrepo.PageListOpt) ([]entity.Tag, int, 
 	return tags, total, nil
 }
 
+func (impl *tagRepoImpl) GetAllTagList() ([]entity.Tag, error) {
+	dos := []TagDO{}
+
+	if err := impl.GetRecords(&TagDO{}, &dos); err != nil {
+		if cmdmerror.IsNotFound(err) {
+			return []entity.Tag{}, nil
+		}
+
+		return nil, err
+	}
+
+	tags := make([]entity.Tag, len(dos))
+
+	var err error
+	for i := range dos {
+		if tags[i], err = dos[i].toTag(); err != nil {
+			return nil, err
+		}
+	}
+
+	return tags, err
+}
+
 func (impl *tagRepoImpl) Delete(id cmprimitive.Id) error {
 	do := TagDO{}
 	do.ID = id.IdNum()
