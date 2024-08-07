@@ -52,3 +52,19 @@ func (impl *articleRepoImpl) Delete(user cmprimitive.Username, id cmprimitive.Id
 
 	return impl.Impl.Delete(&ArticleDO{}, &articleDo)
 }
+
+func (impl *articleRepoImpl) AddArticle(info *entity.ArticleInfo) (uint, error) {
+	do := ArticleDO{
+		Owner:   info.Owner.Username(),
+		Title:   info.Title.Text(),
+		Summary: info.Summary.ArticleSummary(),
+		Content: info.Content.Text(),
+		Cover:   info.Cover.Urlx(),
+	}
+
+	if err := impl.Impl.Add(&do); err != nil {
+		return 0, err
+	}
+
+	return do.ID, nil
+}
