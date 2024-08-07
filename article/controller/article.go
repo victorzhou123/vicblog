@@ -37,7 +37,7 @@ type ArticleController struct {
 // @Description  list all articles of request user
 // @Tags     Article
 // @Accept   json
-// @Success  201   {array}  app.ArticleListDto
+// @Success  201   {array}  service.ArticleListDto
 // @Router   /v1/admin/article/list [post]
 func (ctl *ArticleController) List(ctx *gin.Context) {
 
@@ -62,7 +62,7 @@ func (ctl *ArticleController) List(ctx *gin.Context) {
 // @Description  delete one article of request user
 // @Tags     Article
 // @Param	id	path	int	true	"article ID"
-// @Success  204
+// @Success  200
 // @Router   /v1/admin/article/{id} [delete]
 func (ctl *ArticleController) Delete(ctx *gin.Context) {
 

@@ -66,8 +66,8 @@ func (ctl *categoryController) Add(ctx *gin.Context) {
 // @Accept   json
 // @Param    current  query  int  true  "current page of user queried"
 // @Param    size  query  int  true  "single page size of user queried"
-// @Success  201   {array}  domain.category.service.CategoryListDto
-// @Success  201   array  domain.category.service.CategoryDto
+// @Success  201   {array}  service.CategoryListDto
+// @Success  201   array  service.CategoryDto
 // @Router   /v1/admin/category [get]
 func (ctl *categoryController) List(ctx *gin.Context) {
 	var req = reqCategoryList{

@@ -1,20 +1,5 @@
 basePath: /api
 definitions:
-  app.ArticleListDto:
-    properties:
-      cover:
-        type: string
-      createTime:
-        type: string
-      id:
-        type: integer
-      isPublish:
-        type: boolean
-      isTop:
-        type: boolean
-      title:
-        type: string
-    type: object
   app.UserAndTokenDto:
     properties:
       email:
@@ -22,6 +7,23 @@ definitions:
       token:
         type: string
       username:
+        type: string
+    type: object
+  controller.reqArticle:
+    properties:
+      categoryId:
+        type: integer
+      content:
+        type: string
+      cover:
+        type: string
+      summary:
+        type: string
+      tags:
+        items:
+          type: integer
+        type: array
+      title:
         type: string
     type: object
   controller.reqCategory:
@@ -43,6 +45,74 @@ definitions:
           type: string
         type: array
     type: object
+  service.ArticleListDto:
+    properties:
+      cover:
+        type: string
+      createTime:
+        type: string
+      id:
+        type: integer
+      isPublish:
+        type: boolean
+      isTop:
+        type: boolean
+      title:
+        type: string
+    type: object
+  service.CategoryDto:
+    properties:
+      createTime:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  service.CategoryListDto:
+    properties:
+      category:
+        items:
+          $ref: '#/definitions/service.CategoryDto'
+        type: array
+      current:
+        type: integer
+      pages:
+        type: integer
+      size:
+        type: integer
+      total:
+        type: integer
+    type: object
+  service.FileUrlDto:
+    properties:
+      url:
+        type: string
+    type: object
+  service.TagDto:
+    properties:
+      createTime:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  service.TagListDto:
+    properties:
+      current:
+        type: integer
+      pages:
+        type: integer
+      size:
+        type: integer
+      tag:
+        items:
+          $ref: '#/definitions/service.TagDto'
+        type: array
+      total:
+        type: integer
+    type: object
 host: localhost:8080
 info:
   contact:
@@ -51,6 +121,24 @@ info:
   title: vicBlog server API
   version: "1.0"
 paths:
+  /v1/admin/article:
+    post:
+      consumes:
+      - application/json
+      description: add an article
+      parameters:
+      - description: body of add article
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/controller.reqArticle'
+      responses:
+        "201":
+          description: Created
+      summary: add article
+      tags:
+      - Article
   /v1/admin/article/{id}:
     delete:
       description: delete one article of request user
@@ -61,8 +149,8 @@ paths:
         required: true
         type: integer
       responses:
-        "204":
-          description: No Content
+        "200":
+          description: OK
       summary: delete article
       tags:
       - Article
@@ -76,11 +164,24 @@ paths:
           description: Created
           schema:
             items:
-              $ref: '#/definitions/app.ArticleListDto'
+              $ref: '#/definitions/service.ArticleListDto'
             type: array
       summary: List articles
       tags:
       - Article
+  /v1/admin/article/picture:
+    post:
+      consumes:
+      - application/json
+      description: upload users picture
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/service.FileUrlDto'
+      summary: Upload file
+      tags:
+      - Util
   /v1/admin/category:
     get:
       consumes:
@@ -102,7 +203,7 @@ paths:
           description: Created
           schema:
             items:
-              $ref: '#/definitions/app.ArticleListDto'
+              $ref: '#/definitions/service.CategoryDto'
             type: array
       summary: List category
       tags:
@@ -155,6 +256,31 @@ paths:
         "200":
           description: OK
       summary: Delete tag
+      tags:
+      - Tag
+    get:
+      consumes:
+      - application/json
+      description: list tag with pagination
+      parameters:
+      - description: current page of user queried
+        in: query
+        name: current
+        required: true
+        type: integer
+      - description: single page size of user queried
+        in: query
+        name: size
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/service.TagListDto'
+            type: array
+      summary: List tag
       tags:
       - Tag
     post:
