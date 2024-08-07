@@ -14,3 +14,7 @@ func (cfg *Config) SetDefault() {
 	cfg.Log.SetDefault()
 	cfg.Infra.SetDefault()
 }
+
+func (cfg *Config) Validate() error {
+	return cfg.Infra.Validate()
+}
