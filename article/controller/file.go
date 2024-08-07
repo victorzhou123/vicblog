@@ -31,7 +31,7 @@ type fileController struct {
 // @Description  upload users picture
 // @Tags     Util
 // @Accept   json
-// @Success  201   {array}  app.ArticleListDto
+// @Success  201   {object}  service.FileUrlDto
 // @Router   /v1/admin/article/picture [post]
 func (ctl *fileController) Upload(ctx *gin.Context) {
 	file, err := ctx.FormFile("file")

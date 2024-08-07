@@ -1,6 +1,9 @@
 package service
 
-import "victorzhou123/vicblog/article/domain/article/entity"
+import (
+	"victorzhou123/vicblog/article/domain/article/entity"
+	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
+)
 
 type ArticleListDto struct {
 	Id        uint   `json:"id"`
@@ -20,4 +23,12 @@ func toArticleListDto(v entity.Article) ArticleListDto {
 		IsTop:     v.IsTop,
 		CreatedAt: v.CreatedAt.TimeYearToSecond(),
 	}
+}
+
+type ArticleCmd struct {
+	Owner   cmprimitive.Username
+	Title   cmprimitive.Text
+	Summary entity.ArticleSummary
+	Content cmprimitive.Text
+	Cover   cmprimitive.Urlx
 }

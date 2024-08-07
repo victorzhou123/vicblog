@@ -15,3 +15,11 @@ type Article struct {
 	UpdatedAt cmprimitive.Timex
 	CreatedAt cmprimitive.Timex
 }
+
+type ArticleInfo struct {
+	Owner   cmprimitive.Username
+	Title   cmprimitive.Text
+	Summary ArticleSummary
+	Content cmprimitive.Text
+	Cover   cmprimitive.Urlx
+}
