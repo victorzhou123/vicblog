@@ -4,7 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"net/url"
+	"path/filepath"
 	"regexp"
+	"strings"
 )
 
 const (
@@ -12,13 +14,12 @@ const (
 	regexPassword = `^.{8,14}$` // #nosec G101
 	regexEmail    = `^\w+(-+.\w+)*@\w+(-.\w+)*.\w+(-.\w+)*$`
 	regexTitle    = `^.{8,255}$` // #nosec G101
-)
 
-const (
 	articleContentLengthLimit = 40000
 	articleSummaryLengthLimit = 140
 	categoryNameLengthLimit   = 60
 	tagNameLengthLimit        = 60
+	pictureNameLengthLimit    = 200
 )
 
 var (
@@ -31,6 +32,8 @@ var (
 	regexCompEmail = regexp.MustCompile(regexEmail)
 
 	regexCompTitle = regexp.MustCompile(regexTitle)
+
+	allowedPictureExts = []string{".jpg", ".jpeg", ".png"}
 )
 
 type validateCmd struct {
@@ -102,6 +105,31 @@ func validate(cmd *validateCmd) error {
 func IsUrl(v string) error {
 	if _, err := url.Parse(v); err != nil {
 		return fmt.Errorf("input is not an url")
+	}
+
+	return nil
+}
+
+func IsPictureName(name string) error {
+	if len(name) > pictureNameLengthLimit || len(name) <= 0 {
+		return fmt.Errorf("picture name length must bigger than 0 and less than %d", pictureNameLengthLimit)
+	}
+
+	// get extension of file
+	ext := filepath.Ext(name)
+	ext = strings.ToLower(ext)
+
+	var allowedExt bool
+	for i := range allowedPictureExts {
+		if ext == allowedPictureExts[i] {
+			allowedExt = true
+
+			break
+		}
+	}
+
+	if !allowedExt {
+		return fmt.Errorf("picture extension must be in %v", allowedPictureExts)
 	}
 
 	return nil

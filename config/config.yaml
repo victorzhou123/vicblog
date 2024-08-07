@@ -24,3 +24,10 @@ common:
       username: "root"
       password: "Password@1"
       db_name: "vicblog"
+    oss:
+      id: "LTAI5tFnKogF9bTcvoJxrZor"
+      secret: "W1veUccsXDy3mciIzAnNF1IpJ0u0CG"
+      endpoint: "oss-cn-shanghai.aliyuncs.com"
+      bucket: "victor-bucket"
+      root_dir: "project/vicblog"
+      picture_folder_name: "user_photo"

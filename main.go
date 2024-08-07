@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"victorzhou123/vicblog/common/infrastructure/mysql"
+	"victorzhou123/vicblog/common/infrastructure/oss"
 	"victorzhou123/vicblog/common/log"
 	"victorzhou123/vicblog/config"
 	"victorzhou123/vicblog/server"
@@ -36,6 +37,11 @@ func main() {
 	// mysql
 	if err := mysql.Init(&cfg.Common.Infra.Mysql); err != nil {
 		log.Warnf("mysql init failed, error: %s", err.Error())
+	}
+
+	// object storage
+	if err := oss.Init(&cfg.Common.Infra.Oss); err != nil {
+		log.Warnf("object storage init failed, error: %s", err.Error())
 	}
 
 	if err := server.StartWebServer(cfg); err != nil {

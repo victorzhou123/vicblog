@@ -12,11 +12,13 @@ import (
 	articlectl "victorzhou123/vicblog/article/controller"
 	articlesvc "victorzhou123/vicblog/article/domain/article/service"
 	categorysvc "victorzhou123/vicblog/article/domain/category/service"
+	picturesvc "victorzhou123/vicblog/article/domain/picture/service"
 	tagsvc "victorzhou123/vicblog/article/domain/tag/service"
 	articlerepoimpl "victorzhou123/vicblog/article/infrastructure/repositoryimpl"
 	cmapp "victorzhou123/vicblog/common/app"
 	cminfraauthimpl "victorzhou123/vicblog/common/infrastructure/authimpl"
 	cminframysql "victorzhou123/vicblog/common/infrastructure/mysql"
+	"victorzhou123/vicblog/common/infrastructure/oss"
 	cmutil "victorzhou123/vicblog/common/util"
 	mconfig "victorzhou123/vicblog/config"
 	_ "victorzhou123/vicblog/docs"
@@ -62,6 +64,7 @@ func setRouter(engine *gin.Engine, cfg *mconfig.Config) {
 	tagTable := cminframysql.DAO(tableNameTag)
 
 	// repo: following are the dependencies of service
+	ossRepo := articlerepoimpl.NewPictureImpl(oss.Client())
 	auth := cminfraauthimpl.NewSignJwt(&timeCreator, &cfg.Common.Infra.Auth)
 	userRepo := userrepoimpl.NewUserRepo(userTable)
 	articleRepo := articlerepoimpl.NewArticleRepo(articleTable)
@@ -72,6 +75,7 @@ func setRouter(engine *gin.Engine, cfg *mconfig.Config) {
 	tagService := tagsvc.NewTagService(tagRepo)
 	articleService := articlesvc.NewArticleService(articleRepo)
 	categoryService := categorysvc.NewCategoryService(categoryRepo)
+	pictureService := picturesvc.NewFileService(ossRepo)
 
 	// app: following are app services
 	authMiddleware := cmapp.NewAuthMiddleware(auth)
@@ -96,6 +100,10 @@ func setRouter(engine *gin.Engine, cfg *mconfig.Config) {
 
 		articlectl.AddRouterForTagController(
 			v1, authMiddleware, tagService,
+		)
+
+		articlectl.AddRouterForFileController(
+			v1, authMiddleware, pictureService,
 		)
 	}
 }
