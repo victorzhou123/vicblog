@@ -3,11 +3,15 @@ package controller
 import (
 	"strconv"
 
+	"victorzhou123/vicblog/article/app/dto"
+	articleent "victorzhou123/vicblog/article/domain/article/entity"
 	"victorzhou123/vicblog/article/domain/category/entity"
 	categorysvc "victorzhou123/vicblog/article/domain/category/service"
 	tagent "victorzhou123/vicblog/article/domain/tag/entity"
 	"victorzhou123/vicblog/article/domain/tag/repository"
 	tagsvc "victorzhou123/vicblog/article/domain/tag/service"
+	"victorzhou123/vicblog/common/domain/primitive"
+	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
 )
 
 type reqCategory struct {
@@ -81,6 +85,45 @@ func (req *reqTagList) toCmd() (cmd tagsvc.TagListCmd, err error) {
 
 	if err = cmd.Validate(); err != nil {
 		return
+	}
+
+	return
+}
+
+type reqArticle struct {
+	Title    string `json:"title"`
+	Summary  string `json:"summary"`
+	Content  string `json:"content"`
+	Cover    string `json:"cover"`
+	Category uint   `json:"categoryId"`
+	Tags     []uint `json:"tags"`
+}
+
+func (req *reqArticle) toCmd(user primitive.Username) (cmd dto.AddArticleCmd, err error) {
+
+	if cmd.Title, err = cmprimitive.NewTitle(req.Title); err != nil {
+		return
+	}
+
+	if cmd.Summary, err = articleent.NewArticleSummary(req.Summary); err != nil {
+		return
+	}
+
+	if cmd.Content, err = cmprimitive.NewArticleContent(req.Content); err != nil {
+		return
+	}
+
+	if cmd.Cover, err = cmprimitive.NewUrlx(req.Cover); err != nil {
+		return
+	}
+
+	cmd.Owner = user
+
+	cmd.Category = cmprimitive.NewIdByUint(req.Category)
+
+	cmd.Tags = make([]cmprimitive.Id, len(req.Tags))
+	for i := range req.Tags {
+		cmd.Tags[i] = cmprimitive.NewIdByUint(req.Tags[i])
 	}
 
 	return
