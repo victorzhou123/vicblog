@@ -13,7 +13,7 @@ const (
 	regexUsername = `^[a-zA-Z0-9_]{3,8}$`
 	regexPassword = `^.{8,14}$` // #nosec G101
 	regexEmail    = `^\w+(-+.\w+)*@\w+(-.\w+)*.\w+(-.\w+)*$`
-	regexTitle    = `^.{8,255}$` // #nosec G101
+	regexTitle    = `^.{3,255}$` // #nosec G101
 
 	articleContentLengthLimit = 40000
 	articleSummaryLengthLimit = 140
