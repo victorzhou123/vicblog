@@ -12,9 +12,11 @@ import (
 )
 
 var (
-	tableNameArticle  string
-	tableNameCategory string
-	tableNameTag      string
+	tableNameArticle         string
+	tableNameCategory        string
+	tableNameTag             string
+	tableNameTagArticle      string
+	tableNameCategoryArticle string
 )
 
 // article
@@ -117,4 +119,28 @@ func (do *TagDO) toTag() (tag tagent.Tag, err error) {
 
 func (do *TagDO) TableName() string {
 	return tableNameTag
+}
+
+// tag-article
+type TagArticleDO struct {
+	gorm.Model
+
+	TagId     uint `gorm:"column:tag_id;not null"`
+	ArticleId uint `gorm:"column:article_id;not null"`
+}
+
+func (do *TagArticleDO) TableName() string {
+	return tableNameTagArticle
+}
+
+// category-article
+type CategoryArticleDO struct {
+	gorm.Model
+
+	CategoryId uint `gorm:"column:category_id;not null"`
+	ArticleId  uint `gorm:"column:article_id;not null"`
+}
+
+func (do *CategoryArticleDO) TableName() string {
+	return tableNameCategoryArticle
 }
