@@ -3,17 +3,47 @@ package infrastructure
 import (
 	"victorzhou123/vicblog/common/infrastructure/authimpl"
 	"victorzhou123/vicblog/common/infrastructure/mysql"
+	"victorzhou123/vicblog/common/infrastructure/oss"
 )
 
 type Config struct {
 	Auth  authimpl.Config `json:"auth"`
 	Mysql mysql.Config    `json:"mysql"`
+	Oss   oss.Config      `json:"oss"`
 }
 
-func (cfg *Config) Validate() error {
-	return cfg.Auth.Validate()
+func (cfg *Config) configItems() []interface{} {
+	return []interface{}{
+		&cfg.Auth,
+		&cfg.Mysql,
+		&cfg.Oss,
+	}
+}
+
+type configSetDefault interface {
+	SetDefault()
 }
 
 func (cfg *Config) SetDefault() {
-	cfg.Mysql.SetDefault()
+	for _, intf := range cfg.configItems() {
+		if o, ok := intf.(configSetDefault); ok {
+			o.SetDefault()
+		}
+	}
+}
+
+type configValidate interface {
+	Validate() error
+}
+
+func (cfg *Config) Validate() error {
+	for _, intf := range cfg.configItems() {
+		if o, ok := intf.(configValidate); ok {
+			if err := o.Validate(); err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
 }
