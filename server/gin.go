@@ -27,16 +27,7 @@ import (
 	userrepoimpl "victorzhou123/vicblog/user/infrastructure/repositoryimpl"
 )
 
-const (
-	BasePath = "/api"
-
-	tableNameUser            = "user"
-	tableNameArticle         = "article"
-	tableNameCategory        = "category"
-	tableNameCategoryArticle = "category_article"
-	tableNameTag             = "tag"
-	tableNameTagArticle      = "tag_article"
-)
+const BasePath = "/api"
 
 func StartWebServer(cfg *mconfig.Config) error {
 	engine := gin.New()
