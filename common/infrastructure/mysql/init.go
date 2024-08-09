@@ -33,7 +33,7 @@ func DB() *gorm.DB {
 	return db
 }
 
-func AutoMigrate(table interface{}) error {
+func AutoMigrate(tables ...any) error {
 	// pointer non-nil check
 	if db == nil {
 		err := errors.New("empty pointer of *gorm.DB")
@@ -41,5 +41,11 @@ func AutoMigrate(table interface{}) error {
 		return err
 	}
 
-	return db.AutoMigrate(table)
+	for _, table := range tables {
+		if err := db.AutoMigrate(table); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
