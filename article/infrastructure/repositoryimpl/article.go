@@ -9,7 +9,11 @@ import (
 
 func NewArticleRepo(db mysql.Impl) repository.Article {
 
-	if err := mysql.AutoMigrate(&ArticleDO{}); err != nil {
+	if err := mysql.AutoMigrate(
+		&ArticleDO{},
+		&CategoryArticleDO{},
+		&TagArticleDO{},
+	); err != nil {
 		return nil
 	}
 
