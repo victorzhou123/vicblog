@@ -7,7 +7,7 @@ import (
 	"victorzhou123/vicblog/common/infrastructure/mysql"
 )
 
-func NewArticleRepo(db mysql.Impl) repository.Article {
+func NewArticleRepo(db mysql.Impl, tx mysql.Transaction) repository.Article {
 
 	if err := mysql.AutoMigrate(
 		&ArticleDO{},
@@ -17,11 +17,12 @@ func NewArticleRepo(db mysql.Impl) repository.Article {
 		return nil
 	}
 
-	return &articleRepoImpl{db}
+	return &articleRepoImpl{db, tx}
 }
 
 type articleRepoImpl struct {
-	mysql.Impl
+	db mysql.Impl
+	tx mysql.Transaction
 }
 
 func (impl *articleRepoImpl) GetArticles(owner cmprimitive.Username) ([]entity.Article, error) {
@@ -30,7 +31,7 @@ func (impl *articleRepoImpl) GetArticles(owner cmprimitive.Username) ([]entity.A
 
 	articlesDo := []ArticleDO{}
 
-	if err := impl.GetRecords(&ArticleDO{}, &articleDo, &articlesDo); err != nil {
+	if err := impl.db.GetRecords(&ArticleDO{}, &articleDo, &articlesDo); err != nil {
 		return nil, err
 	}
 
@@ -53,51 +54,24 @@ func (impl *articleRepoImpl) Delete(user cmprimitive.Username, id cmprimitive.Id
 	articleDo.Owner = user.Username()
 	articleDo.ID = id.IdNum()
 
-	return impl.Impl.Delete(&ArticleDO{}, &articleDo)
+	return impl.db.Delete(&ArticleDO{}, &articleDo)
 }
 
-func (impl *articleRepoImpl) AddArticle(info *entity.ArticleWithCateAndTagInfo) error {
-	articleDo := ArticleDO{
-		Owner:   info.Article.Owner.Username(),
-		Title:   info.Article.Title.Text(),
-		Summary: info.Article.Summary.ArticleSummary(),
-		Content: info.Article.Content.Text(),
-		Cover:   info.Article.Cover.Urlx(),
+func (impl *articleRepoImpl) AddArticle(info *entity.ArticleInfo) (uint, error) {
+	do := ArticleDO{
+		Owner:   info.Owner.Username(),
+		Title:   info.Title.Text(),
+		Summary: info.Summary.ArticleSummary(),
+		Content: info.Content.Text(),
+		Cover:   info.Cover.Urlx(),
 	}
 
 	// transaction begin
-	tx := impl.Impl.Begin()
+	impl.tx.Begin()
 
-	// add article
-	if err := impl.Impl.TxAdd(tx, &ArticleDO{}, &articleDo); err != nil {
-		return err
+	if err := impl.tx.Insert(&ArticleDO{}, &do); err != nil {
+		return 0, err
 	}
 
-	// bind category
-	cateArticleDo := CategoryArticleDO{
-		CategoryId: info.Category.IdNum(),
-		ArticleId:  articleDo.ID,
-	}
-
-	if err := impl.Impl.TxAdd(tx, &CategoryArticleDO{}, &cateArticleDo); err != nil {
-		return err
-	}
-
-	// bind tags
-	tagArticleDos := make([]TagArticleDO, len(info.Tags))
-	for i := range info.Tags {
-		tagArticleDos[i] = TagArticleDO{
-			TagId:     info.Tags[i].IdNum(),
-			ArticleId: articleDo.ID,
-		}
-	}
-
-	if err := impl.Impl.TxAdd(tx, &TagArticleDO{}, &tagArticleDos); err != nil {
-		return err
-	}
-
-	// transaction commit
-	tx.Commit()
-
-	return nil
+	return do.ID, nil
 }

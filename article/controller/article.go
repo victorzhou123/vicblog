@@ -3,6 +3,7 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 
+	articleappsvc "victorzhou123/vicblog/article/app/service"
 	"victorzhou123/vicblog/article/domain/article/service"
 	cmapp "victorzhou123/vicblog/common/app"
 	cmctl "victorzhou123/vicblog/common/controller"
@@ -13,10 +14,12 @@ func AddRouterForArticleController(
 	rg *gin.RouterGroup,
 	auth cmapp.AuthMiddleware,
 	article service.ArticleService,
+	articleAppService articleappsvc.ArticleAppService,
 ) {
 	ctl := ArticleController{
-		AuthMiddleware: auth,
-		article:        article,
+		AuthMiddleware:    auth,
+		article:           article,
+		articleAppService: articleAppService,
 	}
 
 	rg.POST("/v1/admin/article/list", auth.VerifyToken, ctl.List)
@@ -26,7 +29,8 @@ func AddRouterForArticleController(
 
 type ArticleController struct {
 	cmapp.AuthMiddleware
-	article service.ArticleService
+	article           service.ArticleService
+	articleAppService articleappsvc.ArticleAppService
 }
 
 // @Summary  List articles
@@ -108,7 +112,7 @@ func (ctl *ArticleController) Add(ctx *gin.Context) {
 		return
 	}
 
-	if err := ctl.article.AddArticle(&cmd); err != nil {
+	if err := ctl.articleAppService.AddArticle(&cmd); err != nil {
 		cmctl.SendError(ctx, err)
 
 		return
