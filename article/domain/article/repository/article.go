@@ -8,5 +8,5 @@ import (
 type Article interface {
 	GetArticles(cmprimitive.Username) ([]entity.Article, error)
 	Delete(cmprimitive.Username, cmprimitive.Id) error
-	AddArticle(*entity.ArticleWithCateAndTagInfo) error
+	AddArticle(*entity.ArticleInfo) (articleId uint, err error)
 }

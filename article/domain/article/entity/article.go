@@ -16,12 +16,6 @@ type Article struct {
 	CreatedAt cmprimitive.Timex
 }
 
-type ArticleWithCateAndTagInfo struct {
-	Article  ArticleInfo
-	Category cmprimitive.Id
-	Tags     []cmprimitive.Id
-}
-
 type ArticleInfo struct {
 	Owner   cmprimitive.Username
 	Title   cmprimitive.Text

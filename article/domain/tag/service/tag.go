@@ -11,15 +11,21 @@ type TagService interface {
 	GetTagList(*TagListCmd) (TagListDto, error)
 	ListAllTag() ([]TagDto, error)
 	Delete(cmprimitive.Id) error
+
+	BuildRelationWithArticle(articleId cmprimitive.Id, tagIds []cmprimitive.Id) error
 }
 
 type tagService struct {
-	repo repository.Tag
+	repo           repository.Tag
+	tagArticleRepo repository.TagArticle
 }
 
-func NewTagService(repo repository.Tag) TagService {
+func NewTagService(
+	repo repository.Tag, tagArticleRepo repository.TagArticle,
+) TagService {
 	return &tagService{
-		repo: repo,
+		repo:           repo,
+		tagArticleRepo: tagArticleRepo,
 	}
 }
 
@@ -62,4 +68,10 @@ func (s *tagService) ListAllTag() ([]TagDto, error) {
 
 func (s *tagService) Delete(id cmprimitive.Id) error {
 	return s.repo.Delete(id)
+}
+
+func (s *tagService) BuildRelationWithArticle(
+	articleId cmprimitive.Id, tagIds []cmprimitive.Id,
+) error {
+	return s.tagArticleRepo.AddRelateWithArticle(articleId, tagIds)
 }

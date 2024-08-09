@@ -9,6 +9,7 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
+	articleappsvc "victorzhou123/vicblog/article/app/service"
 	articlectl "victorzhou123/vicblog/article/controller"
 	articlesvc "victorzhou123/vicblog/article/domain/article/service"
 	categorysvc "victorzhou123/vicblog/article/domain/category/service"
@@ -52,24 +53,28 @@ func setRouter(engine *gin.Engine, cfg *mconfig.Config) {
 	// infrastructure: following are the instance of infrastructure components
 	timeCreator := cmutil.NewTimerCreator()
 	mysqlImpl := cminframysql.DAO()
+	txAddArticle := cminframysql.NewTransaction()
 
 	// repo: following are the dependencies of service
 	ossRepo := articlerepoimpl.NewPictureImpl(oss.Client())
 	auth := cminfraauthimpl.NewSignJwt(&timeCreator, &cfg.Common.Infra.Auth)
 	userRepo := userrepoimpl.NewUserRepo(mysqlImpl)
-	articleRepo := articlerepoimpl.NewArticleRepo(mysqlImpl)
+	articleRepo := articlerepoimpl.NewArticleRepo(mysqlImpl, txAddArticle)
 	categoryRepo := articlerepoimpl.NewCategoryRepo(mysqlImpl)
+	categoryArticleRepo := articlerepoimpl.NewCategoryArticleRepo(txAddArticle)
 	tagRepo := articlerepoimpl.NewTagRepo(mysqlImpl)
+	tagArticleRepo := articlerepoimpl.NewTagArticleRepo(txAddArticle)
 
 	// domain: following are domain services
-	tagService := tagsvc.NewTagService(tagRepo)
+	tagService := tagsvc.NewTagService(tagRepo, tagArticleRepo)
 	articleService := articlesvc.NewArticleService(articleRepo)
-	categoryService := categorysvc.NewCategoryService(categoryRepo)
+	categoryService := categorysvc.NewCategoryService(categoryRepo, categoryArticleRepo)
 	pictureService := picturesvc.NewFileService(ossRepo)
 
 	// app: following are app services
 	authMiddleware := cmapp.NewAuthMiddleware(auth)
 	loginService := userapp.NewLoginService(userRepo, auth)
+	articleAppService := articleappsvc.NewArticleAggService(articleService, categoryService, tagService)
 
 	// controller: add routers
 	v1 := engine.Group(BasePath)
@@ -81,7 +86,7 @@ func setRouter(engine *gin.Engine, cfg *mconfig.Config) {
 		)
 
 		articlectl.AddRouterForArticleController(
-			v1, authMiddleware, articleService,
+			v1, authMiddleware, articleService, articleAppService,
 		)
 
 		articlectl.AddRouterForCategoryController(
