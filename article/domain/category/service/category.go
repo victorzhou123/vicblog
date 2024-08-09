@@ -12,22 +12,15 @@ type CategoryService interface {
 	ListCategory(*CategoryListCmd) (CategoryListDto, error)
 	ListAllCategory() ([]CategoryDto, error)
 	DelCategory(cmprimitive.Id) error
-
-	BindCategoryAndArticle(articleId, cateId cmprimitive.Id) error
 }
 
 type categoryService struct {
-	repo                repository.Category
-	categoryArticleRepo repository.CategoryArticle
+	repo repository.Category
 }
 
-func NewCategoryService(
-	repo repository.Category,
-	categoryArticleRepo repository.CategoryArticle,
-) CategoryService {
+func NewCategoryService(repo repository.Category) CategoryService {
 	return &categoryService{
-		repo:                repo,
-		categoryArticleRepo: categoryArticleRepo,
+		repo: repo,
 	}
 }
 
@@ -66,8 +59,4 @@ func (s *categoryService) ListAllCategory() ([]CategoryDto, error) {
 
 func (s *categoryService) DelCategory(id cmprimitive.Id) error {
 	return s.repo.DelCategory(id)
-}
-
-func (s *categoryService) BindCategoryAndArticle(articleId, cateId cmprimitive.Id) error {
-	return s.categoryArticleRepo.BindCategoryAndArticle(articleId, cateId)
 }
