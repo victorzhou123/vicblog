@@ -9,7 +9,6 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
-	articleappsvc "victorzhou123/vicblog/article/app/service"
 	articlectl "victorzhou123/vicblog/article/controller"
 	articlesvc "victorzhou123/vicblog/article/domain/article/service"
 	categorysvc "victorzhou123/vicblog/article/domain/category/service"
@@ -82,7 +81,6 @@ func setRouter(engine *gin.Engine, cfg *mconfig.Config) {
 	// app: following are app services
 	authMiddleware := cmapp.NewAuthMiddleware(auth)
 	loginService := userapp.NewLoginService(userRepo, auth)
-	articleAppService := articleappsvc.NewArticleAggService(articleService, categoryService, tagService)
 
 	// controller: add routers
 	v1 := engine.Group(BasePath)
@@ -94,7 +92,7 @@ func setRouter(engine *gin.Engine, cfg *mconfig.Config) {
 		)
 
 		articlectl.AddRouterForArticleController(
-			v1, authMiddleware, articleService, articleAppService,
+			v1, authMiddleware, articleService,
 		)
 
 		articlectl.AddRouterForCategoryController(

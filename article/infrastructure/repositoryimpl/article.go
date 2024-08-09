@@ -52,18 +52,48 @@ func (impl *articleRepoImpl) Delete(user cmprimitive.Username, id cmprimitive.Id
 	return impl.Impl.Delete(&ArticleDO{}, &articleDo)
 }
 
-func (impl *articleRepoImpl) AddArticle(info *entity.ArticleInfo) (uint, error) {
-	do := ArticleDO{
-		Owner:   info.Owner.Username(),
-		Title:   info.Title.Text(),
-		Summary: info.Summary.ArticleSummary(),
-		Content: info.Content.Text(),
-		Cover:   info.Cover.Urlx(),
+func (impl *articleRepoImpl) AddArticle(info *entity.ArticleWithCateAndTagInfo) error {
+	articleDo := ArticleDO{
+		Owner:   info.Article.Owner.Username(),
+		Title:   info.Article.Title.Text(),
+		Summary: info.Article.Summary.ArticleSummary(),
+		Content: info.Article.Content.Text(),
+		Cover:   info.Article.Cover.Urlx(),
 	}
 
-	if err := impl.Impl.Add(&ArticleDO{}, &do); err != nil {
-		return 0, err
+	// transaction begin
+	tx := impl.Impl.Begin()
+
+	// add article
+	if err := impl.Impl.TxAdd(tx, &ArticleDO{}, &articleDo); err != nil {
+		return err
 	}
 
-	return do.ID, nil
+	// bind category
+	cateArticleDo := CategoryArticleDO{
+		CategoryId: info.Category.IdNum(),
+		ArticleId:  articleDo.ID,
+	}
+
+	if err := impl.Impl.TxAdd(tx, &CategoryArticleDO{}, &cateArticleDo); err != nil {
+		return err
+	}
+
+	// bind tags
+	tagArticleDos := make([]TagArticleDO, len(info.Tags))
+	for i := range info.Tags {
+		tagArticleDos[i] = TagArticleDO{
+			TagId:     info.Tags[i].IdNum(),
+			ArticleId: articleDo.ID,
+		}
+	}
+
+	if err := impl.Impl.TxAdd(tx, &TagArticleDO{}, &tagArticleDos); err != nil {
+		return err
+	}
+
+	// transaction commit
+	tx.Commit()
+
+	return nil
 }

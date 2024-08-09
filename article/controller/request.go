@@ -3,13 +3,13 @@ package controller
 import (
 	"strconv"
 
-	"victorzhou123/vicblog/article/app/dto"
 	articleent "victorzhou123/vicblog/article/domain/article/entity"
 	"victorzhou123/vicblog/article/domain/category/entity"
 	categorysvc "victorzhou123/vicblog/article/domain/category/service"
 	tagent "victorzhou123/vicblog/article/domain/tag/entity"
 	"victorzhou123/vicblog/article/domain/tag/repository"
 	tagsvc "victorzhou123/vicblog/article/domain/tag/service"
+	articlesvc "victorzhou123/vicblog/article/domain/article/service"
 	"victorzhou123/vicblog/common/domain/primitive"
 	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
 )
@@ -99,7 +99,7 @@ type reqArticle struct {
 	Tags     []uint `json:"tags"`
 }
 
-func (req *reqArticle) toCmd(user primitive.Username) (cmd dto.AddArticleCmd, err error) {
+func (req *reqArticle) toCmd(user primitive.Username) (cmd articlesvc.AddArticleCmd, err error) {
 
 	if cmd.Title, err = cmprimitive.NewTitle(req.Title); err != nil {
 		return

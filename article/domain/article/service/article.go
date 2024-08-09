@@ -12,7 +12,7 @@ const msgCannotFoundTheArticle = "can not found the article"
 type ArticleService interface {
 	GetArticleList(cmprimitive.Username) ([]ArticleListDto, error)
 	Delete(cmprimitive.Username, cmprimitive.Id) error
-	AddArticle(cmd *ArticleCmd) (articleId uint, err error)
+	AddArticle(*AddArticleCmd) error
 }
 
 type articleService struct {
@@ -49,12 +49,19 @@ func (s *articleService) Delete(user cmprimitive.Username, id cmprimitive.Id) er
 	return nil
 }
 
-func (s *articleService) AddArticle(cmd *ArticleCmd) (uint, error) {
-	return s.repo.AddArticle(&entity.ArticleInfo{
+func (s *articleService) AddArticle(cmd *AddArticleCmd) error {
+
+	articleInfo := entity.ArticleInfo{
 		Owner:   cmd.Owner,
 		Title:   cmd.Title,
 		Summary: cmd.Summary,
 		Content: cmd.Content,
 		Cover:   cmd.Cover,
+	}
+
+	return s.repo.AddArticle(&entity.ArticleWithCateAndTagInfo{
+		Article:  articleInfo,
+		Category: cmd.Category,
+		Tags:     cmd.Tags,
 	})
 }
