@@ -6,6 +6,7 @@ import (
 	"gorm.io/gorm"
 
 	"victorzhou123/vicblog/common/domain/repository"
+	"victorzhou123/vicblog/common/util"
 )
 
 type Transaction interface {
@@ -17,7 +18,7 @@ type Transaction interface {
 }
 
 type transaction struct {
-	tx *gorm.DB
+	tx map[int64]*gorm.DB
 }
 
 // e.g:
@@ -29,24 +30,25 @@ type transaction struct {
 // tagrepo := tagRepo(addArticleTx)
 func NewTransaction() Transaction {
 	return &transaction{
-		tx: DB(),
+		tx: map[int64]*gorm.DB{}, // goroutine local storage
 	}
 }
 
 func (t *transaction) Begin() {
-	t.tx = t.tx.Begin()
+	t.tx[util.GetGoroutineId()] = DB().Begin()
 }
 
 func (t *transaction) Commit() {
-	t.tx = t.tx.Commit()
+	t.tx[util.GetGoroutineId()].Commit()
+	t.tx[util.GetGoroutineId()] = nil // clear the data
 }
 
 func (t *transaction) Insert(model, value any) error {
 
-	err := t.tx.Model(model).Create(value).Error
+	err := t.txNow().Model(model).Create(value).Error
 
 	if err != nil {
-		t.tx.Rollback()
+		t.rollback()
 	}
 
 	if errors.Is(err, gorm.ErrCheckConstraintViolated) {
@@ -58,4 +60,13 @@ func (t *transaction) Insert(model, value any) error {
 	}
 
 	return err
+}
+
+func (t *transaction) rollback() {
+	t.txNow().Rollback()
+	t.tx[util.GetGoroutineId()] = nil // clear the data
+}
+
+func (t *transaction) txNow() *gorm.DB {
+	return t.tx[util.GetGoroutineId()]
 }
