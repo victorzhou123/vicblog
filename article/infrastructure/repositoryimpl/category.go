@@ -10,7 +10,6 @@ import (
 )
 
 func NewCategoryRepo(db mysql.Impl) repository.Category {
-	tableNameCategory = db.TableName()
 
 	if err := mysql.AutoMigrate(&CategoryDO{}); err != nil {
 		return nil
@@ -27,7 +26,7 @@ func (impl *categoryRepoImpl) AddCategory(name entity.CategoryName) error {
 	categoryDo := CategoryDO{}
 	categoryDo.Name = name.CategoryName()
 
-	return impl.Add(&categoryDo)
+	return impl.Add(&CategoryDO{}, &categoryDo)
 }
 
 func (impl *categoryRepoImpl) GetCategoryList(opt cmrepo.PageListOpt) ([]entity.Category, int, error) {
@@ -38,7 +37,7 @@ func (impl *categoryRepoImpl) GetCategoryList(opt cmrepo.PageListOpt) ([]entity.
 		PageSize: opt.PageSize,
 	}
 
-	total, err := impl.GetRecordByPagination(&CategoryDO{}, &categoryDos, options)
+	total, err := impl.GetRecordByPagination(&CategoryDO{}, &CategoryDO{}, &categoryDos, options)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -56,7 +55,7 @@ func (impl *categoryRepoImpl) GetCategoryList(opt cmrepo.PageListOpt) ([]entity.
 func (impl *categoryRepoImpl) GetAllCategoryList() ([]entity.Category, error) {
 	dos := []CategoryDO{}
 
-	if err := impl.GetRecords(&CategoryDO{}, &dos); err != nil {
+	if err := impl.GetRecords(&CategoryDO{}, &CategoryDO{}, &dos); err != nil {
 		if cmdmerror.IsNotFound(err) {
 			return []entity.Category{}, nil
 		}
@@ -80,7 +79,7 @@ func (impl *categoryRepoImpl) DelCategory(id cmprimitive.Id) error {
 	do := &CategoryDO{}
 	do.ID = id.IdNum()
 
-	if err := impl.DeleteByPrimaryKey(&do); err != nil {
+	if err := impl.DeleteByPrimaryKey(&CategoryDO{}, &do); err != nil {
 		return cmdmerror.New(cmdmerror.ErrorCodeResourceNotFound, "")
 	}
 

@@ -61,22 +61,17 @@ func setRouter(engine *gin.Engine, cfg *mconfig.Config) {
 
 	// infrastructure: following are the instance of infrastructure components
 	timeCreator := cmutil.NewTimerCreator()
-	userTable := cminframysql.DAO(tableNameUser)
-	articleTable := cminframysql.DAO(tableNameArticle)
-	categoryTable := cminframysql.DAO(tableNameCategory)
-	categoryArticleTable := cminframysql.DAO(tableNameCategoryArticle)
-	tagTable := cminframysql.DAO(tableNameTag)
-	tagArticleTable := cminframysql.DAO(tableNameTagArticle)
+	mysqlImpl := cminframysql.DAO()
 
 	// repo: following are the dependencies of service
 	ossRepo := articlerepoimpl.NewPictureImpl(oss.Client())
 	auth := cminfraauthimpl.NewSignJwt(&timeCreator, &cfg.Common.Infra.Auth)
-	userRepo := userrepoimpl.NewUserRepo(userTable)
-	articleRepo := articlerepoimpl.NewArticleRepo(articleTable)
-	categoryRepo := articlerepoimpl.NewCategoryRepo(categoryTable)
-	categoryArticleRepo := articlerepoimpl.NewCategoryArticleRepo(categoryArticleTable)
-	tagRepo := articlerepoimpl.NewTagRepo(tagTable)
-	tagArticleRepo := articlerepoimpl.NewTagArticleRepo(tagArticleTable)
+	userRepo := userrepoimpl.NewUserRepo(mysqlImpl)
+	articleRepo := articlerepoimpl.NewArticleRepo(mysqlImpl)
+	categoryRepo := articlerepoimpl.NewCategoryRepo(mysqlImpl)
+	categoryArticleRepo := articlerepoimpl.NewCategoryArticleRepo(mysqlImpl)
+	tagRepo := articlerepoimpl.NewTagRepo(mysqlImpl)
+	tagArticleRepo := articlerepoimpl.NewTagArticleRepo(mysqlImpl)
 
 	// domain: following are domain services
 	tagService := tagsvc.NewTagService(tagRepo, tagArticleRepo)

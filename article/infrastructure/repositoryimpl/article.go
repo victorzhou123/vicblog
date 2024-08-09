@@ -8,7 +8,6 @@ import (
 )
 
 func NewArticleRepo(db mysql.Impl) repository.Article {
-	tableNameArticle = db.TableName()
 
 	if err := mysql.AutoMigrate(&ArticleDO{}); err != nil {
 		return nil
@@ -27,7 +26,7 @@ func (impl *articleRepoImpl) GetArticles(owner cmprimitive.Username) ([]entity.A
 
 	articlesDo := []ArticleDO{}
 
-	if err := impl.GetRecords(&articleDo, &articlesDo); err != nil {
+	if err := impl.GetRecords(&ArticleDO{}, &articleDo, &articlesDo); err != nil {
 		return nil, err
 	}
 
@@ -62,7 +61,7 @@ func (impl *articleRepoImpl) AddArticle(info *entity.ArticleInfo) (uint, error) 
 		Cover:   info.Cover.Urlx(),
 	}
 
-	if err := impl.Impl.Add(&do); err != nil {
+	if err := impl.Impl.Add(&ArticleDO{}, &do); err != nil {
 		return 0, err
 	}
 

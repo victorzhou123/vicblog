@@ -7,7 +7,6 @@ import (
 )
 
 func NewTagArticleRepo(db mysql.Impl) repository.TagArticle {
-	tableNameTagArticle = db.TableName()
 
 	if err := mysql.AutoMigrate(&TagArticleDO{}); err != nil {
 		return nil
@@ -32,5 +31,5 @@ func (impl *tagArticleImpl) AddRelateWithArticle(
 		}
 	}
 
-	return impl.Impl.Add(&dos)
+	return impl.Impl.Add(&TagArticleDO{}, &dos)
 }

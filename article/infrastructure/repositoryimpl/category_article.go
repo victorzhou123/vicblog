@@ -7,7 +7,6 @@ import (
 )
 
 func NewCategoryArticleRepo(db mysql.Impl) repository.CategoryArticle {
-	tableNameCategoryArticle = db.TableName()
 
 	if err := mysql.AutoMigrate(&CategoryArticleDO{}); err != nil {
 		return nil
@@ -26,5 +25,5 @@ func (impl *categoryArticleImpl) BindCategoryAndArticle(articleId, cateId cmprim
 		ArticleId:  articleId.IdNum(),
 	}
 
-	return impl.Impl.Add(&do)
+	return impl.Impl.Add(&CategoryArticleDO{}, &do)
 }

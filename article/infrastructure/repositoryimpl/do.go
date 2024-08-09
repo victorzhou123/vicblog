@@ -12,11 +12,11 @@ import (
 )
 
 var (
-	tableNameArticle         string
-	tableNameCategory        string
-	tableNameTag             string
-	tableNameTagArticle      string
-	tableNameCategoryArticle string
+	tableNameArticle         = "article"
+	tableNameCategory        = "category"
+	tableNameTag             = "tag"
+	tableNameTagArticle      = "tag_article"
+	tableNameCategoryArticle = "category_article"
 )
 
 // article
