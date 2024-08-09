@@ -125,8 +125,8 @@ func (do *TagDO) TableName() string {
 type TagArticleDO struct {
 	gorm.Model
 
-	TagId     uint `gorm:"column:tag_id;not null"`
-	ArticleId uint `gorm:"column:article_id;not null"`
+	TagId     uint `gorm:"column:tag_id;not null;uniqueIndex:idx_tag_id_article_id"`
+	ArticleId uint `gorm:"column:article_id;not null;uniqueIndex:idx_tag_id_article_id"`
 }
 
 func (do *TagArticleDO) TableName() string {
@@ -137,8 +137,8 @@ func (do *TagArticleDO) TableName() string {
 type CategoryArticleDO struct {
 	gorm.Model
 
-	CategoryId uint `gorm:"column:category_id;not null"`
-	ArticleId  uint `gorm:"column:article_id;not null"`
+	CategoryId uint `gorm:"column:category_id;not null;uniqueIndex:idx_tag_id_article_id"`
+	ArticleId  uint `gorm:"column:article_id;not null;uniqueIndex:idx_tag_id_article_id"`
 }
 
 func (do *CategoryArticleDO) TableName() string {
