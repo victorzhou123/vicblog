@@ -25,10 +25,12 @@ func toArticleListDto(v entity.Article) ArticleListDto {
 	}
 }
 
-type ArticleCmd struct {
-	Owner   cmprimitive.Username
-	Title   cmprimitive.Text
-	Summary entity.ArticleSummary
-	Content cmprimitive.Text
-	Cover   cmprimitive.Urlx
+type AddArticleCmd struct {
+	Owner    cmprimitive.Username
+	Title    cmprimitive.Text
+	Summary  entity.ArticleSummary
+	Content  cmprimitive.Text
+	Cover    cmprimitive.Urlx
+	Category cmprimitive.Id
+	Tags     []cmprimitive.Id
 }

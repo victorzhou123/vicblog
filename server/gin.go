@@ -9,7 +9,6 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
-	articleappsvc "victorzhou123/vicblog/article/app/service"
 	articlectl "victorzhou123/vicblog/article/controller"
 	articlesvc "victorzhou123/vicblog/article/domain/article/service"
 	categorysvc "victorzhou123/vicblog/article/domain/category/service"
@@ -28,16 +27,7 @@ import (
 	userrepoimpl "victorzhou123/vicblog/user/infrastructure/repositoryimpl"
 )
 
-const (
-	BasePath = "/api"
-
-	tableNameUser            = "user"
-	tableNameArticle         = "article"
-	tableNameCategory        = "category"
-	tableNameCategoryArticle = "category_article"
-	tableNameTag             = "tag"
-	tableNameTagArticle      = "tag_article"
-)
+const BasePath = "/api"
 
 func StartWebServer(cfg *mconfig.Config) error {
 	engine := gin.New()
@@ -61,33 +51,25 @@ func setRouter(engine *gin.Engine, cfg *mconfig.Config) {
 
 	// infrastructure: following are the instance of infrastructure components
 	timeCreator := cmutil.NewTimerCreator()
-	userTable := cminframysql.DAO(tableNameUser)
-	articleTable := cminframysql.DAO(tableNameArticle)
-	categoryTable := cminframysql.DAO(tableNameCategory)
-	categoryArticleTable := cminframysql.DAO(tableNameCategoryArticle)
-	tagTable := cminframysql.DAO(tableNameTag)
-	tagArticleTable := cminframysql.DAO(tableNameTagArticle)
+	mysqlImpl := cminframysql.DAO()
 
 	// repo: following are the dependencies of service
 	ossRepo := articlerepoimpl.NewPictureImpl(oss.Client())
 	auth := cminfraauthimpl.NewSignJwt(&timeCreator, &cfg.Common.Infra.Auth)
-	userRepo := userrepoimpl.NewUserRepo(userTable)
-	articleRepo := articlerepoimpl.NewArticleRepo(articleTable)
-	categoryRepo := articlerepoimpl.NewCategoryRepo(categoryTable)
-	categoryArticleRepo := articlerepoimpl.NewCategoryArticleRepo(categoryArticleTable)
-	tagRepo := articlerepoimpl.NewTagRepo(tagTable)
-	tagArticleRepo := articlerepoimpl.NewTagArticleRepo(tagArticleTable)
+	userRepo := userrepoimpl.NewUserRepo(mysqlImpl)
+	articleRepo := articlerepoimpl.NewArticleRepo(mysqlImpl)
+	categoryRepo := articlerepoimpl.NewCategoryRepo(mysqlImpl)
+	tagRepo := articlerepoimpl.NewTagRepo(mysqlImpl)
 
 	// domain: following are domain services
-	tagService := tagsvc.NewTagService(tagRepo, tagArticleRepo)
+	tagService := tagsvc.NewTagService(tagRepo)
 	articleService := articlesvc.NewArticleService(articleRepo)
-	categoryService := categorysvc.NewCategoryService(categoryRepo, categoryArticleRepo)
+	categoryService := categorysvc.NewCategoryService(categoryRepo)
 	pictureService := picturesvc.NewFileService(ossRepo)
 
 	// app: following are app services
 	authMiddleware := cmapp.NewAuthMiddleware(auth)
 	loginService := userapp.NewLoginService(userRepo, auth)
-	articleAppService := articleappsvc.NewArticleAggService(articleService, categoryService, tagService)
 
 	// controller: add routers
 	v1 := engine.Group(BasePath)
@@ -99,7 +81,7 @@ func setRouter(engine *gin.Engine, cfg *mconfig.Config) {
 		)
 
 		articlectl.AddRouterForArticleController(
-			v1, authMiddleware, articleService, articleAppService,
+			v1, authMiddleware, articleService,
 		)
 
 		articlectl.AddRouterForCategoryController(

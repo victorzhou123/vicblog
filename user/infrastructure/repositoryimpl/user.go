@@ -7,7 +7,6 @@ import (
 )
 
 func NewUserRepo(db mysql.Impl) repository.User {
-	tableNameUser = db.TableName()
 
 	if err := mysql.AutoMigrate(&UserDO{}); err != nil {
 		return nil
@@ -25,7 +24,7 @@ func (impl *userRepoImpl) GetUserInfo(account *repository.Account) (domain.User,
 	userDo.Username = account.Username.Username()
 	userDo.Password = account.Password.Password()
 
-	if err := impl.GetRecord(&userDo, &userDo); err != nil {
+	if err := impl.GetRecord(&UserDO{}, &userDo, &userDo); err != nil {
 		return domain.User{}, err
 	}
 

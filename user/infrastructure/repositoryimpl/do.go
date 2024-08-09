@@ -7,7 +7,7 @@ import (
 	"victorzhou123/vicblog/user/domain"
 )
 
-var tableNameUser string
+const tableNameUser = "user"
 
 type UserDO struct {
 	gorm.Model

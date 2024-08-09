@@ -10,24 +10,25 @@ import (
 )
 
 type Impl interface {
-	DB() *gorm.DB
-	TableName() string
+	Model(model any) *gorm.DB
+	Begin() *gorm.DB
 
 	// Query
-	GetRecord(filter, result interface{}) error
-	GetRecords(filter, result interface{}) error
-	GetRecordByPagination(filter, result interface{}, opt PaginationOpt) (int, error)
-	GetByPrimaryKey(row interface{}) error
+	GetRecord(model, filter, result any) error
+	GetRecords(model, filter, result any) error
+	GetRecordByPagination(model, filter, result any, opt PaginationOpt) (int, error)
+	GetByPrimaryKey(model, row any) error
 
 	// Add
-	Add(value interface{}) error
+	Add(model, value any) error
+	TxAdd(tx *gorm.DB, model, value any) error
 
 	// Update
-	Update(filter, values interface{}) error
+	Update(model, filter, values any) error
 
 	// Delete
-	Delete(model, filter interface{}) error
-	DeleteByPrimaryKey(row interface{}) error
+	Delete(model, filter any) error
+	DeleteByPrimaryKey(model, row any) error
 
 	// util interface
 	EqualQuery(field string) string
@@ -36,24 +37,28 @@ type Impl interface {
 	InFilter(field string) string
 }
 
-func DAO(table string) *daoImpl {
-	return &daoImpl{
-		table: table,
-	}
+func DAO() *daoImpl {
+	return &daoImpl{}
 }
 
-type daoImpl struct {
-	table string
-}
+type daoImpl struct{}
 
 // Each operation must generate a new gorm.DB instance.
 // If using the same gorm.DB instance by different operations, they will share the same error.
-func (dao *daoImpl) DB() *gorm.DB {
-	return db.Table(dao.table)
+func (dao *daoImpl) Model(model any) *gorm.DB {
+	return db.Model(model)
 }
 
-func (dao *daoImpl) GetRecord(filter, result interface{}) error {
-	err := dao.DB().Where(filter).First(result).Error
+func (dao *daoImpl) db() *gorm.DB {
+	return DB()
+}
+
+func (dao *daoImpl) Begin() *gorm.DB {
+	return db.Begin()
+}
+
+func (dao *daoImpl) GetRecord(model, filter, result any) error {
+	err := dao.Model(model).Where(filter).First(result).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return repository.NewErrorResourceNotExists(errors.New("not found"))
@@ -62,8 +67,8 @@ func (dao *daoImpl) GetRecord(filter, result interface{}) error {
 	return err
 }
 
-func (dao *daoImpl) GetRecords(filter, result interface{}) error {
-	err := dao.DB().Where(filter).Find(result).Error
+func (dao *daoImpl) GetRecords(model, filter, result any) error {
+	err := dao.Model(model).Where(filter).Find(result).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return repository.NewErrorResourceNotExists(errors.New("not found"))
@@ -72,10 +77,10 @@ func (dao *daoImpl) GetRecords(filter, result interface{}) error {
 	return err
 }
 
-func (dao *daoImpl) GetRecordByPagination(filter, result interface{}, opt PaginationOpt) (int, error) {
+func (dao *daoImpl) GetRecordByPagination(model, filter, result any, opt PaginationOpt) (int, error) {
 	var total int64
 
-	err := dao.DB().Where(filter).Count(&total).Offset((opt.CurPage - 1) * opt.PageSize).Limit(opt.PageSize).Find(result).Error
+	err := dao.Model(model).Where(filter).Count(&total).Offset((opt.CurPage - 1) * opt.PageSize).Limit(opt.PageSize).Find(result).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return 0, repository.NewErrorResourceNotExists(errors.New("not found"))
@@ -84,8 +89,8 @@ func (dao *daoImpl) GetRecordByPagination(filter, result interface{}, opt Pagina
 	return int(total), err
 }
 
-func (dao *daoImpl) GetByPrimaryKey(row interface{}) error {
-	err := dao.DB().First(row).Error
+func (dao *daoImpl) GetByPrimaryKey(model, row any) error {
+	err := dao.Model(model).First(row).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return repository.NewErrorResourceNotExists(errors.New("not found"))
@@ -94,8 +99,24 @@ func (dao *daoImpl) GetByPrimaryKey(row interface{}) error {
 	return err
 }
 
-func (dao *daoImpl) Add(value interface{}) error {
-	err := dao.DB().Create(value).Error
+func (dao *daoImpl) Add(model, value any) error {
+	return dao.add(dao.db(), model, value)
+}
+
+func (dao *daoImpl) TxAdd(tx *gorm.DB, model, value any) error {
+
+	if err := dao.add(tx, model, value); err != nil {
+		tx.Rollback()
+
+		return err
+	}
+
+	return nil
+}
+
+func (dao *daoImpl) add(db *gorm.DB, model, value any) error {
+
+	err := db.Model(model).Create(value).Error
 	if errors.Is(err, gorm.ErrCheckConstraintViolated) {
 		return repository.NewErrorConstraintViolated(err)
 	}
@@ -107,8 +128,8 @@ func (dao *daoImpl) Add(value interface{}) error {
 	return err
 }
 
-func (dao *daoImpl) Update(filter, values interface{}) error {
-	err := dao.DB().Where(filter).Updates(values).Error
+func (dao *daoImpl) Update(model, filter, values any) error {
+	err := dao.Model(model).Where(filter).Updates(values).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return repository.NewErrorResourceNotExists(errors.New("not found"))
@@ -121,8 +142,8 @@ func (dao *daoImpl) Update(filter, values interface{}) error {
 	return err
 }
 
-func (dao *daoImpl) Delete(model, filter interface{}) error {
-	err := dao.DB().Unscoped().Delete(model, filter).Error
+func (dao *daoImpl) Delete(model, filter any) error {
+	err := dao.Model(model).Unscoped().Delete(model, filter).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return repository.NewErrorResourceNotExists(errors.New("not found"))
@@ -131,8 +152,8 @@ func (dao *daoImpl) Delete(model, filter interface{}) error {
 	return err
 }
 
-func (dao *daoImpl) DeleteByPrimaryKey(row interface{}) error {
-	err := dao.DB().Unscoped().Delete(row).Error
+func (dao *daoImpl) DeleteByPrimaryKey(model, row any) error {
+	err := dao.Model(model).Unscoped().Delete(row).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return repository.NewErrorResourceNotExists(errors.New("not found"))
@@ -155,8 +176,4 @@ func (dao *daoImpl) OrderByDesc(field string) string {
 
 func (dao *daoImpl) InFilter(field string) string {
 	return fmt.Sprintf(`%s IN ?`, field)
-}
-
-func (dao *daoImpl) TableName() string {
-	return dao.table
 }

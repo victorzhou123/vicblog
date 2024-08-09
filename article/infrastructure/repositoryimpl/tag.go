@@ -10,7 +10,6 @@ import (
 )
 
 func NewTagRepo(db mysql.Impl) repository.Tag {
-	tableNameTag = db.TableName()
 
 	if err := mysql.AutoMigrate(&TagDO{}); err != nil {
 		return nil
@@ -31,7 +30,7 @@ func (impl *tagRepoImpl) AddBatches(tagNames repository.TagNames) error {
 		dos[i].Name = names[i].TagName()
 	}
 
-	err := impl.Impl.Add(&dos)
+	err := impl.Impl.Add(&TagDO{}, &dos)
 	if cmrepo.IsErrorConstraintViolated(err) || cmrepo.IsErrorDuplicateCreating(err) {
 		return cmdmerror.NewInvalidParam(err.Error())
 	}
@@ -47,7 +46,7 @@ func (impl *tagRepoImpl) GetTagList(opt cmrepo.PageListOpt) ([]entity.Tag, int, 
 		PageSize: opt.PageSize,
 	}
 
-	total, err := impl.GetRecordByPagination(&TagDO{}, &dos, options)
+	total, err := impl.GetRecordByPagination(&TagDO{}, &TagDO{}, &dos, options)
 	if err != nil {
 		if cmrepo.IsErrorResourceNotExists(err) {
 			return nil, 0, cmdmerror.NewNotFound(cmdmerror.ErrorCodeResourceNotFound, "")
@@ -69,7 +68,7 @@ func (impl *tagRepoImpl) GetTagList(opt cmrepo.PageListOpt) ([]entity.Tag, int, 
 func (impl *tagRepoImpl) GetAllTagList() ([]entity.Tag, error) {
 	dos := []TagDO{}
 
-	if err := impl.GetRecords(&TagDO{}, &dos); err != nil {
+	if err := impl.GetRecords(&TagDO{}, &TagDO{}, &dos); err != nil {
 		if cmdmerror.IsNotFound(err) {
 			return []entity.Tag{}, nil
 		}
