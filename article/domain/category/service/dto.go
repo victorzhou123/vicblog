@@ -1,34 +1,21 @@
 package service
 
 import (
-	"fmt"
-
 	categoryett "victorzhou123/vicblog/article/domain/category/entity"
 	"victorzhou123/vicblog/common/domain/repository"
+	dmservice "victorzhou123/vicblog/common/domain/service"
 )
 
 type CategoryListCmd struct {
-	CurPage  int
-	PageSize int
+	dmservice.ListCmd
 }
 
 func (cmd *CategoryListCmd) Validate() error {
-	if cmd.CurPage <= 0 {
-		return fmt.Errorf("current page must > 0")
-	}
-
-	if cmd.PageSize <= 0 {
-		return fmt.Errorf("page size must > 0")
-	}
-
-	return nil
+	return cmd.ListCmd.Validate()
 }
 
 func (cmd *CategoryListCmd) toPageListOpt() repository.PageListOpt {
-	return repository.PageListOpt{
-		CurPage:  cmd.CurPage,
-		PageSize: cmd.PageSize,
-	}
+	return cmd.ListCmd.ToPageListOpt()
 }
 
 type CategoryListDto struct {
