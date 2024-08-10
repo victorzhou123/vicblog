@@ -19,7 +19,7 @@ type tagArticleImpl struct {
 	tx mysql.Transaction
 }
 
-func (impl *tagArticleImpl) AddRelateWithArticle(
+func (impl *tagArticleImpl) BuildRelationWithArticle(
 	articleId cmprimitive.Id, tagIds []cmprimitive.Id,
 ) error {
 	dos := make([]TagArticleDO, len(tagIds))
@@ -32,4 +32,12 @@ func (impl *tagArticleImpl) AddRelateWithArticle(
 	}
 
 	return impl.tx.Insert(&TagArticleDO{}, &dos)
+}
+
+func (impl *tagArticleImpl) RemoveAllRowsByArticleId(articleId cmprimitive.Id) error {
+	do := TagArticleDO{
+		ArticleId: articleId.IdNum(),
+	}
+
+	return impl.tx.Delete(&TagArticleDO{}, &do)
 }

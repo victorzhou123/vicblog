@@ -19,13 +19,28 @@ type categoryArticleImpl struct {
 	tx mysql.Transaction
 }
 
-func (impl *categoryArticleImpl) BindCategoryAndArticle(articleId, cateId cmprimitive.Id) error {
+func (impl *categoryArticleImpl) BuildRelationWithArticle(articleId, cateId cmprimitive.Id) error {
 	do := CategoryArticleDO{
 		CategoryId: cateId.IdNum(),
 		ArticleId:  articleId.IdNum(),
 	}
 
 	if err := impl.tx.Insert(&CategoryArticleDO{}, &do); err != nil {
+		return err
+	}
+
+	// transaction commit
+	impl.tx.Commit()
+
+	return nil
+}
+
+func (impl *categoryArticleImpl) RemoveAllRowsByArticleId(articleId cmprimitive.Id) error {
+	do := CategoryArticleDO{
+		ArticleId: articleId.IdNum(),
+	}
+
+	if err := impl.tx.Delete(&CategoryArticleDO{}, &do); err != nil {
 		return err
 	}
 

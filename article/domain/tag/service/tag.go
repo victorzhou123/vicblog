@@ -13,6 +13,7 @@ type TagService interface {
 	Delete(cmprimitive.Id) error
 
 	BuildRelationWithArticle(articleId cmprimitive.Id, tagIds []cmprimitive.Id) error
+	RemoveRelationWithArticle(articleId cmprimitive.Id) error
 }
 
 type tagService struct {
@@ -73,5 +74,9 @@ func (s *tagService) Delete(id cmprimitive.Id) error {
 func (s *tagService) BuildRelationWithArticle(
 	articleId cmprimitive.Id, tagIds []cmprimitive.Id,
 ) error {
-	return s.tagArticleRepo.AddRelateWithArticle(articleId, tagIds)
+	return s.tagArticleRepo.BuildRelationWithArticle(articleId, tagIds)
+}
+
+func (s *tagService) RemoveRelationWithArticle(articleId cmprimitive.Id) error {
+	return s.tagArticleRepo.RemoveAllRowsByArticleId(articleId)
 }

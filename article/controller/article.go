@@ -73,8 +73,10 @@ func (ctl *ArticleController) Delete(ctx *gin.Context) {
 		return
 	}
 
-	if err := ctl.article.Delete(user, cmprimitive.NewId(ctx.Param("id"))); err != nil {
-		cmctl.SendRespOfDelete(ctx)
+	if err := ctl.articleAppService.DeleteArticle(
+		user, cmprimitive.NewId(ctx.Param("id")),
+	); err != nil {
+		cmctl.SendError(ctx, err)
 
 		return
 	}

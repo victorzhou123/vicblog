@@ -14,6 +14,7 @@ type CategoryService interface {
 	DelCategory(cmprimitive.Id) error
 
 	BuildRelationWithArticle(articleId, cateId cmprimitive.Id) error
+	RemoveRelationWithArticle(articleId cmprimitive.Id) error
 }
 
 type categoryService struct {
@@ -69,5 +70,9 @@ func (s *categoryService) DelCategory(id cmprimitive.Id) error {
 }
 
 func (s *categoryService) BuildRelationWithArticle(articleId, cateId cmprimitive.Id) error {
-	return s.categoryArticleRepo.BindCategoryAndArticle(articleId, cateId)
+	return s.categoryArticleRepo.BuildRelationWithArticle(articleId, cateId)
+}
+
+func (s *categoryService) RemoveRelationWithArticle(articleId cmprimitive.Id) error {
+	return s.categoryArticleRepo.RemoveAllRowsByArticleId(articleId)
 }
