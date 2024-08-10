@@ -15,6 +15,10 @@ type Transaction interface {
 
 	// Insert
 	Insert(model, value any) error
+
+	// Delete
+	Delete(model, filter any) error
+	SoftDelete(model, filter any) error
 }
 
 type transaction struct {
@@ -57,6 +61,36 @@ func (t *transaction) Insert(model, value any) error {
 
 	if errors.Is(err, gorm.ErrDuplicatedKey) {
 		return repository.NewErrorDuplicateCreating(err)
+	}
+
+	return err
+}
+
+func (t *transaction) Delete(model, filter any) error {
+
+	err := t.txNow().Model(model).Unscoped().Where(filter).Delete(model).Error
+
+	if err != nil {
+		t.rollback()
+	}
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return repository.NewErrorResourceNotExists(errors.New("not found"))
+	}
+
+	return err
+}
+
+func (t *transaction) SoftDelete(model, filter any) error {
+
+	err := t.txNow().Model(model).Where(filter).Delete(model).Error
+
+	if err != nil {
+		t.rollback()
+	}
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return repository.NewErrorResourceNotExists(errors.New("not found"))
 	}
 
 	return err

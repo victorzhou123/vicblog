@@ -54,7 +54,10 @@ func (impl *articleRepoImpl) Delete(user cmprimitive.Username, id cmprimitive.Id
 	articleDo.Owner = user.Username()
 	articleDo.ID = id.IdNum()
 
-	return impl.db.Delete(&ArticleDO{}, &articleDo)
+	// transaction begin
+	impl.tx.Begin()
+
+	return impl.tx.Delete(&ArticleDO{}, &articleDo)
 }
 
 func (impl *articleRepoImpl) AddArticle(info *entity.ArticleInfo) (uint, error) {

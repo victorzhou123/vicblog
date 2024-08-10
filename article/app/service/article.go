@@ -5,11 +5,12 @@ import (
 	articledmsvc "victorzhou123/vicblog/article/domain/article/service"
 	categorydmsvc "victorzhou123/vicblog/article/domain/category/service"
 	tagdmsvc "victorzhou123/vicblog/article/domain/tag/service"
-	"victorzhou123/vicblog/common/domain/primitive"
+	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
 )
 
 type ArticleAppService interface {
 	AddArticle(*dto.AddArticleCmd) error
+	DeleteArticle(user cmprimitive.Username, articleId cmprimitive.Id) error
 }
 
 type articleAppService struct {
@@ -44,7 +45,7 @@ func (s *articleAppService) AddArticle(cmd *dto.AddArticleCmd) error {
 		return err
 	}
 
-	article := primitive.NewIdByUint(articleId)
+	article := cmprimitive.NewIdByUint(articleId)
 
 	// make relationship with tag
 	if err := s.tag.BuildRelationWithArticle(article, cmd.Tags); err != nil {
@@ -53,6 +54,26 @@ func (s *articleAppService) AddArticle(cmd *dto.AddArticleCmd) error {
 
 	// make relationship with category
 	if err := s.cate.BuildRelationWithArticle(article, cmd.Category); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *articleAppService) DeleteArticle(user cmprimitive.Username, articleId cmprimitive.Id) error {
+
+	// delete article
+	if err := s.article.Delete(user, articleId); err != nil {
+		return err
+	}
+
+	// remove relation with tags
+	if err := s.tag.RemoveRelationWithArticle(articleId); err != nil {
+		return err
+	}
+
+	// remove relation with category
+	if err := s.cate.RemoveRelationWithArticle(articleId); err != nil {
 		return err
 	}
 
