@@ -37,7 +37,7 @@ func (impl *categoryRepoImpl) GetCategoryList(opt cmrepo.PageListOpt) ([]entity.
 		PageSize: opt.PageSize,
 	}
 
-	total, err := impl.GetRecordByPagination(&CategoryDO{}, &CategoryDO{}, &categoryDos, options)
+	total, err := impl.GetRecordsByPagination(&CategoryDO{}, &CategoryDO{}, &categoryDos, options)
 	if err != nil {
 		return nil, 0, err
 	}

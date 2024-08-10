@@ -16,7 +16,7 @@ type Impl interface {
 	// Query
 	GetRecord(model, filter, result any) error
 	GetRecords(model, filter, result any) error
-	GetRecordByPagination(model, filter, result any, opt PaginationOpt) (int, error)
+	GetRecordsByPagination(model, filter, result any, opt PaginationOpt) (int, error)
 	GetByPrimaryKey(model, row any) error
 
 	// Add
@@ -77,7 +77,7 @@ func (dao *daoImpl) GetRecords(model, filter, result any) error {
 	return err
 }
 
-func (dao *daoImpl) GetRecordByPagination(model, filter, result any, opt PaginationOpt) (int, error) {
+func (dao *daoImpl) GetRecordsByPagination(model, filter, result any, opt PaginationOpt) (int, error) {
 	var total int64
 
 	err := dao.Model(model).Where(filter).Count(&total).Offset((opt.CurPage - 1) * opt.PageSize).Limit(opt.PageSize).Find(result).Error
