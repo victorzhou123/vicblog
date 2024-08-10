@@ -1,8 +1,7 @@
-package app
+package service
 
 import (
 	"fmt"
-
 	"victorzhou123/vicblog/common/domain/repository"
 )
 

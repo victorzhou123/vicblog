@@ -10,6 +10,7 @@ import (
 	tagent "victorzhou123/vicblog/article/domain/tag/entity"
 	"victorzhou123/vicblog/article/domain/tag/repository"
 	tagsvc "victorzhou123/vicblog/article/domain/tag/service"
+	cmctl "victorzhou123/vicblog/common/controller"
 	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
 )
 
@@ -22,12 +23,7 @@ func (req *reqCategory) toCategoryName() (entity.CategoryName, error) {
 }
 
 type reqCategoryList struct {
-	CurPage  string `json:"current"`
-	PageSize string `json:"size"`
-}
-
-func (req *reqCategoryList) emptyValue() bool {
-	return req.CurPage == "" && req.PageSize == ""
+	cmctl.ReqList
 }
 
 func (req *reqCategoryList) toCmd() (cmd categorysvc.CategoryListCmd, err error) {

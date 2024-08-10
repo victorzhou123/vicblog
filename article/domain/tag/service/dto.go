@@ -2,11 +2,11 @@ package service
 
 import (
 	"victorzhou123/vicblog/article/domain/tag/entity"
-	cmapp "victorzhou123/vicblog/common/app"
+	dmservice "victorzhou123/vicblog/common/domain/service"
 )
 
 type TagListCmd struct {
-	cmapp.ListCmd
+	dmservice.ListCmd
 }
 
 type TagListDto struct {
