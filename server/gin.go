@@ -53,17 +53,17 @@ func setRouter(engine *gin.Engine, cfg *mconfig.Config) {
 	// infrastructure: following are the instance of infrastructure components
 	timeCreator := cmutil.NewTimerCreator()
 	mysqlImpl := cminframysql.DAO()
-	txAddArticle := cminframysql.NewTransaction()
+	transactionImpl := cminframysql.NewTransaction()
 
 	// repo: following are the dependencies of service
 	ossRepo := articlerepoimpl.NewPictureImpl(oss.Client())
 	auth := cminfraauthimpl.NewSignJwt(&timeCreator, &cfg.Common.Infra.Auth)
 	userRepo := userrepoimpl.NewUserRepo(mysqlImpl)
-	articleRepo := articlerepoimpl.NewArticleRepo(mysqlImpl, txAddArticle)
+	articleRepo := articlerepoimpl.NewArticleRepo(mysqlImpl, transactionImpl)
 	categoryRepo := articlerepoimpl.NewCategoryRepo(mysqlImpl)
-	categoryArticleRepo := articlerepoimpl.NewCategoryArticleRepo(txAddArticle)
+	categoryArticleRepo := articlerepoimpl.NewCategoryArticleRepo(transactionImpl)
 	tagRepo := articlerepoimpl.NewTagRepo(mysqlImpl)
-	tagArticleRepo := articlerepoimpl.NewTagArticleRepo(txAddArticle)
+	tagArticleRepo := articlerepoimpl.NewTagArticleRepo(transactionImpl)
 
 	// domain: following are domain services
 	tagService := tagsvc.NewTagService(tagRepo, tagArticleRepo)

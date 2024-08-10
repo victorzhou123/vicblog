@@ -13,14 +13,14 @@ about transaction of project:
 code: new and inject dependency
 ```go
 // new transaction instance
-txAddArticle := cminframysql.NewTransaction()
+transactionImpl := cminframysql.NewTransaction()
 
 // dependency injection
-articleRepo := articlerepoimpl.NewArticleRepo(mysqlImpl, txAddArticle)
+articleRepo := articlerepoimpl.NewArticleRepo(mysqlImpl, transactionImpl)
 
-categoryArticleRepo := articlerepoimpl.NewCategoryArticleRepo(txAddArticle)
+categoryArticleRepo := articlerepoimpl.NewCategoryArticleRepo(transactionImpl)
 
-tagArticleRepo := articlerepoimpl.NewTagArticleRepo(txAddArticle)
+tagArticleRepo := articlerepoimpl.NewTagArticleRepo(transactionImpl)
 
 // app service
 articleAppService := articleappsvc.NewArticleAggService(articleService, categoryService, tagService)
