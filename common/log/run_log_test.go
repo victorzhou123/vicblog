@@ -2,7 +2,6 @@ package log
 
 import (
 	"bytes"
-	"fmt"
 	"strings"
 	"testing"
 
@@ -40,7 +39,7 @@ func TestInfo(t *testing.T) {
 				template: "%s ate an apple",
 				args:     []any{"victor"},
 			},
-			want: "|INFO||vicBlog|test_trace_id_01||||victor ate an apple|\n",
+			want: "|INFO||vicBlog|test_trace_id_01|||run_log_test.go:47|victor ate an apple|\n",
 		},
 	}
 	for _, tt := range tests {
@@ -52,7 +51,7 @@ func TestInfo(t *testing.T) {
 				t.Errorf("assert failed")
 				return
 			}
-			got := fmt.Sprintf("%s", buf.String()[index:])
+			got := buf.String()[index:]
 
 			if got != tt.want {
 				t.Errorf("got %s want %s", got, tt.want)
