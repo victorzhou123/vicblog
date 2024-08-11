@@ -34,11 +34,13 @@ type ArticleController struct {
 }
 
 // @Summary  List articles
-// @Description  list all articles of request user
+// @Description  list articles of request user by pagination
 // @Tags     Article
 // @Accept   json
-// @Success  201   {array}  service.ArticleListDto
-// @Router   /v1/admin/article/list [post]
+// @Param    current  query  int  true  "current page of user queried"
+// @Param    size  query  int  true  "single page size of user queried"
+// @Success  200   {array}  service.ArticleListDto
+// @Router   /v1/admin/article/list [get]
 func (ctl *ArticleController) List(ctx *gin.Context) {
 
 	req := reqListArticle{
@@ -64,12 +66,12 @@ func (ctl *ArticleController) List(ctx *gin.Context) {
 
 	dto, err := ctl.article.GetArticleList(&cmd)
 	if err != nil {
-		cmctl.SendRespOfPost(ctx, dto)
+		cmctl.SendRespOfGet(ctx, dto)
 
 		return
 	}
 
-	cmctl.SendRespOfPost(ctx, dto)
+	cmctl.SendRespOfGet(ctx, dto)
 }
 
 // @Summary  delete article
