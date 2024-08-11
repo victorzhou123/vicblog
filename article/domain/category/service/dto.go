@@ -7,28 +7,24 @@ import (
 )
 
 type CategoryListCmd struct {
-	dmservice.ListCmd
+	dmservice.PaginationCmd
 }
 
 func (cmd *CategoryListCmd) Validate() error {
-	return cmd.ListCmd.Validate()
+	return cmd.PaginationCmd.Validate()
 }
 
 func (cmd *CategoryListCmd) toPageListOpt() repository.PageListOpt {
-	return cmd.ListCmd.ToPageListOpt()
+	return cmd.PaginationCmd.ToPageListOpt()
 }
 
 type CategoryListDto struct {
-	Total     int           `json:"total"`
-	PageCount int           `json:"pages"`
-	PageSize  int           `json:"size"`
-	CurPage   int           `json:"current"`
-	Category  []CategoryDto `json:"category"`
+	dmservice.PaginationDto
+
+	Category []CategoryDto `json:"category"`
 }
 
 func toCategoryListDto(cates []categoryett.Category, cmd *CategoryListCmd, total int) CategoryListDto {
-
-	pageCount := total/cmd.PageSize + 1
 
 	categoryDos := make([]CategoryDto, len(cates))
 	for i := range cates {
@@ -36,11 +32,8 @@ func toCategoryListDto(cates []categoryett.Category, cmd *CategoryListCmd, total
 	}
 
 	return CategoryListDto{
-		Total:     total,
-		PageCount: pageCount,
-		PageSize:  cmd.PageSize,
-		CurPage:   cmd.CurPage,
-		Category:  categoryDos,
+		PaginationDto: cmd.ToPaginationDto(total),
+		Category:      categoryDos,
 	}
 }
 

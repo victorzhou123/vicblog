@@ -10,7 +10,7 @@ import (
 const msgCannotFoundTheArticle = "can not found the article"
 
 type ArticleService interface {
-	GetArticleList(cmprimitive.Username) ([]ArticleListDto, error)
+	GetArticleList(*ArticleListCmd) (ArticleListDto, error)
 	Delete(cmprimitive.Username, cmprimitive.Id) error
 	AddArticle(cmd *ArticleCmd) (articleId uint, err error)
 }
@@ -25,20 +25,16 @@ func NewArticleService(repo repository.Article) ArticleService {
 	}
 }
 
-func (s *articleService) GetArticleList(user cmprimitive.Username) ([]ArticleListDto, error) {
-	articles, err := s.repo.GetArticles(user)
+func (s *articleService) GetArticleList(cmd *ArticleListCmd) (ArticleListDto, error) {
+
+	articles, total, err := s.repo.ListArticles(cmd.User, cmd.toPageListOpt())
 	if err != nil {
-		return []ArticleListDto{}, cmdmerror.New(
+		return ArticleListDto{}, cmdmerror.New(
 			cmdmerror.ErrorCodeResourceNotFound, msgCannotFoundTheArticle,
 		)
 	}
 
-	dtos := make([]ArticleListDto, len(articles))
-	for i := range articles {
-		dtos[i] = toArticleListDto(articles[i])
-	}
-
-	return dtos, nil
+	return toArticleListDto(articles, cmd, total), nil
 }
 
 func (s *articleService) Delete(user cmprimitive.Username, id cmprimitive.Id) error {
