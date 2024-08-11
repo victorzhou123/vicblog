@@ -121,6 +121,10 @@ func toLog(r any) string {
 }
 
 func writeLog(logger *zap.SugaredLogger, level string, info any) {
+	if logger == nil {
+		return
+	}
+
 	switch level {
 	case levelDebug:
 		logger.Debug(info)
