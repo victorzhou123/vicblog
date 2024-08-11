@@ -19,6 +19,32 @@ const docTemplate = `{
     "basePath": "{{.BasePath}}",
     "paths": {
         "/v1/admin/article": {
+            "put": {
+                "description": "update an article",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Article"
+                ],
+                "summary": "update article",
+                "parameters": [
+                    {
+                        "description": "body of update article",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.reqUpdateArticle"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Accepted"
+                    }
+                }
+            },
             "post": {
                 "description": "add an article",
                 "consumes": [
@@ -405,10 +431,39 @@ const docTemplate = `{
                 }
             }
         },
+        "controller.reqUpdateArticle": {
+            "type": "object",
+            "properties": {
+                "categoryId": {
+                    "type": "integer"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "cover": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "summary": {
+                    "type": "string"
+                },
+                "tagIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.ArticleDetailDto": {
             "type": "object",
             "properties": {
-                "category": {
+                "categoryId": {
                     "type": "integer"
                 },
                 "content": {
@@ -438,7 +493,7 @@ const docTemplate = `{
                 "summary": {
                     "type": "string"
                 },
-                "tags": {
+                "tagIds": {
                     "type": "array",
                     "items": {
                         "type": "integer"

@@ -19,6 +19,9 @@ type Transaction interface {
 	// Delete
 	Delete(model, filter any) error
 	SoftDelete(model, filter any) error
+
+	// Update
+	Update(model, filter, values any) error
 }
 
 type transaction struct {
@@ -102,6 +105,20 @@ func (t *transaction) SoftDelete(model, filter any) error {
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return repository.NewErrorResourceNotExists(errors.New("not found"))
+	}
+
+	return err
+}
+
+func (t *transaction) Update(model, filter, values any) error {
+	err := t.txNow().Model(model).Where(filter).Updates(values).Error
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return repository.NewErrorResourceNotExists(errors.New("not found"))
+	}
+
+	if errors.Is(err, gorm.ErrCheckConstraintViolated) {
+		return repository.NewErrorConstraintViolated(err)
 	}
 
 	return err

@@ -45,9 +45,28 @@ definitions:
           type: string
         type: array
     type: object
+  controller.reqUpdateArticle:
+    properties:
+      categoryId:
+        type: integer
+      content:
+        type: string
+      cover:
+        type: string
+      id:
+        type: integer
+      summary:
+        type: string
+      tagIds:
+        items:
+          type: integer
+        type: array
+      title:
+        type: string
+    type: object
   dto.ArticleDetailDto:
     properties:
-      category:
+      categoryId:
         type: integer
       content:
         type: string
@@ -67,7 +86,7 @@ definitions:
         type: integer
       summary:
         type: string
-      tags:
+      tagIds:
         items:
           type: integer
         type: array
@@ -183,6 +202,23 @@ paths:
         "201":
           description: Created
       summary: add article
+      tags:
+      - Article
+    put:
+      consumes:
+      - application/json
+      description: update an article
+      parameters:
+      - description: body of update article
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/controller.reqUpdateArticle'
+      responses:
+        "202":
+          description: Accepted
+      summary: update article
       tags:
       - Article
   /v1/admin/article/{id}:

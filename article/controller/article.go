@@ -27,6 +27,7 @@ func AddRouterForArticleController(
 	rg.GET("/v1/admin/article", auth.VerifyToken, ctl.List)
 	rg.DELETE("/v1/admin/article/:id", auth.VerifyToken, ctl.Delete)
 	rg.POST("/v1/admin/article", auth.VerifyToken, ctl.Add)
+	rg.PUT("/v1/admin/article", auth.VerifyToken, ctl.Update)
 }
 
 type ArticleController struct {
@@ -171,4 +172,43 @@ func (ctl *ArticleController) Add(ctx *gin.Context) {
 	}
 
 	cmctl.SendRespOfPost(ctx, nil)
+}
+
+// @Summary  update article
+// @Description  update an article
+// @Tags     Article
+// @Accept   json
+// @Param	body	body	reqUpdateArticle  true  "body of update article"
+// @Success  202
+// @Router   /v1/admin/article [put]
+func (ctl *ArticleController) Update(ctx *gin.Context) {
+	var req reqUpdateArticle
+
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		cmctl.SendBadRequestBody(ctx, err)
+
+		return
+	}
+
+	user, err := ctl.GetUser(ctx)
+	if err != nil {
+		cmctl.SendError(ctx, err)
+
+		return
+	}
+
+	cmd, err := req.toCmd(user)
+	if err != nil {
+		cmctl.SendBadRequestBody(ctx, err)
+
+		return
+	}
+
+	if err := ctl.articleAppService.UpdateArticle(&cmd); err != nil {
+		cmctl.SendError(ctx, err)
+
+		return
+	}
+
+	cmctl.SendRespOfPut(ctx, nil)
 }

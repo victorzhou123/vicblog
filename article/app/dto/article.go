@@ -2,6 +2,7 @@ package dto
 
 import (
 	articleent "victorzhou123/vicblog/article/domain/article/entity"
+	articledmsvc "victorzhou123/vicblog/article/domain/article/service"
 	articlesvc "victorzhou123/vicblog/article/domain/article/service"
 	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
 )
@@ -65,4 +66,12 @@ func ToArticleDetailDto(
 		UpdatedAt:  article.UpdatedAt.TimeYearToSecond(),
 		CreatedAt:  article.CreatedAt.TimeYearToSecond(),
 	}
+}
+
+// update article
+type UpdateArticleCmd struct {
+	articledmsvc.UpdateArticleCmd
+
+	CategoryId cmprimitive.Id
+	TagIds     []cmprimitive.Id
 }

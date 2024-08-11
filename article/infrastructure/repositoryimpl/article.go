@@ -101,3 +101,18 @@ func (impl *articleRepoImpl) AddArticle(info *entity.ArticleInfo) (uint, error) 
 
 	return do.ID, nil
 }
+
+func (impl *articleRepoImpl) Update(article *entity.ArticleUpdate) error {
+
+	filterDo := ArticleDO{}
+	filterDo.ID = article.Id.IdNum()
+	filterDo.Owner = article.Owner.Username()
+
+	do := ArticleDO{
+		Title:   article.Title.Text(),
+		Content: article.Content.Text(),
+		Summary: article.Summary.ArticleSummary(),
+	}
+
+	return impl.tx.Update(&ArticleDO{}, &filterDo, &do)
+}

@@ -17,6 +17,8 @@ type ArticleAppService interface {
 	AddArticle(*dto.AddArticleCmd) error
 
 	DeleteArticle(user cmprimitive.Username, articleId cmprimitive.Id) error
+
+	UpdateArticle(*dto.UpdateArticleCmd) error
 }
 
 type articleAppService struct {
@@ -176,6 +178,72 @@ func (s *articleAppService) DeleteArticle(user cmprimitive.Username, articleId c
 	}
 
 	log.Infof("user %s delete article %s success", user.Username(), articleId.Id())
+
+	return nil
+}
+
+func (s *articleAppService) UpdateArticle(cmd *dto.UpdateArticleCmd) error {
+
+	// transaction begin
+	if err := s.tx.Begin(); err != nil {
+
+		log.Errorf("transaction begin error, err: %s", err.Error())
+
+		return err
+	}
+
+	// update article
+	if err := s.article.UpdateArticle(&cmd.UpdateArticleCmd); err != nil {
+
+		log.Errorf("user %s update article %s failed, err: %s",
+			cmd.User.Username(), cmd.Id.Id(), err.Error())
+
+		return err
+	}
+
+	// remove relation with tags
+	if err := s.tag.RemoveRelationWithArticle(cmd.Id); err != nil {
+
+		log.Errorf("user %s remove all tags relations of article %s failed, err: %s",
+			cmd.User.Username(), cmd.Id.Id(), err.Error())
+
+		return err
+	}
+
+	// make relationship with tags
+	if err := s.tag.BuildRelationWithArticle(cmd.Id, cmd.TagIds); err != nil {
+
+		log.Errorf("user %s build tag relation with article failed, err: %s",
+			cmd.User.Username(), err.Error())
+
+		return err
+	}
+
+	// remove relation with category
+	if err := s.cate.RemoveRelationWithArticle(cmd.Id); err != nil {
+
+		log.Errorf("user %s remove all cates relations of article %s failed, err: %s",
+			cmd.User.Username(), cmd.Id.Id(), err.Error())
+
+		return err
+	}
+
+	// make relationship with category
+	if err := s.cate.BuildRelationWithArticle(cmd.Id, cmd.CategoryId); err != nil {
+
+		log.Errorf("user %s build category relation with article failed, err: %s",
+			cmd.User.Username(), err.Error())
+
+		return err
+	}
+
+	// transaction commit
+	if err := s.tx.Commit(); err != nil {
+
+		log.Errorf("transaction commit error, err: %s", err.Error())
+
+		return err
+	}
 
 	return nil
 }
