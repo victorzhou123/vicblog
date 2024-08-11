@@ -43,9 +43,6 @@ func (impl *categoryArticleImpl) BuildRelationWithArticle(articleId, cateId cmpr
 		return err
 	}
 
-	// transaction commit
-	impl.tx.Commit()
-
 	return nil
 }
 
@@ -57,9 +54,6 @@ func (impl *categoryArticleImpl) RemoveAllRowsByArticleId(articleId cmprimitive.
 	if err := impl.tx.Delete(&CategoryArticleDO{}, &do); err != nil {
 		return err
 	}
-
-	// transaction commit
-	impl.tx.Commit()
 
 	return nil
 }

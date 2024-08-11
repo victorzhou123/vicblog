@@ -74,7 +74,7 @@ func setRouter(engine *gin.Engine, cfg *mconfig.Config) {
 	// app: following are app services
 	authMiddleware := cmapp.NewAuthMiddleware(auth)
 	loginService := userapp.NewLoginService(userRepo, auth)
-	articleAppService := articleappsvc.NewArticleAggService(articleService, categoryService, tagService)
+	articleAppService := articleappsvc.NewArticleAppService(transactionImpl, articleService, categoryService, tagService)
 
 	// controller: add routers
 	v1 := engine.Group(BasePath)

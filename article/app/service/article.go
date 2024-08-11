@@ -6,6 +6,8 @@ import (
 	categorydmsvc "victorzhou123/vicblog/article/domain/category/service"
 	tagdmsvc "victorzhou123/vicblog/article/domain/tag/service"
 	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
+	cmrepo "victorzhou123/vicblog/common/domain/repository"
+	"victorzhou123/vicblog/common/infrastructure/mysql"
 	"victorzhou123/vicblog/common/log"
 )
 
@@ -18,17 +20,20 @@ type ArticleAppService interface {
 }
 
 type articleAppService struct {
+	tx      cmrepo.Transaction
 	article articledmsvc.ArticleService
 	cate    categorydmsvc.CategoryService
 	tag     tagdmsvc.TagService
 }
 
-func NewArticleAggService(
+func NewArticleAppService(
+	tx mysql.Transaction,
 	article articledmsvc.ArticleService,
 	cate categorydmsvc.CategoryService,
 	tag tagdmsvc.TagService,
 ) ArticleAppService {
 	return &articleAppService{
+		tx:      tx,
 		article: article,
 		cate:    cate,
 		tag:     tag,
@@ -72,6 +77,14 @@ func (s *articleAppService) GetArticle(cmd *dto.GetArticleCmd) (dto.ArticleDetai
 
 func (s *articleAppService) AddArticle(cmd *dto.AddArticleCmd) error {
 
+	// transaction begin
+	if err := s.tx.Begin(); err != nil {
+
+		log.Errorf("transaction begin error, err: %s", err.Error())
+
+		return err
+	}
+
 	// new article
 	articleId, err := s.article.AddArticle(&articledmsvc.ArticleCmd{
 		Owner:   cmd.Owner,
@@ -104,12 +117,28 @@ func (s *articleAppService) AddArticle(cmd *dto.AddArticleCmd) error {
 		return err
 	}
 
+	// transaction commit
+	if err := s.tx.Commit(); err != nil {
+
+		log.Errorf("transaction commit error, err: %s", err.Error())
+
+		return err
+	}
+
 	log.Infof("user %s add article success", cmd.Owner.Username())
 
 	return nil
 }
 
 func (s *articleAppService) DeleteArticle(user cmprimitive.Username, articleId cmprimitive.Id) error {
+
+	// transaction begin
+	if err := s.tx.Begin(); err != nil {
+
+		log.Errorf("transaction begin error, err: %s", err.Error())
+
+		return err
+	}
 
 	// delete article
 	if err := s.article.Delete(user, articleId); err != nil {
@@ -134,6 +163,14 @@ func (s *articleAppService) DeleteArticle(user cmprimitive.Username, articleId c
 
 		log.Errorf("user %s remove all cates relations of article %s failed, err: %s",
 			user.Username(), articleId.Id(), err.Error())
+
+		return err
+	}
+
+	// transaction commit
+	if err := s.tx.Commit(); err != nil {
+
+		log.Errorf("transaction commit error, err: %s", err.Error())
 
 		return err
 	}

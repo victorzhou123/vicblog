@@ -10,8 +10,8 @@ import (
 )
 
 type Transaction interface {
-	Begin()
-	Commit()
+	Begin() error
+	Commit() error
 
 	// Insert
 	Insert(model, value any) error
@@ -27,24 +27,35 @@ type transaction struct {
 
 // e.g:
 //
-// addArticleTx := mysql.NewTransaction()
+// transactionImpl := mysql.NewTransaction()
 //
-// articlerepo := articleRepo(addArticleTx)
+// articlerepo := articleRepo(transactionImpl)
 //
-// tagrepo := tagRepo(addArticleTx)
+// tagrepo := tagRepo(transactionImpl)
 func NewTransaction() Transaction {
 	return &transaction{
 		tx: map[int64]*gorm.DB{}, // goroutine local storage
 	}
 }
 
-func (t *transaction) Begin() {
-	t.tx[util.GetGoroutineId()] = DB().Begin()
+func (t *transaction) Begin() error {
+
+	db := DB().Begin()
+
+	if db.Error != nil {
+		return db.Error
+	}
+
+	t.tx[util.GetGoroutineId()] = db
+
+	return nil
 }
 
-func (t *transaction) Commit() {
-	t.tx[util.GetGoroutineId()].Commit()
+func (t *transaction) Commit() error {
+	err := t.tx[util.GetGoroutineId()].Commit().Error
 	t.tx[util.GetGoroutineId()] = nil // clear the data
+
+	return err
 }
 
 func (t *transaction) Insert(model, value any) error {

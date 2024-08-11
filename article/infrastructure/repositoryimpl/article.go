@@ -83,9 +83,6 @@ func (impl *articleRepoImpl) Delete(user cmprimitive.Username, id cmprimitive.Id
 	articleDo.Owner = user.Username()
 	articleDo.ID = id.IdNum()
 
-	// transaction begin
-	impl.tx.Begin()
-
 	return impl.tx.Delete(&ArticleDO{}, &articleDo)
 }
 
@@ -97,9 +94,6 @@ func (impl *articleRepoImpl) AddArticle(info *entity.ArticleInfo) (uint, error) 
 		Content: info.Content.Text(),
 		Cover:   info.Cover.Urlx(),
 	}
-
-	// transaction begin
-	impl.tx.Begin()
 
 	if err := impl.tx.Insert(&ArticleDO{}, &do); err != nil {
 		return 0, err
