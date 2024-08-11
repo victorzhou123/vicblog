@@ -3,10 +3,11 @@ package repository
 import (
 	"victorzhou123/vicblog/article/domain/article/entity"
 	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
+	cmrepo "victorzhou123/vicblog/common/domain/repository"
 )
 
 type Article interface {
-	GetArticles(cmprimitive.Username) ([]entity.Article, error)
+	ListArticles(cmprimitive.Username, cmrepo.PageListOpt) ([]entity.Article, int, error)
 	Delete(cmprimitive.Username, cmprimitive.Id) error
 	AddArticle(*entity.ArticleInfo) (articleId uint, err error)
 }

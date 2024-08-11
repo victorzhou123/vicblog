@@ -16,7 +16,7 @@ type Impl interface {
 	// Query
 	GetRecord(model, filter, result any) error
 	GetRecords(model, filter, result any) error
-	GetRecordsByPagination(model, filter, result any, opt PaginationOpt) (int, error)
+	GetRecordsByPagination(model, filter, result any, opt PaginationOpt) (total int, err error)
 	GetByPrimaryKey(model, row any) error
 
 	// Add
