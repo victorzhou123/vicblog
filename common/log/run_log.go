@@ -31,7 +31,7 @@ func newDefaultRunLog() *runLog {
 		Time:     util.TimeNowBaseSecond(),
 		Severity: levelInfo,
 		Service:  constant.ServerName,
-		Position: util.GetCallStackInfo(4),
+		Position: util.GetCallStackInfo(5),
 	}
 }
 

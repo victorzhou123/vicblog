@@ -9,7 +9,7 @@ import (
 )
 
 func GetCallStackInfo(skip int) string {
-	if dir, err := os.Getwd(); err != nil {
+	if dir, err := os.Getwd(); err == nil {
 		dir = filepath.ToSlash(dir) + "/"
 
 		if _, file, line, ok := runtime.Caller(skip); ok {
