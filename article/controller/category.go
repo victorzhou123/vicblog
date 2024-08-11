@@ -71,11 +71,13 @@ func (ctl *categoryController) Add(ctx *gin.Context) {
 // @Router   /v1/admin/category [get]
 func (ctl *categoryController) List(ctx *gin.Context) {
 	var req = reqCategoryList{
-		CurPage:  ctx.Query("current"),
-		PageSize: ctx.Query("size"),
+		ReqList: cmctl.ReqList{
+			CurPage:  ctx.Query("current"),
+			PageSize: ctx.Query("size"),
+		},
 	}
 
-	if req.emptyValue() {
+	if req.EmptyValue() {
 		// list all category
 		dtos, err := ctl.category.ListAllCategory()
 		if err != nil {

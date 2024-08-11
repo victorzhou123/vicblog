@@ -4,6 +4,7 @@ import (
 	"victorzhou123/vicblog/article/domain/article/entity"
 	"victorzhou123/vicblog/article/domain/article/repository"
 	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
+	cmrepo "victorzhou123/vicblog/common/domain/repository"
 	"victorzhou123/vicblog/common/infrastructure/mysql"
 )
 
@@ -25,28 +26,35 @@ type articleRepoImpl struct {
 	tx mysql.Transaction
 }
 
-func (impl *articleRepoImpl) GetArticles(owner cmprimitive.Username) ([]entity.Article, error) {
+func (impl *articleRepoImpl) ListArticles(
+	user cmprimitive.Username, opt cmrepo.PageListOpt,
+) ([]entity.Article, int, error) {
 	articleDo := &ArticleDO{}
-	articleDo.Owner = owner.Username()
+	articleDo.Owner = user.Username()
 
 	articlesDo := []ArticleDO{}
 
-	if err := impl.db.GetRecords(&ArticleDO{}, &articleDo, &articlesDo); err != nil {
-		return nil, err
+	option := mysql.PaginationOpt{
+		CurPage:  opt.CurPage,
+		PageSize: opt.PageSize,
+	}
+
+	total, err := impl.db.GetRecordsByPagination(&ArticleDO{}, &articleDo, &articlesDo, option)
+	if err != nil {
+		return nil, 0, err
 	}
 
 	// convert []ArticleDO to []domain.Article
-	var err error
 	dmArticles := make([]entity.Article, len(articlesDo))
 	for i := range articlesDo {
 
 		if dmArticles[i], err = articlesDo[i].toArticle(); err != nil {
-			return nil, err
+			return nil, 0, err
 		}
 
 	}
 
-	return dmArticles, nil
+	return dmArticles, total, nil
 }
 
 func (impl *articleRepoImpl) Delete(user cmprimitive.Username, id cmprimitive.Id) error {

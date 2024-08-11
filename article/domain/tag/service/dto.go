@@ -2,24 +2,20 @@ package service
 
 import (
 	"victorzhou123/vicblog/article/domain/tag/entity"
-	cmapp "victorzhou123/vicblog/common/app"
+	dmservice "victorzhou123/vicblog/common/domain/service"
 )
 
 type TagListCmd struct {
-	cmapp.ListCmd
+	dmservice.PaginationCmd
 }
 
 type TagListDto struct {
-	Total     int      `json:"total"`
-	PageCount int      `json:"pages"`
-	PageSize  int      `json:"size"`
-	CurPage   int      `json:"current"`
-	Tag       []TagDto `json:"tag"`
+	dmservice.PaginationDto
+
+	Tag []TagDto `json:"tag"`
 }
 
 func toTagListDto(tags []entity.Tag, cmd *TagListCmd, total int) TagListDto {
-
-	pageCount := total/cmd.PageSize + 1
 
 	dtos := make([]TagDto, len(tags))
 	for i := range tags {
@@ -27,11 +23,8 @@ func toTagListDto(tags []entity.Tag, cmd *TagListCmd, total int) TagListDto {
 	}
 
 	return TagListDto{
-		Total:     total,
-		PageCount: pageCount,
-		PageSize:  cmd.PageSize,
-		CurPage:   cmd.CurPage,
-		Tag:       dtos,
+		PaginationDto: cmd.ToPaginationDto(total),
+		Tag:           dtos,
 	}
 }
 

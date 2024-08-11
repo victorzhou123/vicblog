@@ -69,9 +69,11 @@ func (ctl *tagController) AddBatches(ctx *gin.Context) {
 // @Success  200   {array}  service.TagListDto
 // @Router   /v1/admin/tag [get]
 func (ctl *tagController) List(ctx *gin.Context) {
-	var req = reqTagList{
-		CurPage:  ctx.Query("current"),
-		PageSize: ctx.Query("size"),
+	req := reqTagList{
+		ReqList: cmctl.ReqList{
+			CurPage:  ctx.Query("current"),
+			PageSize: ctx.Query("size"),
+		},
 	}
 
 	if req.emptyValue() {

@@ -1,15 +1,15 @@
 package controller
 
 import (
-	"strconv"
-
 	"victorzhou123/vicblog/article/app/dto"
 	articleent "victorzhou123/vicblog/article/domain/article/entity"
+	articlesvc "victorzhou123/vicblog/article/domain/article/service"
 	"victorzhou123/vicblog/article/domain/category/entity"
 	categorysvc "victorzhou123/vicblog/article/domain/category/service"
 	tagent "victorzhou123/vicblog/article/domain/tag/entity"
 	"victorzhou123/vicblog/article/domain/tag/repository"
 	tagsvc "victorzhou123/vicblog/article/domain/tag/service"
+	cmctl "victorzhou123/vicblog/common/controller"
 	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
 )
 
@@ -22,28 +22,21 @@ func (req *reqCategory) toCategoryName() (entity.CategoryName, error) {
 }
 
 type reqCategoryList struct {
-	CurPage  string `json:"current"`
-	PageSize string `json:"size"`
-}
-
-func (req *reqCategoryList) emptyValue() bool {
-	return req.CurPage == "" && req.PageSize == ""
+	cmctl.ReqList
 }
 
 func (req *reqCategoryList) toCmd() (cmd categorysvc.CategoryListCmd, err error) {
-	if cmd.CurPage, err = strconv.Atoi(req.CurPage); err != nil {
+
+	listCmd, err := req.ReqList.ToCmd()
+	if err != nil {
 		return
 	}
 
-	if cmd.PageSize, err = strconv.Atoi(req.PageSize); err != nil {
-		return
+	cmd = categorysvc.CategoryListCmd{
+		PaginationCmd: listCmd,
 	}
 
-	if err = cmd.Validate(); err != nil {
-		return
-	}
-
-	return
+	return cmd, cmd.Validate()
 }
 
 type reqTag struct {
@@ -65,28 +58,22 @@ func (req *reqTag) toTagNames() (repository.TagNames, error) {
 }
 
 type reqTagList struct {
-	CurPage  string `json:"current"`
-	PageSize string `json:"size"`
+	cmctl.ReqList
 }
 
 func (req *reqTagList) emptyValue() bool {
-	return req.CurPage == "" && req.PageSize == ""
+	return req.ReqList.EmptyValue()
 }
 
 func (req *reqTagList) toCmd() (cmd tagsvc.TagListCmd, err error) {
-	if cmd.CurPage, err = strconv.Atoi(req.CurPage); err != nil {
-		return
+
+	listCmd, err := req.ReqList.ToCmd()
+
+	cmd = tagsvc.TagListCmd{
+		PaginationCmd: listCmd,
 	}
 
-	if cmd.PageSize, err = strconv.Atoi(req.PageSize); err != nil {
-		return
-	}
-
-	if err = cmd.Validate(); err != nil {
-		return
-	}
-
-	return
+	return cmd, cmd.Validate()
 }
 
 type reqArticle struct {
@@ -126,4 +113,20 @@ func (req *reqArticle) toCmd(user cmprimitive.Username) (cmd dto.AddArticleCmd, 
 	}
 
 	return
+}
+
+type reqListArticle struct {
+	cmctl.ReqList
+}
+
+func (req *reqListArticle) toCmd(user cmprimitive.Username) (cmd articlesvc.ArticleListCmd, err error) {
+
+	listCmd, err := req.ReqList.ToCmd()
+
+	cmd = articlesvc.ArticleListCmd{
+		PaginationCmd: listCmd,
+		User:          user,
+	}
+
+	return cmd, cmd.Validate()
 }

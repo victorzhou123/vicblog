@@ -46,7 +46,7 @@ func (impl *tagRepoImpl) GetTagList(opt cmrepo.PageListOpt) ([]entity.Tag, int, 
 		PageSize: opt.PageSize,
 	}
 
-	total, err := impl.GetRecordByPagination(&TagDO{}, &TagDO{}, &dos, options)
+	total, err := impl.GetRecordsByPagination(&TagDO{}, &TagDO{}, &dos, options)
 	if err != nil {
 		if cmrepo.IsErrorResourceNotExists(err) {
 			return nil, 0, cmdmerror.NewNotFound(cmdmerror.ErrorCodeResourceNotFound, "")

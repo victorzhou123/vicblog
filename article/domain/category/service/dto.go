@@ -1,47 +1,30 @@
 package service
 
 import (
-	"fmt"
-
 	categoryett "victorzhou123/vicblog/article/domain/category/entity"
 	"victorzhou123/vicblog/common/domain/repository"
+	dmservice "victorzhou123/vicblog/common/domain/service"
 )
 
 type CategoryListCmd struct {
-	CurPage  int
-	PageSize int
+	dmservice.PaginationCmd
 }
 
 func (cmd *CategoryListCmd) Validate() error {
-	if cmd.CurPage <= 0 {
-		return fmt.Errorf("current page must > 0")
-	}
-
-	if cmd.PageSize <= 0 {
-		return fmt.Errorf("page size must > 0")
-	}
-
-	return nil
+	return cmd.PaginationCmd.Validate()
 }
 
 func (cmd *CategoryListCmd) toPageListOpt() repository.PageListOpt {
-	return repository.PageListOpt{
-		CurPage:  cmd.CurPage,
-		PageSize: cmd.PageSize,
-	}
+	return cmd.PaginationCmd.ToPageListOpt()
 }
 
 type CategoryListDto struct {
-	Total     int           `json:"total"`
-	PageCount int           `json:"pages"`
-	PageSize  int           `json:"size"`
-	CurPage   int           `json:"current"`
-	Category  []CategoryDto `json:"category"`
+	dmservice.PaginationDto
+
+	Category []CategoryDto `json:"category"`
 }
 
 func toCategoryListDto(cates []categoryett.Category, cmd *CategoryListCmd, total int) CategoryListDto {
-
-	pageCount := total/cmd.PageSize + 1
 
 	categoryDos := make([]CategoryDto, len(cates))
 	for i := range cates {
@@ -49,11 +32,8 @@ func toCategoryListDto(cates []categoryett.Category, cmd *CategoryListCmd, total
 	}
 
 	return CategoryListDto{
-		Total:     total,
-		PageCount: pageCount,
-		PageSize:  cmd.PageSize,
-		CurPage:   cmd.CurPage,
-		Category:  categoryDos,
+		PaginationDto: cmd.ToPaginationDto(total),
+		Category:      categoryDos,
 	}
 }
 

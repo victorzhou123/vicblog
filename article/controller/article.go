@@ -22,7 +22,7 @@ func AddRouterForArticleController(
 		articleAppService: articleAppService,
 	}
 
-	rg.POST("/v1/admin/article/list", auth.VerifyToken, ctl.List)
+	rg.GET("/v1/admin/article", auth.VerifyToken, ctl.List)
 	rg.DELETE("/v1/admin/article/:id", auth.VerifyToken, ctl.Delete)
 	rg.POST("/v1/admin/article", auth.VerifyToken, ctl.Add)
 }
@@ -41,6 +41,13 @@ type ArticleController struct {
 // @Router   /v1/admin/article/list [post]
 func (ctl *ArticleController) List(ctx *gin.Context) {
 
+	req := reqListArticle{
+		cmctl.ReqList{
+			CurPage:  ctx.Query("current"),
+			PageSize: ctx.Query("size"),
+		},
+	}
+
 	user, err := ctl.GetUser(ctx)
 	if err != nil {
 		cmctl.SendError(ctx, err)
@@ -48,7 +55,14 @@ func (ctl *ArticleController) List(ctx *gin.Context) {
 		return
 	}
 
-	dto, err := ctl.article.GetArticleList(user)
+	cmd, err := req.toCmd(user)
+	if err != nil {
+		cmctl.SendError(ctx, err)
+
+		return
+	}
+
+	dto, err := ctl.article.GetArticleList(&cmd)
 	if err != nil {
 		cmctl.SendRespOfPost(ctx, dto)
 
