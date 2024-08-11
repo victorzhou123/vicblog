@@ -7,6 +7,7 @@ import (
 	"victorzhou123/vicblog/article/domain/picture/repository"
 	cmdmerror "victorzhou123/vicblog/common/domain/error"
 	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
+	"victorzhou123/vicblog/common/log"
 )
 
 type FileService interface {
@@ -44,11 +45,17 @@ func (s *fileService) Upload(
 	}
 
 	if picture.OverSizeLimited() {
+
+		log.Errorf("user %s upload file over size limited", user.Username())
+
 		return FileUrlDto{}, cmdmerror.NewInvalidParam("picture size over limited")
 	}
 
 	url, err := s.repo.Upload(user.Username(), file.Filename, picture)
 	if err != nil {
+
+		log.Errorf("user %s upload file failed, err: %s", user.Username(), err.Error())
+
 		return FileUrlDto{}, err
 	}
 

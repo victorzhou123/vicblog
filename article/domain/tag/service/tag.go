@@ -4,6 +4,7 @@ import (
 	"victorzhou123/vicblog/article/domain/tag/repository"
 	cmdmerror "victorzhou123/vicblog/common/domain/error"
 	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
+	"victorzhou123/vicblog/common/log"
 )
 
 type TagService interface {
@@ -32,10 +33,22 @@ func NewTagService(
 
 func (s *tagService) AddTags(names repository.TagNames) error {
 	if !names.NoDuplication() {
-		return cmdmerror.NewInvalidParam("input params contain duplicate tags")
+
+		err := cmdmerror.NewInvalidParam("input params contain duplicate tags")
+
+		log.Errorf("add tags failed, err: %s", err.Error())
+
+		return err
 	}
 
-	return s.repo.AddBatches(names)
+	if err := s.repo.AddBatches(names); err != nil {
+
+		log.Errorf("add batches tags failed, err: %s", err.Error())
+
+		return err
+	}
+
+	return nil
 }
 
 func (s *tagService) GetTagList(cmd *TagListCmd) (TagListDto, error) {
@@ -68,15 +81,41 @@ func (s *tagService) ListAllTag() ([]TagDto, error) {
 }
 
 func (s *tagService) Delete(id cmprimitive.Id) error {
-	return s.repo.Delete(id)
+
+	if err := s.repo.Delete(id); err != nil {
+
+		log.Errorf("tag %s deleted failed, err: %s", id.Id(), err.Error())
+
+		return err
+	}
+
+	return nil
 }
 
 func (s *tagService) BuildRelationWithArticle(
 	articleId cmprimitive.Id, tagIds []cmprimitive.Id,
 ) error {
-	return s.tagArticleRepo.BuildRelationWithArticle(articleId, tagIds)
+
+	if err := s.tagArticleRepo.BuildRelationWithArticle(articleId, tagIds); err != nil {
+
+		log.Errorf("article %s build relation with tags %s failed, err: %s",
+			articleId.Id(), tagIds, err.Error())
+
+		return err
+	}
+
+	return nil
 }
 
 func (s *tagService) RemoveRelationWithArticle(articleId cmprimitive.Id) error {
-	return s.tagArticleRepo.RemoveAllRowsByArticleId(articleId)
+
+	if err := s.tagArticleRepo.RemoveAllRowsByArticleId(articleId); err != nil {
+
+		log.Errorf("remove all tags relation with article %s failed, err: %s",
+			articleId.Id(), err.Error())
+
+		return err
+	}
+
+	return nil
 }
