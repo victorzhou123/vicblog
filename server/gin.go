@@ -61,9 +61,9 @@ func setRouter(engine *gin.Engine, cfg *mconfig.Config) {
 	userRepo := userrepoimpl.NewUserRepo(mysqlImpl)
 	articleRepo := articlerepoimpl.NewArticleRepo(mysqlImpl, transactionImpl)
 	categoryRepo := articlerepoimpl.NewCategoryRepo(mysqlImpl)
-	categoryArticleRepo := articlerepoimpl.NewCategoryArticleRepo(transactionImpl)
+	categoryArticleRepo := articlerepoimpl.NewCategoryArticleRepo(mysqlImpl, transactionImpl)
 	tagRepo := articlerepoimpl.NewTagRepo(mysqlImpl)
-	tagArticleRepo := articlerepoimpl.NewTagArticleRepo(transactionImpl)
+	tagArticleRepo := articlerepoimpl.NewTagArticleRepo(mysqlImpl, transactionImpl)
 
 	// domain: following are domain services
 	tagService := tagsvc.NewTagService(tagRepo, tagArticleRepo)

@@ -47,8 +47,8 @@ const docTemplate = `{
             }
         },
         "/v1/admin/article/list": {
-            "post": {
-                "description": "list all articles of request user",
+            "get": {
+                "description": "list articles of request user by pagination",
                 "consumes": [
                     "application/json"
                 ],
@@ -56,9 +56,25 @@ const docTemplate = `{
                     "Article"
                 ],
                 "summary": "List articles",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "current page of user queried",
+                        "name": "current",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "single page size of user queried",
+                        "name": "size",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
-                    "201": {
-                        "description": "Created",
+                    "200": {
+                        "description": "OK",
                         "schema": {
                             "type": "array",
                             "items": {
@@ -389,7 +405,54 @@ const docTemplate = `{
                 }
             }
         },
-        "service.ArticleListDto": {
+        "dto.ArticleDetailDto": {
+            "type": "object",
+            "properties": {
+                "category": {
+                    "type": "integer"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "cover": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "isPublish": {
+                    "type": "boolean"
+                },
+                "isTop": {
+                    "type": "boolean"
+                },
+                "owner": {
+                    "type": "string"
+                },
+                "readTimes": {
+                    "type": "integer"
+                },
+                "summary": {
+                    "type": "string"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "title": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "service.ArticleDto": {
             "type": "object",
             "properties": {
                 "cover": {
@@ -409,6 +472,29 @@ const docTemplate = `{
                 },
                 "title": {
                     "type": "string"
+                }
+            }
+        },
+        "service.ArticleListDto": {
+            "type": "object",
+            "properties": {
+                "articles": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/service.ArticleDto"
+                    }
+                },
+                "current": {
+                    "type": "integer"
+                },
+                "pages": {
+                    "type": "integer"
+                },
+                "size": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
                 }
             }
         },

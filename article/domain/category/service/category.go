@@ -14,6 +14,7 @@ type CategoryService interface {
 	ListAllCategory() ([]CategoryDto, error)
 	DelCategory(cmprimitive.Id) error
 
+	GetRelationWithArticle(articleId cmprimitive.Id) (cateId cmprimitive.Id, err error)
 	BuildRelationWithArticle(articleId, cateId cmprimitive.Id) error
 	RemoveRelationWithArticle(articleId cmprimitive.Id) error
 }
@@ -84,6 +85,22 @@ func (s *categoryService) DelCategory(id cmprimitive.Id) error {
 	}
 
 	return nil
+}
+
+func (s *categoryService) GetRelationWithArticle(
+	articleId cmprimitive.Id,
+) (cmprimitive.Id, error) {
+
+	cateId, err := s.categoryArticleRepo.GetRelationWithArticle(articleId)
+	if err != nil {
+
+		log.Errorf("get all category related to article %s failed, err: %s",
+			articleId.Id(), err.Error())
+
+		return nil, err
+	}
+
+	return cateId, nil
 }
 
 func (s *categoryService) BuildRelationWithArticle(articleId, cateId cmprimitive.Id) error {

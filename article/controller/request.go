@@ -68,6 +68,9 @@ func (req *reqTagList) emptyValue() bool {
 func (req *reqTagList) toCmd() (cmd tagsvc.TagListCmd, err error) {
 
 	listCmd, err := req.ReqList.ToCmd()
+	if err != nil {
+		return
+	}
 
 	cmd = tagsvc.TagListCmd{
 		PaginationCmd: listCmd,
@@ -122,6 +125,9 @@ type reqListArticle struct {
 func (req *reqListArticle) toCmd(user cmprimitive.Username) (cmd articlesvc.ArticleListCmd, err error) {
 
 	listCmd, err := req.ReqList.ToCmd()
+	if err != nil {
+		return
+	}
 
 	cmd = articlesvc.ArticleListCmd{
 		PaginationCmd: listCmd,

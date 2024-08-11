@@ -6,17 +6,37 @@ import (
 	"victorzhou123/vicblog/common/infrastructure/mysql"
 )
 
-func NewTagArticleRepo(tx mysql.Transaction) repository.TagArticle {
+func NewTagArticleRepo(db mysql.Impl, tx mysql.Transaction) repository.TagArticle {
 
 	if err := mysql.AutoMigrate(&TagArticleDO{}); err != nil {
 		return nil
 	}
 
-	return &tagArticleImpl{tx}
+	return &tagArticleImpl{db, tx}
 }
 
 type tagArticleImpl struct {
+	db mysql.Impl
 	tx mysql.Transaction
+}
+
+func (impl *tagArticleImpl) GetRelationWithArticle(articleId cmprimitive.Id) ([]cmprimitive.Id, error) {
+
+	filterDo := TagArticleDO{}
+	filterDo.ArticleId = articleId.IdNum()
+
+	dos := []TagArticleDO{}
+
+	if err := impl.db.GetRecords(&TagArticleDO{}, &filterDo, &dos); err != nil {
+		return nil, err
+	}
+
+	tagIds := make([]cmprimitive.Id, len(dos))
+	for i := range dos {
+		tagIds[i] = cmprimitive.NewIdByUint(dos[i].ID)
+	}
+
+	return tagIds, nil
 }
 
 func (impl *tagArticleImpl) BuildRelationWithArticle(

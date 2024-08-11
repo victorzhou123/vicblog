@@ -11,8 +11,11 @@ import (
 const msgCannotFoundTheArticle = "can not found the article"
 
 type ArticleService interface {
+	GetArticle(*GetArticleCmd) (entity.Article, error)
 	GetArticleList(*ArticleListCmd) (ArticleListDto, error)
+
 	Delete(cmprimitive.Username, cmprimitive.Id) error
+
 	AddArticle(cmd *ArticleCmd) (articleId uint, err error)
 }
 
@@ -24,6 +27,21 @@ func NewArticleService(repo repository.Article) ArticleService {
 	return &articleService{
 		repo: repo,
 	}
+}
+
+func (s *articleService) GetArticle(cmd *GetArticleCmd) (entity.Article, error) {
+
+	// get article
+	article, err := s.repo.GetArticle(cmd.User, cmd.ArticleId)
+	if err != nil {
+
+		log.Errorf("user %s get article %s details failed, err: %s",
+			cmd.User.Username(), cmd.ArticleId.Id(), err.Error())
+
+		return entity.Article{}, err
+	}
+
+	return article, nil
 }
 
 func (s *articleService) GetArticleList(cmd *ArticleListCmd) (ArticleListDto, error) {
