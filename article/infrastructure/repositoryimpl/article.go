@@ -3,6 +3,7 @@ package repositoryimpl
 import (
 	"victorzhou123/vicblog/article/domain/article/entity"
 	"victorzhou123/vicblog/article/domain/article/repository"
+	cmdmerror "victorzhou123/vicblog/common/domain/error"
 	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
 	cmrepo "victorzhou123/vicblog/common/domain/repository"
 	"victorzhou123/vicblog/common/infrastructure/mysql"
@@ -24,6 +25,26 @@ func NewArticleRepo(db mysql.Impl, tx mysql.Transaction) repository.Article {
 type articleRepoImpl struct {
 	db mysql.Impl
 	tx mysql.Transaction
+}
+
+func (impl *articleRepoImpl) GetArticle(
+	user cmprimitive.Username, articleId cmprimitive.Id,
+) (entity.Article, error) {
+
+	do := ArticleDO{}
+	do.ID = articleId.IdNum()
+	do.Owner = user.Username()
+
+	if err := impl.db.GetByPrimaryKey(&ArticleDO{}, &do); err != nil {
+
+		if cmdmerror.IsNotFound(err) {
+			return entity.Article{}, cmdmerror.NewNoPermission("")
+		}
+
+		return entity.Article{}, err
+	}
+
+	return do.toArticle()
 }
 
 func (impl *articleRepoImpl) ListArticles(

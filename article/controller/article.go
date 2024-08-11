@@ -3,6 +3,7 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 
+	"victorzhou123/vicblog/article/app/dto"
 	articleappsvc "victorzhou123/vicblog/article/app/service"
 	"victorzhou123/vicblog/article/domain/article/service"
 	cmapp "victorzhou123/vicblog/common/app"
@@ -22,6 +23,7 @@ func AddRouterForArticleController(
 		articleAppService: articleAppService,
 	}
 
+	rg.GET("/v1/admin/article/:id", auth.VerifyToken, ctl.Get)
 	rg.GET("/v1/admin/article", auth.VerifyToken, ctl.List)
 	rg.DELETE("/v1/admin/article/:id", auth.VerifyToken, ctl.Delete)
 	rg.POST("/v1/admin/article", auth.VerifyToken, ctl.Add)
@@ -31,6 +33,38 @@ type ArticleController struct {
 	cmapp.AuthMiddleware
 	article           service.ArticleService
 	articleAppService articleappsvc.ArticleAppService
+}
+
+// @Summary  List articles
+// @Description  list articles of request user by pagination
+// @Tags     Article
+// @Accept   json
+// @Param	id	path	int	true	"article ID"
+// @Success  200   {array}  dto.ArticleDetailDto
+func (ctl *ArticleController) Get(ctx *gin.Context) {
+
+	user, err := ctl.GetUser(ctx)
+	if err != nil {
+		cmctl.SendError(ctx, err)
+
+		return
+	}
+
+	dto, err := ctl.articleAppService.GetArticle(
+		&dto.GetArticleCmd{
+			GetArticleCmd: service.GetArticleCmd{
+				User:      user,
+				ArticleId: cmprimitive.NewId(ctx.Param("id")),
+			},
+		},
+	)
+	if err != nil {
+		cmctl.SendError(ctx, err)
+
+		return
+	}
+
+	cmctl.SendRespOfGet(ctx, dto)
 }
 
 // @Summary  List articles

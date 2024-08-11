@@ -13,6 +13,7 @@ type TagService interface {
 	ListAllTag() ([]TagDto, error)
 	Delete(cmprimitive.Id) error
 
+	GetRelationWithArticle(articleId cmprimitive.Id) (tags []cmprimitive.Id, err error)
 	BuildRelationWithArticle(articleId cmprimitive.Id, tagIds []cmprimitive.Id) error
 	RemoveRelationWithArticle(articleId cmprimitive.Id) error
 }
@@ -90,6 +91,10 @@ func (s *tagService) Delete(id cmprimitive.Id) error {
 	}
 
 	return nil
+}
+
+func (s *tagService) GetRelationWithArticle(articleId cmprimitive.Id) ([]cmprimitive.Id, error) {
+	return s.tagArticleRepo.GetRelationWithArticle(articleId)
 }
 
 func (s *tagService) BuildRelationWithArticle(

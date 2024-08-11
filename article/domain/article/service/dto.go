@@ -76,3 +76,9 @@ type ArticleCmd struct {
 	Content cmprimitive.Text
 	Cover   cmprimitive.Urlx
 }
+
+// get article
+type GetArticleCmd struct {
+	User      cmprimitive.Username
+	ArticleId cmprimitive.Id
+}

@@ -10,7 +10,10 @@ import (
 )
 
 type ArticleAppService interface {
+	GetArticle(*dto.GetArticleCmd) (dto.ArticleDetailDto, error)
+
 	AddArticle(*dto.AddArticleCmd) error
+
 	DeleteArticle(user cmprimitive.Username, articleId cmprimitive.Id) error
 }
 
@@ -30,6 +33,41 @@ func NewArticleAggService(
 		cate:    cate,
 		tag:     tag,
 	}
+}
+
+func (s *articleAppService) GetArticle(cmd *dto.GetArticleCmd) (dto.ArticleDetailDto, error) {
+
+	// get article
+	article, err := s.article.GetArticle(&cmd.GetArticleCmd)
+	if err != nil {
+
+		log.Errorf("user %s get article %s failed, err: %s",
+			cmd.User.Username(), cmd.ArticleId.Id(), err.Error())
+
+		return dto.ArticleDetailDto{}, err
+	}
+
+	// get relation tags
+	tagIds, err := s.tag.GetRelationWithArticle(article.Id)
+	if err != nil {
+
+		log.Errorf("get all tags of article %s failed, err: %s",
+			article.Id.Id(), err.Error())
+
+		return dto.ArticleDetailDto{}, err
+	}
+
+	// get relation category
+	cateId, err := s.cate.GetRelationWithArticle(article.Id)
+	if err != nil {
+
+		log.Errorf("get category of article %s failed, err: %s",
+			article.Id.Id(), err.Error())
+
+		return dto.ArticleDetailDto{}, err
+	}
+
+	return dto.ToArticleDetailDto(article, tagIds, cateId), nil
 }
 
 func (s *articleAppService) AddArticle(cmd *dto.AddArticleCmd) error {
