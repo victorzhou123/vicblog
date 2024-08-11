@@ -5,6 +5,7 @@ import (
 	"victorzhou123/vicblog/article/domain/article/repository"
 	cmdmerror "victorzhou123/vicblog/common/domain/error"
 	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
+	"victorzhou123/vicblog/common/log"
 )
 
 const msgCannotFoundTheArticle = "can not found the article"
@@ -39,6 +40,9 @@ func (s *articleService) GetArticleList(cmd *ArticleListCmd) (ArticleListDto, er
 
 func (s *articleService) Delete(user cmprimitive.Username, id cmprimitive.Id) error {
 	if err := s.repo.Delete(user, id); err != nil {
+
+		log.Errorf("user %s delete article %s failed, err: %s", user.Username(), id.Id(), err.Error())
+
 		return cmdmerror.NewNoPermission("")
 	}
 
@@ -46,11 +50,20 @@ func (s *articleService) Delete(user cmprimitive.Username, id cmprimitive.Id) er
 }
 
 func (s *articleService) AddArticle(cmd *ArticleCmd) (uint, error) {
-	return s.repo.AddArticle(&entity.ArticleInfo{
+
+	articleId, err := s.repo.AddArticle(&entity.ArticleInfo{
 		Owner:   cmd.Owner,
 		Title:   cmd.Title,
 		Summary: cmd.Summary,
 		Content: cmd.Content,
 		Cover:   cmd.Cover,
 	})
+	if err != nil {
+
+		log.Errorf("user %s add article failed, err: %s", cmd.Owner.Username(), err.Error())
+
+		return 0, err
+	}
+
+	return articleId, nil
 }

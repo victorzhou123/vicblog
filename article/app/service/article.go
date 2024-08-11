@@ -6,6 +6,7 @@ import (
 	categorydmsvc "victorzhou123/vicblog/article/domain/category/service"
 	tagdmsvc "victorzhou123/vicblog/article/domain/tag/service"
 	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
+	"victorzhou123/vicblog/common/log"
 )
 
 type ArticleAppService interface {
@@ -49,13 +50,23 @@ func (s *articleAppService) AddArticle(cmd *dto.AddArticleCmd) error {
 
 	// make relationship with tag
 	if err := s.tag.BuildRelationWithArticle(article, cmd.Tags); err != nil {
+
+		log.Errorf("user %s build tag relation with article failed, err: %s",
+			cmd.Owner.Username(), err.Error())
+
 		return err
 	}
 
 	// make relationship with category
 	if err := s.cate.BuildRelationWithArticle(article, cmd.Category); err != nil {
+
+		log.Errorf("user %s build category relation with article failed, err: %s",
+			cmd.Owner.Username(), err.Error())
+
 		return err
 	}
+
+	log.Infof("user %s add article success", cmd.Owner.Username())
 
 	return nil
 }
@@ -64,18 +75,32 @@ func (s *articleAppService) DeleteArticle(user cmprimitive.Username, articleId c
 
 	// delete article
 	if err := s.article.Delete(user, articleId); err != nil {
+
+		log.Errorf("user %s delete article (articleId: %s) failed, err: %s",
+			user.Username(), articleId.Id(), err.Error())
+
 		return err
 	}
 
 	// remove relation with tags
 	if err := s.tag.RemoveRelationWithArticle(articleId); err != nil {
+
+		log.Errorf("user %s remove all tags relations of article %s failed, err: %s",
+			user.Username(), articleId.Id(), err.Error())
+
 		return err
 	}
 
 	// remove relation with category
 	if err := s.cate.RemoveRelationWithArticle(articleId); err != nil {
+
+		log.Errorf("user %s remove all cates relations of article %s failed, err: %s",
+			user.Username(), articleId.Id(), err.Error())
+
 		return err
 	}
+
+	log.Infof("user %s delete article %s success", user.Username(), articleId.Id())
 
 	return nil
 }

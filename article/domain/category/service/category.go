@@ -5,6 +5,7 @@ import (
 	"victorzhou123/vicblog/article/domain/category/repository"
 	cmdmerror "victorzhou123/vicblog/common/domain/error"
 	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
+	"victorzhou123/vicblog/common/log"
 )
 
 type CategoryService interface {
@@ -33,7 +34,15 @@ func NewCategoryService(
 }
 
 func (s *categoryService) AddCategory(category entity.CategoryName) error {
-	return s.repo.AddCategory(category)
+
+	if err := s.repo.AddCategory(category); err != nil {
+
+		log.Errorf("add category %s failed, err: %s", category.CategoryName(), err.Error())
+
+		return err
+	}
+
+	return nil
 }
 
 func (s *categoryService) ListCategory(cmd *CategoryListCmd) (CategoryListDto, error) {
@@ -66,13 +75,39 @@ func (s *categoryService) ListAllCategory() ([]CategoryDto, error) {
 }
 
 func (s *categoryService) DelCategory(id cmprimitive.Id) error {
-	return s.repo.DelCategory(id)
+
+	if err := s.repo.DelCategory(id); err != nil {
+
+		log.Errorf("delete category %s failed, err: %s", id.Id(), err.Error())
+
+		return err
+	}
+
+	return nil
 }
 
 func (s *categoryService) BuildRelationWithArticle(articleId, cateId cmprimitive.Id) error {
-	return s.categoryArticleRepo.BuildRelationWithArticle(articleId, cateId)
+
+	if err := s.categoryArticleRepo.BuildRelationWithArticle(articleId, cateId); err != nil {
+
+		log.Errorf("article %s build relation with category %s failed, err: %s",
+			articleId.Id(), cateId.Id(), err.Error())
+
+		return err
+	}
+
+	return nil
 }
 
 func (s *categoryService) RemoveRelationWithArticle(articleId cmprimitive.Id) error {
-	return s.categoryArticleRepo.RemoveAllRowsByArticleId(articleId)
+
+	if err := s.categoryArticleRepo.RemoveAllRowsByArticleId(articleId); err != nil {
+
+		log.Errorf("remove all category relation with article %s failed, err: %s",
+			articleId.Id(), err.Error())
+
+		return err
+	}
+
+	return nil
 }
