@@ -39,11 +39,7 @@ func (impl *categoryArticleImpl) BuildRelationWithArticle(articleId, cateId cmpr
 		ArticleId:  articleId.IdNum(),
 	}
 
-	if err := impl.tx.Insert(&CategoryArticleDO{}, &do); err != nil {
-		return err
-	}
-
-	return nil
+	return impl.tx.Insert(&CategoryArticleDO{}, &do)
 }
 
 func (impl *categoryArticleImpl) RemoveAllRowsByArticleId(articleId cmprimitive.Id) error {
@@ -51,9 +47,5 @@ func (impl *categoryArticleImpl) RemoveAllRowsByArticleId(articleId cmprimitive.
 		ArticleId: articleId.IdNum(),
 	}
 
-	if err := impl.tx.Delete(&CategoryArticleDO{}, &do); err != nil {
-		return err
-	}
-
-	return nil
+	return impl.tx.Delete(&CategoryArticleDO{}, &do)
 }

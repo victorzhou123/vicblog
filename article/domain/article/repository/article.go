@@ -13,4 +13,6 @@ type Article interface {
 	Delete(cmprimitive.Username, cmprimitive.Id) error
 
 	AddArticle(*entity.ArticleInfo) (articleId uint, err error)
+
+	Update(*entity.ArticleUpdate) error
 }

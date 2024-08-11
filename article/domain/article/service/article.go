@@ -17,6 +17,8 @@ type ArticleService interface {
 	Delete(cmprimitive.Username, cmprimitive.Id) error
 
 	AddArticle(cmd *ArticleCmd) (articleId uint, err error)
+
+	UpdateArticle(*UpdateArticleCmd) error
 }
 
 type articleService struct {
@@ -84,4 +86,23 @@ func (s *articleService) AddArticle(cmd *ArticleCmd) (uint, error) {
 	}
 
 	return articleId, nil
+}
+
+func (s *articleService) UpdateArticle(cmd *UpdateArticleCmd) error {
+
+	if err := s.repo.Update(&entity.ArticleUpdate{
+		Id:      cmd.Id,
+		Owner:   cmd.User,
+		Title:   cmd.Title,
+		Content: cmd.Content,
+		Summary: cmd.Summary,
+	}); err != nil {
+
+		log.Errorf("user %s update article %s failed, err: %s",
+			cmd.User.Username(), cmd.Id.Id(), err.Error())
+
+		return err
+	}
+
+	return nil
 }

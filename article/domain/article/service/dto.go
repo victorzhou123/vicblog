@@ -82,3 +82,13 @@ type GetArticleCmd struct {
 	User      cmprimitive.Username
 	ArticleId cmprimitive.Id
 }
+
+// update article
+type UpdateArticleCmd struct {
+	Id      cmprimitive.Id
+	User    cmprimitive.Username
+	Title   cmprimitive.Text
+	Content cmprimitive.Text
+	Summary entity.ArticleSummary
+	Cover   cmprimitive.Urlx
+}

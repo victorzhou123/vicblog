@@ -136,3 +136,46 @@ func (req *reqListArticle) toCmd(user cmprimitive.Username) (cmd articlesvc.Arti
 
 	return cmd, cmd.Validate()
 }
+
+type reqUpdateArticle struct {
+	Id         uint   `json:"id"`
+	Title      string `json:"title"`
+	Content    string `json:"content"`
+	Cover      string `json:"cover"`
+	Summary    string `json:"summary"`
+	CategoryId uint   `json:"categoryId"`
+	TagIds     []uint `json:"tags"`
+}
+
+func (req *reqUpdateArticle) toCmd(user cmprimitive.Username) (cmd dto.UpdateArticleCmd, err error) {
+
+	if cmd.Title, err = cmprimitive.NewTitle(req.Title); err != nil {
+		return
+	}
+
+	if cmd.Content, err = cmprimitive.NewArticleContent(req.Content); err != nil {
+		return
+	}
+
+	if cmd.Cover, err = cmprimitive.NewUrlx(req.Cover); err != nil {
+		return
+	}
+
+	if cmd.Summary, err = articleent.NewArticleSummary(req.Summary); err != nil {
+		return
+	}
+
+	tagIds := make([]cmprimitive.Id, len(req.TagIds))
+	for i := range req.TagIds {
+		tagIds[i] = cmprimitive.NewIdByUint(req.TagIds[i])
+	}
+	cmd.TagIds = tagIds
+
+	cmd.Id = cmprimitive.NewIdByUint(req.Id)
+
+	cmd.User = user
+
+	cmd.CategoryId = cmprimitive.NewIdByUint(req.CategoryId)
+
+	return
+}
