@@ -2,9 +2,11 @@ package dto
 
 import (
 	articleent "victorzhou123/vicblog/article/domain/article/entity"
-	articledmsvc "victorzhou123/vicblog/article/domain/article/service"
 	articlesvc "victorzhou123/vicblog/article/domain/article/service"
+	catesvc "victorzhou123/vicblog/article/domain/category/service"
+	tagsvc "victorzhou123/vicblog/article/domain/tag/service"
 	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
+	dmsvc "victorzhou123/vicblog/common/domain/service"
 )
 
 // add article
@@ -68,9 +70,33 @@ func ToArticleDetailDto(
 	}
 }
 
+// list all articles
+type ListAllArticlesCmd struct {
+	dmsvc.PaginationCmd
+}
+
+type ArticleDetailsListDto struct {
+	dmsvc.PaginationDto
+
+	Articles []ArticleDetailListDto `json:"articles"`
+}
+
+type ArticleDetailListDto struct {
+	Id        uint   `json:"id"`
+	Title     string `json:"title"`
+	Summary   string `json:"summary"`
+	Cover     string `json:"cover"`
+	IsPublish bool   `json:"isPublish"`
+	IsTop     bool   `json:"isTop"`
+	CreatedAt string `json:"createTime"`
+
+	Category catesvc.CategoryDto `json:"category"`
+	Tags     []tagsvc.TagDto     `json:"tags"`
+}
+
 // update article
 type UpdateArticleCmd struct {
-	articledmsvc.UpdateArticleCmd
+	articlesvc.UpdateArticleCmd
 
 	CategoryId cmprimitive.Id
 	TagIds     []cmprimitive.Id

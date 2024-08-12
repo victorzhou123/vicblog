@@ -13,7 +13,7 @@ const msgCannotFoundTheArticle = "can not found the article"
 type ArticleService interface {
 	GetArticle(*GetArticleCmd) (entity.Article, error)
 	GetArticleList(*ArticleListCmd) (ArticleListDto, error)
-	GetAllArticleList(*ListAllArticleCmd) (ArticleListDto, error)
+	PaginationListArticle(*ListAllArticleCmd) (ArticleListDto, error)
 
 	Delete(cmprimitive.Username, cmprimitive.Id) error
 
@@ -59,7 +59,7 @@ func (s *articleService) GetArticleList(cmd *ArticleListCmd) (ArticleListDto, er
 	return toArticleListDto(articles, &cmd.PaginationCmd, total), nil
 }
 
-func (s *articleService) GetAllArticleList(cmd *ListAllArticleCmd) (ArticleListDto, error) {
+func (s *articleService) PaginationListArticle(cmd *ListAllArticleCmd) (ArticleListDto, error) {
 
 	articles, total, err := s.repo.ListAllArticles(cmd.toPageListOpt())
 	if err != nil {
@@ -73,7 +73,6 @@ func (s *articleService) GetAllArticleList(cmd *ListAllArticleCmd) (ArticleListD
 	}
 
 	return toArticleListDto(articles, &cmd.PaginationCmd, total), nil
-
 }
 
 func (s *articleService) Delete(user cmprimitive.Username, id cmprimitive.Id) error {

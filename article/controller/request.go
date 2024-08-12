@@ -137,6 +137,24 @@ func (req *reqListArticle) toCmd(user cmprimitive.Username) (cmd articlesvc.Arti
 	return cmd, cmd.Validate()
 }
 
+type reqListAllArticle struct {
+	cmctl.ReqList
+}
+
+func (req *reqListAllArticle) toCmd() (cmd articlesvc.ListAllArticleCmd, err error) {
+
+	listCmd, err := req.ReqList.ToCmd()
+	if err != nil {
+		return
+	}
+
+	cmd = articlesvc.ListAllArticleCmd{
+		PaginationCmd: listCmd,
+	}
+
+	return
+}
+
 type reqUpdateArticle struct {
 	Id         uint   `json:"id"`
 	Title      string `json:"title"`

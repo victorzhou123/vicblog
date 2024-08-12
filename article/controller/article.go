@@ -17,7 +17,7 @@ func AddRouterForArticleController(
 	article service.ArticleService,
 	articleAppService articleappsvc.ArticleAppService,
 ) {
-	ctl := ArticleController{
+	ctl := articleController{
 		AuthMiddleware:    auth,
 		article:           article,
 		articleAppService: articleAppService,
@@ -25,12 +25,13 @@ func AddRouterForArticleController(
 
 	rg.GET("/v1/admin/article/:id", auth.VerifyToken, ctl.Get)
 	rg.GET("/v1/admin/article", auth.VerifyToken, ctl.List)
+	rg.GET("/v1/article", ctl.ListAll)
 	rg.DELETE("/v1/admin/article/:id", auth.VerifyToken, ctl.Delete)
 	rg.POST("/v1/admin/article", auth.VerifyToken, ctl.Add)
 	rg.PUT("/v1/admin/article", auth.VerifyToken, ctl.Update)
 }
 
-type ArticleController struct {
+type articleController struct {
 	cmapp.AuthMiddleware
 	article           service.ArticleService
 	articleAppService articleappsvc.ArticleAppService
@@ -42,7 +43,7 @@ type ArticleController struct {
 // @Accept   json
 // @Param	id	path	int	true	"article ID"
 // @Success  200   {array}  dto.ArticleDetailDto
-func (ctl *ArticleController) Get(ctx *gin.Context) {
+func (ctl *articleController) Get(ctx *gin.Context) {
 
 	user, err := ctl.GetUser(ctx)
 	if err != nil {
@@ -76,7 +77,7 @@ func (ctl *ArticleController) Get(ctx *gin.Context) {
 // @Param    size  query  int  true  "single page size of user queried"
 // @Success  200   {array}  service.ArticleListDto
 // @Router   /v1/admin/article/list [get]
-func (ctl *ArticleController) List(ctx *gin.Context) {
+func (ctl *articleController) List(ctx *gin.Context) {
 
 	req := reqListArticle{
 		cmctl.ReqList{
@@ -109,13 +110,47 @@ func (ctl *ArticleController) List(ctx *gin.Context) {
 	cmctl.SendRespOfGet(ctx, dto)
 }
 
+// @Summary  List all articles
+// @Description  list all articles by pagination
+// @Tags     Article
+// @Accept   json
+// @Param    current  query  int  true  "current page of user queried"
+// @Param    size  query  int  true  "single page size of user queried"
+// @Success  200   {array}  service.ArticleListDto
+// @Router   /v1/article [get]
+func (ctl *articleController) ListAll(ctx *gin.Context) {
+
+	req := reqListAllArticle{
+		cmctl.ReqList{
+			CurPage:  ctx.Query("current"),
+			PageSize: ctx.Query("size"),
+		},
+	}
+
+	cmd, err := req.toCmd()
+	if err != nil {
+		cmctl.SendError(ctx, err)
+
+		return
+	}
+
+	dto, err := ctl.article.PaginationListArticle(&cmd)
+	if err != nil {
+		cmctl.SendRespOfGet(ctx, dto)
+
+		return
+	}
+
+	cmctl.SendRespOfGet(ctx, dto)
+}
+
 // @Summary  delete article
 // @Description  delete one article of request user
 // @Tags     Article
 // @Param	id	path	int	true	"article ID"
 // @Success  200
 // @Router   /v1/admin/article/{id} [delete]
-func (ctl *ArticleController) Delete(ctx *gin.Context) {
+func (ctl *articleController) Delete(ctx *gin.Context) {
 
 	user, err := ctl.GetUser(ctx)
 	if err != nil {
@@ -142,7 +177,7 @@ func (ctl *ArticleController) Delete(ctx *gin.Context) {
 // @Param	body	body	reqArticle  true  "body of add article"
 // @Success  201
 // @Router   /v1/admin/article [post]
-func (ctl *ArticleController) Add(ctx *gin.Context) {
+func (ctl *articleController) Add(ctx *gin.Context) {
 	var req reqArticle
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -181,7 +216,7 @@ func (ctl *ArticleController) Add(ctx *gin.Context) {
 // @Param	body	body	reqUpdateArticle  true  "body of update article"
 // @Success  202
 // @Router   /v1/admin/article [put]
-func (ctl *ArticleController) Update(ctx *gin.Context) {
+func (ctl *articleController) Update(ctx *gin.Context) {
 	var req reqUpdateArticle
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {

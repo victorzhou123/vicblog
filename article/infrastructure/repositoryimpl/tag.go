@@ -38,6 +38,30 @@ func (impl *tagRepoImpl) AddBatches(tagNames repository.TagNames) error {
 	return err
 }
 
+func (impl *tagRepoImpl) GetBatchTags(tagIds []cmprimitive.Id) ([]entity.Tag, error) {
+
+	ids := make([]uint, len(tagIds))
+	for i := range ids {
+		ids[i] = tagIds[i].IdNum()
+	}
+
+	dos := []TagDO{}
+
+	if err := impl.Impl.Model(&TagDO{}).Where(impl.InFilter("id"), ids).Find(&dos); err != nil {
+		return nil, cmdmerror.NewNotFound(cmdmerror.ErrorCodeResourceNotFound, "")
+	}
+
+	var err error
+	tags := make([]entity.Tag, len(dos))
+	for i := range dos {
+		if tags[i], err = dos[i].toTag(); err != nil {
+			return nil, err
+		}
+	}
+
+	return tags, nil
+}
+
 func (impl *tagRepoImpl) GetTagList(opt cmrepo.PageListOpt) ([]entity.Tag, int, error) {
 	dos := []TagDO{}
 

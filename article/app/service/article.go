@@ -13,6 +13,7 @@ import (
 
 type ArticleAppService interface {
 	GetArticle(*dto.GetArticleCmd) (dto.ArticleDetailDto, error)
+	PaginationListArticle(*dto.ListAllArticlesCmd) (dto.ArticleDetailsListDto, error)
 
 	AddArticle(*dto.AddArticleCmd) error
 
@@ -75,6 +76,36 @@ func (s *articleAppService) GetArticle(cmd *dto.GetArticleCmd) (dto.ArticleDetai
 	}
 
 	return dto.ToArticleDetailDto(article, tagIds, cateId), nil
+}
+
+func (s *articleAppService) PaginationListArticle(cmd *dto.ListAllArticlesCmd) (dto.ArticleDetailsListDto, error) {
+
+	// list articles
+	articleDto, err := s.article.PaginationListArticle(
+		&articledmsvc.ListAllArticleCmd{PaginationCmd: cmd.PaginationCmd})
+	if err != nil {
+		return dto.ArticleDetailsListDto{}, err
+	}
+
+	articleDetailListDtos := make([]dto.ArticleDetailListDto, len(articleDto.Articles))
+
+	for i := range articleDto.Articles {
+
+		articleId := cmprimitive.NewIdByUint(articleDto.Articles[i].Id)
+
+		if articleDetailListDtos[i].Tags, err = s.tag.GetArticleTag(articleId); err != nil {
+			return dto.ArticleDetailsListDto{}, err
+		}
+
+		if articleDetailListDtos[i].Category, err = s.cate.GetArticleCategory(articleId); err != nil {
+			return dto.ArticleDetailsListDto{}, err
+		}
+	}
+
+	return dto.ArticleDetailsListDto{
+		PaginationDto: articleDto.PaginationDto,
+		Articles:      articleDetailListDtos,
+	}, nil
 }
 
 func (s *articleAppService) AddArticle(cmd *dto.AddArticleCmd) error {
