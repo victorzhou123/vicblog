@@ -11,7 +11,6 @@ import (
 
 type Impl interface {
 	Model(model any) *gorm.DB
-	Begin() *gorm.DB
 
 	// Query
 	GetRecord(model, filter, result any) error
@@ -21,7 +20,6 @@ type Impl interface {
 
 	// Add
 	Add(model, value any) error
-	TxAdd(tx *gorm.DB, model, value any) error
 
 	// Update
 	Update(model, filter, values any) error
@@ -47,14 +45,6 @@ type daoImpl struct{}
 // If using the same gorm.DB instance by different operations, they will share the same error.
 func (dao *daoImpl) Model(model any) *gorm.DB {
 	return db.Model(model)
-}
-
-func (dao *daoImpl) db() *gorm.DB {
-	return DB()
-}
-
-func (dao *daoImpl) Begin() *gorm.DB {
-	return db.Begin()
 }
 
 func (dao *daoImpl) GetRecord(model, filter, result any) error {
@@ -98,25 +88,10 @@ func (dao *daoImpl) GetByPrimaryKey(model, row any) error {
 
 	return err
 }
-
 func (dao *daoImpl) Add(model, value any) error {
-	return dao.add(dao.db(), model, value)
-}
 
-func (dao *daoImpl) TxAdd(tx *gorm.DB, model, value any) error {
+	err := dao.Model(model).Create(value).Error
 
-	if err := dao.add(tx, model, value); err != nil {
-		tx.Rollback()
-
-		return err
-	}
-
-	return nil
-}
-
-func (dao *daoImpl) add(db *gorm.DB, model, value any) error {
-
-	err := db.Model(model).Create(value).Error
 	if errors.Is(err, gorm.ErrCheckConstraintViolated) {
 		return repository.NewErrorConstraintViolated(err)
 	}

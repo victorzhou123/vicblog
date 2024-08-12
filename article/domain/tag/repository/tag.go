@@ -2,7 +2,7 @@ package repository
 
 import (
 	"victorzhou123/vicblog/article/domain/tag/entity"
-	"victorzhou123/vicblog/common/domain/primitive"
+	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
 	cmrepo "victorzhou123/vicblog/common/domain/repository"
 )
 
@@ -24,7 +24,8 @@ func (t *TagNames) NoDuplication() bool {
 
 type Tag interface {
 	AddBatches(TagNames) error
+	GetBatchTags(tagIds []cmprimitive.Id) ([]entity.Tag, error)
 	GetTagList(cmrepo.PageListOpt) ([]entity.Tag, int, error)
 	GetAllTagList() ([]entity.Tag, error)
-	Delete(primitive.Id) error
+	Delete(cmprimitive.Id) error
 }

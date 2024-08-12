@@ -9,6 +9,7 @@ import (
 type Article interface {
 	GetArticle(user cmprimitive.Username, articleId cmprimitive.Id) (entity.Article, error)
 	ListArticles(cmprimitive.Username, cmrepo.PageListOpt) ([]entity.Article, int, error)
+	ListAllArticles(cmrepo.PageListOpt) ([]entity.Article, int, error)
 
 	Delete(cmprimitive.Username, cmprimitive.Id) error
 

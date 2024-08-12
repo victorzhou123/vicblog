@@ -29,6 +29,17 @@ func (impl *categoryRepoImpl) AddCategory(name entity.CategoryName) error {
 	return impl.Add(&CategoryDO{}, &categoryDo)
 }
 
+func (impl *categoryRepoImpl) GetCategory(cateId cmprimitive.Id) (entity.Category, error) {
+
+	do := CategoryDO{}
+
+	if err := impl.Impl.GetByPrimaryKey(&CategoryDO{}, &do); err != nil {
+		return entity.Category{}, err
+	}
+
+	return do.toCategory()
+}
+
 func (impl *categoryRepoImpl) GetCategoryList(opt cmrepo.PageListOpt) ([]entity.Category, int, error) {
 	categoryDos := []CategoryDO{}
 

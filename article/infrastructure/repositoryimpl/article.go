@@ -78,6 +78,33 @@ func (impl *articleRepoImpl) ListArticles(
 	return dmArticles, total, nil
 }
 
+func (impl *articleRepoImpl) ListAllArticles(opt cmrepo.PageListOpt) ([]entity.Article, int, error) {
+
+	dos := []ArticleDO{}
+
+	option := mysql.PaginationOpt{
+		CurPage:  opt.CurPage,
+		PageSize: opt.PageSize,
+	}
+
+	total, err := impl.db.GetRecordsByPagination(&ArticleDO{}, &ArticleDO{}, &dos, option)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	// convert []ArticleDO to []domain.Article
+	dmArticles := make([]entity.Article, len(dos))
+	for i := range dos {
+
+		if dmArticles[i], err = dos[i].toArticle(); err != nil {
+			return nil, 0, err
+		}
+
+	}
+
+	return dmArticles, total, nil
+}
+
 func (impl *articleRepoImpl) Delete(user cmprimitive.Username, id cmprimitive.Id) error {
 	articleDo := &ArticleDO{}
 	articleDo.Owner = user.Username()
