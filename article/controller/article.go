@@ -134,9 +134,10 @@ func (ctl *articleController) ListAll(ctx *gin.Context) {
 		return
 	}
 
-	dto, err := ctl.article.PaginationListArticle(&cmd)
+	dto, err := ctl.articleAppService.PaginationListArticle(
+		&dto.ListAllArticlesCmd{PaginationCmd: cmd.PaginationCmd})
 	if err != nil {
-		cmctl.SendRespOfGet(ctx, dto)
+		cmctl.SendError(ctx, err)
 
 		return
 	}
