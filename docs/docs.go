@@ -328,6 +328,45 @@ const docTemplate = `{
                 }
             }
         },
+        "/v1/article": {
+            "get": {
+                "description": "list all articles by pagination",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Article"
+                ],
+                "summary": "List all articles",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "current page of user queried",
+                        "name": "current",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "single page size of user queried",
+                        "name": "size",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/service.ArticleListDto"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/v1/login": {
             "post": {
                 "description": "login",
@@ -449,7 +488,7 @@ const docTemplate = `{
                 "summary": {
                     "type": "string"
                 },
-                "tagIds": {
+                "tags": {
                     "type": "array",
                     "items": {
                         "type": "integer"
@@ -524,6 +563,9 @@ const docTemplate = `{
                 },
                 "isTop": {
                     "type": "boolean"
+                },
+                "summary": {
+                    "type": "string"
                 },
                 "title": {
                     "type": "string"
