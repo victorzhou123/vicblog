@@ -3,6 +3,7 @@ package service
 import (
 	"victorzhou123/vicblog/article/domain/article/entity"
 	"victorzhou123/vicblog/article/domain/article/repository"
+	cmentt "victorzhou123/vicblog/common/domain/entity"
 	cmdmerror "victorzhou123/vicblog/common/domain/error"
 	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
 	"victorzhou123/vicblog/common/log"
@@ -13,13 +14,13 @@ const msgCannotFoundTheArticle = "can not found the article"
 type ArticleService interface {
 	GetArticle(*GetArticleCmd) (entity.Article, error)
 	GetArticleList(*ArticleListCmd) (ArticleListDto, error)
-	PaginationListArticle(*ListAllArticleCmd) (ArticleListDto, error)
+	PaginationListArticle(*cmentt.Pagination) (ArticleListDto, error)
 
 	Delete(cmprimitive.Username, cmprimitive.Id) error
 
-	AddArticle(cmd *ArticleCmd) (articleId uint, err error)
+	AddArticle(*entity.ArticleInfo) (articleId cmprimitive.Id, err error)
 
-	UpdateArticle(*UpdateArticleCmd) error
+	UpdateArticle(articleId cmprimitive.Id, articleInfo *entity.ArticleInfo) error
 }
 
 type articleService struct {
@@ -49,19 +50,22 @@ func (s *articleService) GetArticle(cmd *GetArticleCmd) (entity.Article, error) 
 
 func (s *articleService) GetArticleList(cmd *ArticleListCmd) (ArticleListDto, error) {
 
-	articles, total, err := s.repo.ListArticles(cmd.User, cmd.toPageListOpt())
+	articles, total, err := s.repo.ListArticles(cmd.User, cmd.Pagination)
 	if err != nil {
 		return ArticleListDto{}, cmdmerror.New(
 			cmdmerror.ErrorCodeResourceNotFound, msgCannotFoundTheArticle,
 		)
 	}
 
-	return toArticleListDto(articles, &cmd.PaginationCmd, total), nil
+	return ArticleListDto{
+		PaginationStatus: cmd.ToPaginationStatus(total),
+		Articles:         articles,
+	}, nil
 }
 
-func (s *articleService) PaginationListArticle(cmd *ListAllArticleCmd) (ArticleListDto, error) {
+func (s *articleService) PaginationListArticle(pagination *cmentt.Pagination) (ArticleListDto, error) {
 
-	articles, total, err := s.repo.ListAllArticles(cmd.ToPageListOpt())
+	articles, total, err := s.repo.ListAllArticles(*pagination)
 	if err != nil {
 		if cmdmerror.IsNotFound(err) {
 			return ArticleListDto{}, cmdmerror.New(
@@ -72,7 +76,10 @@ func (s *articleService) PaginationListArticle(cmd *ListAllArticleCmd) (ArticleL
 		return ArticleListDto{}, err
 	}
 
-	return toArticleListDto(articles, &cmd.PaginationCmd, total), nil
+	return ArticleListDto{
+		PaginationStatus: pagination.ToPaginationStatus(total),
+		Articles:         articles,
+	}, nil
 }
 
 func (s *articleService) Delete(user cmprimitive.Username, id cmprimitive.Id) error {
@@ -86,37 +93,36 @@ func (s *articleService) Delete(user cmprimitive.Username, id cmprimitive.Id) er
 	return nil
 }
 
-func (s *articleService) AddArticle(cmd *ArticleCmd) (uint, error) {
+func (s *articleService) AddArticle(articleInfo *entity.ArticleInfo) (cmprimitive.Id, error) {
 
 	articleId, err := s.repo.AddArticle(&entity.ArticleInfo{
-		Owner:   cmd.Owner,
-		Title:   cmd.Title,
-		Summary: cmd.Summary,
-		Content: cmd.Content,
-		Cover:   cmd.Cover,
+		Owner:   articleInfo.Owner,
+		Title:   articleInfo.Title,
+		Summary: articleInfo.Summary,
+		Content: articleInfo.Content,
+		Cover:   articleInfo.Cover,
 	})
 	if err != nil {
 
-		log.Errorf("user %s add article failed, err: %s", cmd.Owner.Username(), err.Error())
+		log.Errorf("user %s add article failed, err: %s", articleInfo.Owner.Username(), err.Error())
 
-		return 0, err
+		return nil, err
 	}
 
 	return articleId, nil
 }
 
-func (s *articleService) UpdateArticle(cmd *UpdateArticleCmd) error {
+func (s *articleService) UpdateArticle(articleId cmprimitive.Id, articleInfo *entity.ArticleInfo) error {
 
-	if err := s.repo.Update(&entity.ArticleUpdate{
-		Id:      cmd.Id,
-		Owner:   cmd.User,
-		Title:   cmd.Title,
-		Content: cmd.Content,
-		Summary: cmd.Summary,
+	if err := s.repo.Update(articleId, &entity.ArticleInfo{
+		Owner:   articleInfo.Owner,
+		Title:   articleInfo.Title,
+		Content: articleInfo.Content,
+		Summary: articleInfo.Summary,
 	}); err != nil {
 
 		log.Errorf("user %s update article %s failed, err: %s",
-			cmd.User.Username(), cmd.Id.Id(), err.Error())
+			articleInfo.Owner.Username(), articleId.Id(), err.Error())
 
 		return err
 	}

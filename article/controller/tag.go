@@ -3,7 +3,7 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 
-	"victorzhou123/vicblog/article/domain/tag/service"
+	"victorzhou123/vicblog/article/app/service"
 	cmapp "victorzhou123/vicblog/common/app"
 	cmctl "victorzhou123/vicblog/common/controller"
 	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
@@ -12,7 +12,7 @@ import (
 func AddRouterForTagController(
 	rg *gin.RouterGroup,
 	auth cmapp.AuthMiddleware,
-	tag service.TagService,
+	tag service.TagAppService,
 ) {
 	ctl := tagController{
 		AuthMiddleware: auth,
@@ -26,7 +26,7 @@ func AddRouterForTagController(
 
 type tagController struct {
 	cmapp.AuthMiddleware
-	tag service.TagService
+	tag service.TagAppService
 }
 
 // @Summary  Add tag
@@ -95,7 +95,7 @@ func (ctl *tagController) List(ctx *gin.Context) {
 			return
 		}
 
-		dto, err := ctl.tag.GetTagList(&cmd)
+		dto, err := ctl.tag.ListTag(&cmd)
 		if err != nil {
 			cmctl.SendError(ctx, err)
 

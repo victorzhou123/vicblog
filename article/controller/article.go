@@ -19,7 +19,6 @@ func AddRouterForArticleController(
 ) {
 	ctl := articleController{
 		AuthMiddleware:    auth,
-		article:           article,
 		articleAppService: articleAppService,
 	}
 
@@ -33,7 +32,6 @@ func AddRouterForArticleController(
 
 type articleController struct {
 	cmapp.AuthMiddleware
-	article           service.ArticleService
 	articleAppService articleappsvc.ArticleAppService
 }
 
@@ -100,7 +98,7 @@ func (ctl *articleController) List(ctx *gin.Context) {
 		return
 	}
 
-	dto, err := ctl.article.GetArticleList(&cmd)
+	dto, err := ctl.articleAppService.GetArticleList(&cmd)
 	if err != nil {
 		cmctl.SendRespOfGet(ctx, dto)
 

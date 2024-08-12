@@ -3,7 +3,6 @@ package dto
 import (
 	"victorzhou123/vicblog/common/domain/entity"
 	"victorzhou123/vicblog/common/domain/primitive"
-	"victorzhou123/vicblog/common/domain/repository"
 )
 
 type PaginationCmd struct {
@@ -20,12 +19,10 @@ func (cmd *PaginationCmd) ToPaginationDto(total int) PaginationDto {
 	}
 }
 
-func (cmd *PaginationCmd) ToPageListOpt() repository.PageListOpt {
-	return repository.PageListOpt{
-		Pagination: entity.Pagination{
-			CurPage:  cmd.CurPage,
-			PageSize: cmd.PageSize,
-		},
+func (cmd *PaginationCmd) ToPagination() *entity.Pagination {
+	return &entity.Pagination{
+		CurPage:  cmd.CurPage,
+		PageSize: cmd.PageSize,
 	}
 }
 
@@ -34,4 +31,13 @@ type PaginationDto struct {
 	PageCount int `json:"pages"`
 	PageSize  int `json:"size"`
 	CurPage   int `json:"current"`
+}
+
+func ToPaginationDto(ps entity.PaginationStatus) PaginationDto {
+	return PaginationDto{
+		Total:     ps.Total,
+		PageCount: ps.PageCount,
+		PageSize:  ps.PageSize.PageSize(),
+		CurPage:   ps.CurPage.CurPage(),
+	}
 }

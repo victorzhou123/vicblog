@@ -3,6 +3,7 @@ package service
 import (
 	"victorzhou123/vicblog/article/domain/category/entity"
 	"victorzhou123/vicblog/article/domain/category/repository"
+	cment "victorzhou123/vicblog/common/domain/entity"
 	cmdmerror "victorzhou123/vicblog/common/domain/error"
 	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
 	"victorzhou123/vicblog/common/log"
@@ -10,9 +11,9 @@ import (
 
 type CategoryService interface {
 	AddCategory(entity.CategoryName) error
-	ListCategory(*CategoryListCmd) (CategoryListDto, error)
-	ListAllCategory() ([]CategoryDto, error)
-	GetArticleCategory(articleId cmprimitive.Id) (CategoryDto, error)
+	ListCategory(*cment.Pagination) (CategoryListDto, error)
+	ListAllCategory() ([]entity.Category, error)
+	GetArticleCategory(articleId cmprimitive.Id) (entity.Category, error)
 	DelCategory(cmprimitive.Id) error
 
 	GetRelationWithArticle(articleId cmprimitive.Id) (cateId cmprimitive.Id, err error)
@@ -47,9 +48,9 @@ func (s *categoryService) AddCategory(category entity.CategoryName) error {
 	return nil
 }
 
-func (s *categoryService) ListCategory(cmd *CategoryListCmd) (CategoryListDto, error) {
+func (s *categoryService) ListCategory(pagination *cment.Pagination) (CategoryListDto, error) {
 
-	cates, total, err := s.repo.GetCategoryList(cmd.ToPageListOpt())
+	cates, total, err := s.repo.GetCategoryList(*pagination)
 	if err != nil {
 		if cmdmerror.IsNotFound(err) {
 			return CategoryListDto{}, nil
@@ -58,39 +59,25 @@ func (s *categoryService) ListCategory(cmd *CategoryListCmd) (CategoryListDto, e
 		return CategoryListDto{}, err
 	}
 
-	return toCategoryListDto(cates, cmd, total), nil
+	return CategoryListDto{
+		PaginationStatus: pagination.ToPaginationStatus(total),
+		Categories:       cates,
+	}, nil
 }
 
-func (s *categoryService) ListAllCategory() ([]CategoryDto, error) {
-
-	cates, err := s.repo.GetAllCategoryList()
-	if err != nil {
-		return nil, err
-	}
-
-	dtos := make([]CategoryDto, len(cates))
-	for i := range cates {
-		dtos[i] = toCategoryDto(cates[i])
-	}
-
-	return dtos, nil
+func (s *categoryService) ListAllCategory() ([]entity.Category, error) {
+	return s.repo.GetAllCategoryList()
 }
 
-func (s *categoryService) GetArticleCategory(articleId cmprimitive.Id) (CategoryDto, error) {
+func (s *categoryService) GetArticleCategory(articleId cmprimitive.Id) (entity.Category, error) {
 
 	// get article relate category
 	cateId, err := s.categoryArticleRepo.GetRelationWithArticle(articleId)
 	if err != nil {
-		return CategoryDto{}, err
+		return entity.Category{}, err
 	}
 
-	// get category information
-	category, err := s.repo.GetCategory(cateId)
-	if err != nil {
-		return CategoryDto{}, err
-	}
-
-	return toCategoryDto(category), nil
+	return s.repo.GetCategory(cateId)
 }
 
 func (s *categoryService) DelCategory(id cmprimitive.Id) error {

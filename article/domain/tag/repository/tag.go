@@ -2,8 +2,8 @@ package repository
 
 import (
 	"victorzhou123/vicblog/article/domain/tag/entity"
+	cment "victorzhou123/vicblog/common/domain/entity"
 	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
-	cmrepo "victorzhou123/vicblog/common/domain/repository"
 )
 
 type TagNames struct {
@@ -25,7 +25,7 @@ func (t *TagNames) NoDuplication() bool {
 type Tag interface {
 	AddBatches(TagNames) error
 	GetBatchTags(tagIds []cmprimitive.Id) ([]entity.Tag, error)
-	GetTagList(cmrepo.PageListOpt) ([]entity.Tag, int, error)
+	GetTagList(cment.Pagination) ([]entity.Tag, int, error)
 	GetAllTagList() ([]entity.Tag, error)
 	Delete(cmprimitive.Id) error
 }
