@@ -4,14 +4,15 @@ import (
 	"errors"
 
 	"victorzhou123/vicblog/article/domain/article/entity"
+	cmappdto "victorzhou123/vicblog/common/app/dto"
+	cment "victorzhou123/vicblog/common/domain/entity"
 	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
 	"victorzhou123/vicblog/common/domain/repository"
-	dmservice "victorzhou123/vicblog/common/domain/service"
 )
 
 // list article
 type ArticleListCmd struct {
-	dmservice.PaginationCmd
+	cmappdto.PaginationCmd
 
 	User cmprimitive.Username
 }
@@ -22,20 +23,25 @@ func (cmd *ArticleListCmd) Validate() error {
 		return errors.New("user cannot be empty")
 	}
 
-	return cmd.PaginationCmd.Validate()
+	return nil
 }
 
 func (cmd *ArticleListCmd) toPageListOpt() repository.PageListOpt {
-	return cmd.PaginationCmd.ToPageListOpt()
+	return repository.PageListOpt{
+		Pagination: cment.Pagination{
+			CurPage:  cmd.CurPage,
+			PageSize: cmd.PageSize,
+		},
+	}
 }
 
 type ArticleListDto struct {
-	dmservice.PaginationDto
+	cmappdto.PaginationDto
 
 	Articles []ArticleDto `json:"articles"`
 }
 
-func toArticleListDto(articles []entity.Article, cmd *dmservice.PaginationCmd, total int) ArticleListDto {
+func toArticleListDto(articles []entity.Article, cmd *cmappdto.PaginationCmd, total int) ArticleListDto {
 
 	dtos := make([]ArticleDto, len(articles))
 	for i := range articles {
@@ -72,11 +78,7 @@ func toArticleDto(v entity.Article) ArticleDto {
 
 // list all articles
 type ListAllArticleCmd struct {
-	dmservice.PaginationCmd
-}
-
-func (cmd *ListAllArticleCmd) toPageListOpt() repository.PageListOpt {
-	return cmd.PaginationCmd.ToPageListOpt()
+	cmappdto.PaginationCmd
 }
 
 // add article

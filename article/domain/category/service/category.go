@@ -49,7 +49,7 @@ func (s *categoryService) AddCategory(category entity.CategoryName) error {
 
 func (s *categoryService) ListCategory(cmd *CategoryListCmd) (CategoryListDto, error) {
 
-	cates, total, err := s.repo.GetCategoryList(cmd.toPageListOpt())
+	cates, total, err := s.repo.GetCategoryList(cmd.ToPageListOpt())
 	if err != nil {
 		if cmdmerror.IsNotFound(err) {
 			return CategoryListDto{}, nil

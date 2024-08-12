@@ -5,8 +5,8 @@ import (
 	articledmsvc "victorzhou123/vicblog/article/domain/article/service"
 	catesvc "victorzhou123/vicblog/article/domain/category/service"
 	tagsvc "victorzhou123/vicblog/article/domain/tag/service"
+	cmappdto "victorzhou123/vicblog/common/app/dto"
 	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
-	dmsvc "victorzhou123/vicblog/common/domain/service"
 )
 
 // add article
@@ -71,11 +71,11 @@ func ToArticleDetailDto(
 
 // list all articles
 type ListAllArticlesCmd struct {
-	dmsvc.PaginationCmd
+	cmappdto.PaginationCmd
 }
 
 type ArticleDetailsListDto struct {
-	dmsvc.PaginationDto
+	cmappdto.PaginationDto
 
 	Articles []ArticleDetailListDto `json:"articles"`
 }

@@ -2,24 +2,15 @@ package service
 
 import (
 	categoryett "victorzhou123/vicblog/article/domain/category/entity"
-	"victorzhou123/vicblog/common/domain/repository"
-	dmservice "victorzhou123/vicblog/common/domain/service"
+	cmappdto "victorzhou123/vicblog/common/app/dto"
 )
 
 type CategoryListCmd struct {
-	dmservice.PaginationCmd
-}
-
-func (cmd *CategoryListCmd) Validate() error {
-	return cmd.PaginationCmd.Validate()
-}
-
-func (cmd *CategoryListCmd) toPageListOpt() repository.PageListOpt {
-	return cmd.PaginationCmd.ToPageListOpt()
+	cmappdto.PaginationCmd
 }
 
 type CategoryListDto struct {
-	dmservice.PaginationDto
+	cmappdto.PaginationDto
 
 	Category []CategoryDto `json:"category"`
 }

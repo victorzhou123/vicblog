@@ -1,6 +1,7 @@
 package repository
 
+import "victorzhou123/vicblog/common/domain/entity"
+
 type PageListOpt struct {
-	CurPage  int
-	PageSize int
+	entity.Pagination
 }

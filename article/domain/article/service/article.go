@@ -61,7 +61,7 @@ func (s *articleService) GetArticleList(cmd *ArticleListCmd) (ArticleListDto, er
 
 func (s *articleService) PaginationListArticle(cmd *ListAllArticleCmd) (ArticleListDto, error) {
 
-	articles, total, err := s.repo.ListAllArticles(cmd.toPageListOpt())
+	articles, total, err := s.repo.ListAllArticles(cmd.ToPageListOpt())
 	if err != nil {
 		if cmdmerror.IsNotFound(err) {
 			return ArticleListDto{}, cmdmerror.New(

@@ -36,7 +36,7 @@ func (req *reqCategoryList) toCmd() (cmd categorysvc.CategoryListCmd, err error)
 		PaginationCmd: listCmd,
 	}
 
-	return cmd, cmd.Validate()
+	return
 }
 
 type reqTag struct {
@@ -76,7 +76,7 @@ func (req *reqTagList) toCmd() (cmd tagsvc.TagListCmd, err error) {
 		PaginationCmd: listCmd,
 	}
 
-	return cmd, cmd.Validate()
+	return
 }
 
 type reqArticle struct {

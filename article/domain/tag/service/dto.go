@@ -2,15 +2,15 @@ package service
 
 import (
 	"victorzhou123/vicblog/article/domain/tag/entity"
-	dmservice "victorzhou123/vicblog/common/domain/service"
+	cmappdto "victorzhou123/vicblog/common/app/dto"
 )
 
 type TagListCmd struct {
-	dmservice.PaginationCmd
+	cmappdto.PaginationCmd
 }
 
 type TagListDto struct {
-	dmservice.PaginationDto
+	cmappdto.PaginationDto
 
 	Tag []TagDto `json:"tag"`
 }

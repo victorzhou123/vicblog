@@ -56,8 +56,8 @@ func (impl *articleRepoImpl) ListArticles(
 	articlesDo := []ArticleDO{}
 
 	option := mysql.PaginationOpt{
-		CurPage:  opt.CurPage,
-		PageSize: opt.PageSize,
+		CurPage:  opt.CurPage.CurPage(),
+		PageSize: opt.PageSize.PageSize(),
 	}
 
 	total, err := impl.db.GetRecordsByPagination(&ArticleDO{}, &articleDo, &articlesDo, option)
@@ -83,8 +83,8 @@ func (impl *articleRepoImpl) ListAllArticles(opt cmrepo.PageListOpt) ([]entity.A
 	dos := []ArticleDO{}
 
 	option := mysql.PaginationOpt{
-		CurPage:  opt.CurPage,
-		PageSize: opt.PageSize,
+		CurPage:  opt.CurPage.CurPage(),
+		PageSize: opt.PageSize.PageSize(),
 	}
 
 	total, err := impl.db.GetRecordsByPagination(&ArticleDO{}, &ArticleDO{}, &dos, option)

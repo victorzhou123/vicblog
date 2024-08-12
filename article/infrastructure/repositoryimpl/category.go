@@ -44,8 +44,8 @@ func (impl *categoryRepoImpl) GetCategoryList(opt cmrepo.PageListOpt) ([]entity.
 	categoryDos := []CategoryDO{}
 
 	options := mysql.PaginationOpt{
-		CurPage:  opt.CurPage,
-		PageSize: opt.PageSize,
+		CurPage:  opt.CurPage.CurPage(),
+		PageSize: opt.PageSize.PageSize(),
 	}
 
 	total, err := impl.GetRecordsByPagination(&CategoryDO{}, &CategoryDO{}, &categoryDos, options)

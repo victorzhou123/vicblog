@@ -66,8 +66,8 @@ func (impl *tagRepoImpl) GetTagList(opt cmrepo.PageListOpt) ([]entity.Tag, int, 
 	dos := []TagDO{}
 
 	options := mysql.PaginationOpt{
-		CurPage:  opt.CurPage,
-		PageSize: opt.PageSize,
+		CurPage:  opt.CurPage.CurPage(),
+		PageSize: opt.PageSize.PageSize(),
 	}
 
 	total, err := impl.GetRecordsByPagination(&TagDO{}, &TagDO{}, &dos, options)
