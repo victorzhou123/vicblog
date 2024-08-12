@@ -31,3 +31,14 @@ common:
       bucket: "victor-bucket"
       root_dir: "project/vicblog"
       picture_folder_name: "user_photo"
+blog:
+  blog_info:
+    logo: "https://img.quanxiaoha.com/quanxiaoha/f97361c0429d4bb1bc276ab835843065.jpg"
+    name: "vicblog"
+    author: "victor"
+    introduction: "这是一段介绍"
+    avatar: "https://img.quanxiaoha.com/quanxiaoha/f97361c0429d4bb1bc276ab835843065.jpg"
+    github_homepage: "https://github.com/victorzhou123"
+    gitee_homepage: "https://github.com/victorzhou123"
+    csdn_homepage: "https://github.com/victorzhou123"
+    zhihu_homepage: "https://github.com/victorzhou123"

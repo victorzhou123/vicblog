@@ -367,6 +367,29 @@ const docTemplate = `{
                 }
             }
         },
+        "/v1/blog/settings/detail": {
+            "get": {
+                "description": "get blog information",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Blog"
+                ],
+                "summary": "Get blog information",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dto.BlogInformationDto"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/v1/login": {
             "post": {
                 "description": "login",
@@ -542,6 +565,38 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.BlogInformationDto": {
+            "type": "object",
+            "properties": {
+                "author": {
+                    "type": "string"
+                },
+                "avatar": {
+                    "type": "string"
+                },
+                "csdnHomepage": {
+                    "type": "string"
+                },
+                "giteeHomepage": {
+                    "type": "string"
+                },
+                "githubHomepage": {
+                    "type": "string"
+                },
+                "introduction": {
+                    "type": "string"
+                },
+                "logo": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "zhihuHomepage": {
                     "type": "string"
                 }
             }

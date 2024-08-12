@@ -1,6 +1,7 @@
 package config
 
 import (
+	"victorzhou123/vicblog/blog"
 	"victorzhou123/vicblog/common"
 	"victorzhou123/vicblog/common/util"
 )
@@ -18,12 +19,14 @@ func LoadConfig(path string, cfg *Config) error {
 type Config struct {
 	Server Server        `json:"server"`
 	Common common.Config `json:"common"`
+	Blog   blog.Config   `json:"blog"`
 }
 
 func (cfg *Config) configItems() []interface{} {
 	return []interface{}{
 		&cfg.Common,
 		&cfg.Server,
+		&cfg.Blog,
 	}
 }
 

@@ -16,6 +16,10 @@ import (
 	picturesvc "victorzhou123/vicblog/article/domain/picture/service"
 	tagsvc "victorzhou123/vicblog/article/domain/tag/service"
 	articlerepoimpl "victorzhou123/vicblog/article/infrastructure/repositoryimpl"
+	blogappsvc "victorzhou123/vicblog/blog/app/service"
+	blogctl "victorzhou123/vicblog/blog/controller"
+	blogsvc "victorzhou123/vicblog/blog/domain/service"
+	blogrepoimpl "victorzhou123/vicblog/blog/infrastructure/repositoryimpl"
 	cmapp "victorzhou123/vicblog/common/app"
 	cminfraauthimpl "victorzhou123/vicblog/common/infrastructure/authimpl"
 	cminframysql "victorzhou123/vicblog/common/infrastructure/mysql"
@@ -64,17 +68,20 @@ func setRouter(engine *gin.Engine, cfg *mconfig.Config) {
 	categoryArticleRepo := articlerepoimpl.NewCategoryArticleRepo(mysqlImpl, transactionImpl)
 	tagRepo := articlerepoimpl.NewTagRepo(mysqlImpl)
 	tagArticleRepo := articlerepoimpl.NewTagArticleRepo(mysqlImpl, transactionImpl)
+	blogRepo := blogrepoimpl.NewBlogInfoImpl(&cfg.Blog.BlogInfo)
 
 	// domain: following are domain services
 	tagService := tagsvc.NewTagService(tagRepo, tagArticleRepo)
 	articleService := articlesvc.NewArticleService(articleRepo)
 	categoryService := categorysvc.NewCategoryService(categoryRepo, categoryArticleRepo)
 	pictureService := picturesvc.NewFileService(ossRepo)
+	blogService := blogsvc.NewBlogService(blogRepo)
 
 	// app: following are app services
 	authMiddleware := cmapp.NewAuthMiddleware(auth)
 	loginService := userapp.NewLoginService(userRepo, auth)
 	articleAppService := articleappsvc.NewArticleAppService(transactionImpl, articleService, categoryService, tagService)
+	blogAppService := blogappsvc.NewBlogAppService(blogService)
 
 	// controller: add routers
 	v1 := engine.Group(BasePath)
@@ -99,6 +106,10 @@ func setRouter(engine *gin.Engine, cfg *mconfig.Config) {
 
 		articlectl.AddRouterForFileController(
 			v1, authMiddleware, pictureService,
+		)
+
+		blogctl.AddRouterForBlogController(
+			v1, blogAppService,
 		)
 	}
 }
