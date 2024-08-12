@@ -95,6 +95,27 @@ definitions:
       updatedAt:
         type: string
     type: object
+  dto.BlogInformationDto:
+    properties:
+      author:
+        type: string
+      avatar:
+        type: string
+      csdnHomepage:
+        type: string
+      giteeHomepage:
+        type: string
+      githubHomepage:
+        type: string
+      introduction:
+        type: string
+      logo:
+        type: string
+      name:
+        type: string
+      zhihuHomepage:
+        type: string
+    type: object
   service.ArticleDto:
     properties:
       cover:
@@ -419,6 +440,21 @@ paths:
       summary: List all articles
       tags:
       - Article
+  /v1/blog/settings/detail:
+    get:
+      consumes:
+      - application/json
+      description: get blog information
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dto.BlogInformationDto'
+            type: array
+      summary: Get blog information
+      tags:
+      - Blog
   /v1/login:
     post:
       consumes:
