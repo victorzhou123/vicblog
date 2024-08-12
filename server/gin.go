@@ -81,6 +81,8 @@ func setRouter(engine *gin.Engine, cfg *mconfig.Config) {
 	authMiddleware := cmapp.NewAuthMiddleware(auth)
 	loginService := userapp.NewLoginService(userRepo, auth)
 	articleAppService := articleappsvc.NewArticleAppService(transactionImpl, articleService, categoryService, tagService)
+	cateAppService := articleappsvc.NewCategoryAppService(categoryService)
+	tagAppService := articleappsvc.NewTagAppService(tagService)
 	blogAppService := blogappsvc.NewBlogAppService(blogService)
 
 	// controller: add routers
@@ -97,11 +99,11 @@ func setRouter(engine *gin.Engine, cfg *mconfig.Config) {
 		)
 
 		articlectl.AddRouterForCategoryController(
-			v1, authMiddleware, categoryService,
+			v1, authMiddleware, cateAppService,
 		)
 
 		articlectl.AddRouterForTagController(
-			v1, authMiddleware, tagService,
+			v1, authMiddleware, tagAppService,
 		)
 
 		articlectl.AddRouterForFileController(

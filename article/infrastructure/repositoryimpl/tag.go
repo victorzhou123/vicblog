@@ -3,6 +3,7 @@ package repositoryimpl
 import (
 	"victorzhou123/vicblog/article/domain/tag/entity"
 	"victorzhou123/vicblog/article/domain/tag/repository"
+	cment "victorzhou123/vicblog/common/domain/entity"
 	cmdmerror "victorzhou123/vicblog/common/domain/error"
 	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
 	cmrepo "victorzhou123/vicblog/common/domain/repository"
@@ -62,12 +63,12 @@ func (impl *tagRepoImpl) GetBatchTags(tagIds []cmprimitive.Id) ([]entity.Tag, er
 	return tags, nil
 }
 
-func (impl *tagRepoImpl) GetTagList(opt cmrepo.PageListOpt) ([]entity.Tag, int, error) {
+func (impl *tagRepoImpl) GetTagList(opt cment.Pagination) ([]entity.Tag, int, error) {
 	dos := []TagDO{}
 
 	options := mysql.PaginationOpt{
-		CurPage:  opt.CurPage,
-		PageSize: opt.PageSize,
+		CurPage:  opt.CurPage.CurPage(),
+		PageSize: opt.PageSize.PageSize(),
 	}
 
 	total, err := impl.GetRecordsByPagination(&TagDO{}, &TagDO{}, &dos, options)

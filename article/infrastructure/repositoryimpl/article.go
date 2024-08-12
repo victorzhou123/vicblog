@@ -3,9 +3,9 @@ package repositoryimpl
 import (
 	"victorzhou123/vicblog/article/domain/article/entity"
 	"victorzhou123/vicblog/article/domain/article/repository"
+	cment "victorzhou123/vicblog/common/domain/entity"
 	cmdmerror "victorzhou123/vicblog/common/domain/error"
 	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
-	cmrepo "victorzhou123/vicblog/common/domain/repository"
 	"victorzhou123/vicblog/common/infrastructure/mysql"
 )
 
@@ -48,7 +48,7 @@ func (impl *articleRepoImpl) GetArticle(
 }
 
 func (impl *articleRepoImpl) ListArticles(
-	user cmprimitive.Username, opt cmrepo.PageListOpt,
+	user cmprimitive.Username, opt cment.Pagination,
 ) ([]entity.Article, int, error) {
 	articleDo := &ArticleDO{}
 	articleDo.Owner = user.Username()
@@ -56,8 +56,8 @@ func (impl *articleRepoImpl) ListArticles(
 	articlesDo := []ArticleDO{}
 
 	option := mysql.PaginationOpt{
-		CurPage:  opt.CurPage,
-		PageSize: opt.PageSize,
+		CurPage:  opt.CurPage.CurPage(),
+		PageSize: opt.PageSize.PageSize(),
 	}
 
 	total, err := impl.db.GetRecordsByPagination(&ArticleDO{}, &articleDo, &articlesDo, option)
@@ -78,13 +78,14 @@ func (impl *articleRepoImpl) ListArticles(
 	return dmArticles, total, nil
 }
 
-func (impl *articleRepoImpl) ListAllArticles(opt cmrepo.PageListOpt) ([]entity.Article, int, error) {
+// TODO ignore content while list articles
+func (impl *articleRepoImpl) ListAllArticles(opt cment.Pagination) ([]entity.Article, int, error) {
 
 	dos := []ArticleDO{}
 
 	option := mysql.PaginationOpt{
-		CurPage:  opt.CurPage,
-		PageSize: opt.PageSize,
+		CurPage:  opt.CurPage.CurPage(),
+		PageSize: opt.PageSize.PageSize(),
 	}
 
 	total, err := impl.db.GetRecordsByPagination(&ArticleDO{}, &ArticleDO{}, &dos, option)
@@ -113,7 +114,7 @@ func (impl *articleRepoImpl) Delete(user cmprimitive.Username, id cmprimitive.Id
 	return impl.tx.Delete(&ArticleDO{}, &articleDo)
 }
 
-func (impl *articleRepoImpl) AddArticle(info *entity.ArticleInfo) (uint, error) {
+func (impl *articleRepoImpl) AddArticle(info *entity.ArticleInfo) (cmprimitive.Id, error) {
 	do := ArticleDO{
 		Owner:   info.Owner.Username(),
 		Title:   info.Title.Text(),
@@ -123,22 +124,24 @@ func (impl *articleRepoImpl) AddArticle(info *entity.ArticleInfo) (uint, error) 
 	}
 
 	if err := impl.tx.Insert(&ArticleDO{}, &do); err != nil {
-		return 0, err
+		return nil, err
 	}
 
-	return do.ID, nil
+	return cmprimitive.NewIdByUint(do.ID), nil
 }
 
-func (impl *articleRepoImpl) Update(article *entity.ArticleUpdate) error {
+func (impl *articleRepoImpl) Update(
+	articleId cmprimitive.Id, articleInfo *entity.ArticleInfo,
+) error {
 
 	filterDo := ArticleDO{}
-	filterDo.ID = article.Id.IdNum()
-	filterDo.Owner = article.Owner.Username()
+	filterDo.ID = articleId.IdNum()
+	filterDo.Owner = articleInfo.Owner.Username()
 
 	do := ArticleDO{
-		Title:   article.Title.Text(),
-		Content: article.Content.Text(),
-		Summary: article.Summary.ArticleSummary(),
+		Title:   articleInfo.Title.Text(),
+		Content: articleInfo.Content.Text(),
+		Summary: articleInfo.Summary.ArticleSummary(),
 	}
 
 	return impl.tx.Update(&ArticleDO{}, &filterDo, &do)

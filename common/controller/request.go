@@ -1,8 +1,8 @@
 package controller
 
 import (
-	"strconv"
-	"victorzhou123/vicblog/common/domain/service"
+	"victorzhou123/vicblog/common/app/dto"
+	"victorzhou123/vicblog/common/domain/primitive"
 )
 
 type ReqList struct {
@@ -14,13 +14,13 @@ func (req *ReqList) EmptyValue() bool {
 	return req.CurPage == "" && req.PageSize == ""
 }
 
-func (req *ReqList) ToCmd() (cmd service.PaginationCmd, err error) {
+func (req *ReqList) ToCmd() (cmd dto.PaginationCmd, err error) {
 
-	if cmd.CurPage, err = strconv.Atoi(req.CurPage); err != nil {
+	if cmd.CurPage, err = primitive.NewCurPageWithString(req.CurPage); err != nil {
 		return
 	}
 
-	if cmd.PageSize, err = strconv.Atoi(req.PageSize); err != nil {
+	if cmd.PageSize, err = primitive.NewPageSizeWithString(req.PageSize); err != nil {
 		return
 	}
 

@@ -23,11 +23,3 @@ type ArticleInfo struct {
 	Content cmprimitive.Text
 	Cover   cmprimitive.Urlx
 }
-
-type ArticleUpdate struct {
-	Id      cmprimitive.Id
-	Owner   cmprimitive.Username
-	Title   cmprimitive.Text
-	Content cmprimitive.Text
-	Summary ArticleSummary
-}

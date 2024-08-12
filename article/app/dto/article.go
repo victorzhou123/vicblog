@@ -1,23 +1,34 @@
 package dto
 
 import (
-	articleent "victorzhou123/vicblog/article/domain/article/entity"
+	"victorzhou123/vicblog/article/domain/article/entity"
 	articledmsvc "victorzhou123/vicblog/article/domain/article/service"
-	catesvc "victorzhou123/vicblog/article/domain/category/service"
-	tagsvc "victorzhou123/vicblog/article/domain/tag/service"
+	cateent "victorzhou123/vicblog/article/domain/category/entity"
+	tagent "victorzhou123/vicblog/article/domain/tag/entity"
+	cmappdto "victorzhou123/vicblog/common/app/dto"
+	cment "victorzhou123/vicblog/common/domain/entity"
 	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
-	dmsvc "victorzhou123/vicblog/common/domain/service"
 )
 
 // add article
 type AddArticleCmd struct {
 	Owner    cmprimitive.Username
 	Title    cmprimitive.Text
-	Summary  articleent.ArticleSummary
+	Summary  entity.ArticleSummary
 	Content  cmprimitive.Text
 	Cover    cmprimitive.Urlx
 	Category cmprimitive.Id
 	Tags     []cmprimitive.Id
+}
+
+func (cmd *AddArticleCmd) ToArticleInfo() *entity.ArticleInfo {
+	return &entity.ArticleInfo{
+		Owner:   cmd.Owner,
+		Title:   cmd.Title,
+		Summary: cmd.Summary,
+		Content: cmd.Content,
+		Cover:   cmd.Cover,
+	}
 }
 
 // get article
@@ -42,7 +53,7 @@ type ArticleDetailDto struct {
 }
 
 func ToArticleDetailDto(
-	article articleent.Article,
+	article entity.Article,
 	tagIds []cmprimitive.Id,
 	cateId cmprimitive.Id,
 ) ArticleDetailDto {
@@ -69,28 +80,94 @@ func ToArticleDetailDto(
 	}
 }
 
+// get article list
+type GetArticleListCmd struct {
+	cmappdto.PaginationCmd
+
+	User cmprimitive.Username
+}
+
+type ArticleListDto struct {
+	cmappdto.PaginationDto
+
+	Articles []ArticleDto `json:"articles"`
+}
+
+func ToArticleListDto(
+	ps cment.PaginationStatus,
+	articles []entity.Article,
+) ArticleListDto {
+
+	articleDtos := make([]ArticleDto, len(articles))
+	for i := range articles {
+		articleDtos[i] = toArticleDto(articles[i])
+	}
+
+	return ArticleListDto{
+		PaginationDto: cmappdto.ToPaginationDto(ps),
+		Articles:      articleDtos,
+	}
+}
+
 // list all articles
 type ListAllArticlesCmd struct {
-	dmsvc.PaginationCmd
+	cmappdto.PaginationCmd
 }
 
 type ArticleDetailsListDto struct {
-	dmsvc.PaginationDto
+	cmappdto.PaginationDto
 
 	Articles []ArticleDetailListDto `json:"articles"`
 }
 
 type ArticleDetailListDto struct {
-	articledmsvc.ArticleDto
+	ArticleDto
 
-	Category catesvc.CategoryDto `json:"category"`
-	Tags     []tagsvc.TagDto     `json:"tags"`
+	Category CategoryDto `json:"category"`
+	Tags     []TagDto    `json:"tags"`
+}
+
+func ToArticleDetailListDto(
+	article entity.Article, category cateent.Category, tags []tagent.Tag,
+) ArticleDetailListDto {
+
+	tagDtos := make([]TagDto, len(tags))
+	for i := range tags {
+		tagDtos[i] = ToTagDto(tags[i])
+	}
+
+	return ArticleDetailListDto{
+		ArticleDto: toArticleDto(article),
+		Category:   ToCategoryDto(category),
+		Tags:       tagDtos,
+	}
+}
+
+type ArticleDto struct {
+	Id        uint   `json:"id"`
+	Title     string `json:"title"`
+	Summary   string `json:"summary"`
+	Cover     string `json:"cover"`
+	IsPublish bool   `json:"isPublish"`
+	IsTop     bool   `json:"isTop"`
+	CreatedAt string `json:"createTime"`
+}
+
+func toArticleDto(article entity.Article) ArticleDto {
+	return ArticleDto{
+		Id:        article.Id.IdNum(),
+		Title:     article.Title.Text(),
+		Summary:   article.Summary.ArticleSummary(),
+		Cover:     article.Cover.Urlx(),
+		IsPublish: article.IsPublish,
+		IsTop:     article.IsTop,
+		CreatedAt: article.CreatedAt.TimeYearToSecond(),
+	}
 }
 
 // update article
 type UpdateArticleCmd struct {
-	articledmsvc.UpdateArticleCmd
+	AddArticleCmd
 
-	CategoryId cmprimitive.Id
-	TagIds     []cmprimitive.Id
+	Id cmprimitive.Id
 }

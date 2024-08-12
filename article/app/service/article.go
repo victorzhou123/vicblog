@@ -5,6 +5,8 @@ import (
 	articledmsvc "victorzhou123/vicblog/article/domain/article/service"
 	categorydmsvc "victorzhou123/vicblog/article/domain/category/service"
 	tagdmsvc "victorzhou123/vicblog/article/domain/tag/service"
+	cmappdto "victorzhou123/vicblog/common/app/dto"
+	"victorzhou123/vicblog/common/domain/entity"
 	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
 	cmrepo "victorzhou123/vicblog/common/domain/repository"
 	"victorzhou123/vicblog/common/infrastructure/mysql"
@@ -13,6 +15,7 @@ import (
 
 type ArticleAppService interface {
 	GetArticle(*dto.GetArticleCmd) (dto.ArticleDetailDto, error)
+	GetArticleList(*dto.GetArticleListCmd) (dto.ArticleListDto, error)
 	PaginationListArticle(*dto.ListAllArticlesCmd) (dto.ArticleDetailsListDto, error)
 
 	AddArticle(*dto.AddArticleCmd) error
@@ -78,34 +81,47 @@ func (s *articleAppService) GetArticle(cmd *dto.GetArticleCmd) (dto.ArticleDetai
 	return dto.ToArticleDetailDto(article, tagIds, cateId), nil
 }
 
+func (s *articleAppService) GetArticleList(cmd *dto.GetArticleListCmd) (dto.ArticleListDto, error) {
+
+	articleDto, err := s.article.GetArticleList(&articledmsvc.ArticleListCmd{
+		Pagination: *cmd.ToPagination(),
+		User:       cmd.User,
+	})
+	if err != nil {
+		return dto.ArticleListDto{}, err
+	}
+
+	return dto.ToArticleListDto(articleDto.PaginationStatus, articleDto.Articles), nil
+}
+
 func (s *articleAppService) PaginationListArticle(cmd *dto.ListAllArticlesCmd) (dto.ArticleDetailsListDto, error) {
 
 	// list articles
-	articleDto, err := s.article.PaginationListArticle(
-		&articledmsvc.ListAllArticleCmd{PaginationCmd: cmd.PaginationCmd})
+	articleDto, err := s.article.PaginationListArticle(&entity.Pagination{
+		CurPage: cmd.CurPage, PageSize: cmd.PageSize,
+	})
 	if err != nil {
 		return dto.ArticleDetailsListDto{}, err
 	}
 
 	articleDetailListDtos := make([]dto.ArticleDetailListDto, len(articleDto.Articles))
-
 	for i := range articleDto.Articles {
 
-		articleId := cmprimitive.NewIdByUint(articleDto.Articles[i].Id)
-
-		if articleDetailListDtos[i].Tags, err = s.tag.GetArticleTag(articleId); err != nil {
+		tags, err := s.tag.GetArticleTag(articleDto.Articles[i].Id)
+		if err != nil {
 			return dto.ArticleDetailsListDto{}, err
 		}
 
-		if articleDetailListDtos[i].Category, err = s.cate.GetArticleCategory(articleId); err != nil {
+		category, err := s.cate.GetArticleCategory(articleDto.Articles[i].Id)
+		if err != nil {
 			return dto.ArticleDetailsListDto{}, err
 		}
 
-		articleDetailListDtos[i].ArticleDto = articleDto.Articles[i]
+		articleDetailListDtos[i] = dto.ToArticleDetailListDto(articleDto.Articles[i], category, tags)
 	}
 
 	return dto.ArticleDetailsListDto{
-		PaginationDto: articleDto.PaginationDto,
+		PaginationDto: cmappdto.ToPaginationDto(articleDto.PaginationStatus),
 		Articles:      articleDetailListDtos,
 	}, nil
 }
@@ -121,21 +137,13 @@ func (s *articleAppService) AddArticle(cmd *dto.AddArticleCmd) error {
 	}
 
 	// new article
-	articleId, err := s.article.AddArticle(&articledmsvc.ArticleCmd{
-		Owner:   cmd.Owner,
-		Title:   cmd.Title,
-		Summary: cmd.Summary,
-		Content: cmd.Content,
-		Cover:   cmd.Cover,
-	})
+	articleId, err := s.article.AddArticle(cmd.ToArticleInfo())
 	if err != nil {
 		return err
 	}
 
-	article := cmprimitive.NewIdByUint(articleId)
-
 	// make relationship with tag
-	if err := s.tag.BuildRelationWithArticle(article, cmd.Tags); err != nil {
+	if err := s.tag.BuildRelationWithArticle(articleId, cmd.Tags); err != nil {
 
 		log.Errorf("user %s build tag relation with article failed, err: %s",
 			cmd.Owner.Username(), err.Error())
@@ -144,7 +152,7 @@ func (s *articleAppService) AddArticle(cmd *dto.AddArticleCmd) error {
 	}
 
 	// make relationship with category
-	if err := s.cate.BuildRelationWithArticle(article, cmd.Category); err != nil {
+	if err := s.cate.BuildRelationWithArticle(articleId, cmd.Category); err != nil {
 
 		log.Errorf("user %s build category relation with article failed, err: %s",
 			cmd.Owner.Username(), err.Error())
@@ -226,10 +234,10 @@ func (s *articleAppService) UpdateArticle(cmd *dto.UpdateArticleCmd) error {
 	}
 
 	// update article
-	if err := s.article.UpdateArticle(&cmd.UpdateArticleCmd); err != nil {
+	if err := s.article.UpdateArticle(cmd.Id, cmd.ToArticleInfo()); err != nil {
 
 		log.Errorf("user %s update article %s failed, err: %s",
-			cmd.User.Username(), cmd.Id.Id(), err.Error())
+			cmd.AddArticleCmd.Owner.Username(), cmd.Id.Id(), err.Error())
 
 		return err
 	}
@@ -238,16 +246,16 @@ func (s *articleAppService) UpdateArticle(cmd *dto.UpdateArticleCmd) error {
 	if err := s.tag.RemoveRelationWithArticle(cmd.Id); err != nil {
 
 		log.Errorf("user %s remove all tags relations of article %s failed, err: %s",
-			cmd.User.Username(), cmd.Id.Id(), err.Error())
+			cmd.AddArticleCmd.Owner.Username(), cmd.Id.Id(), err.Error())
 
 		return err
 	}
 
 	// make relationship with tags
-	if err := s.tag.BuildRelationWithArticle(cmd.Id, cmd.TagIds); err != nil {
+	if err := s.tag.BuildRelationWithArticle(cmd.Id, cmd.AddArticleCmd.Tags); err != nil {
 
 		log.Errorf("user %s build tag relation with article failed, err: %s",
-			cmd.User.Username(), err.Error())
+			cmd.AddArticleCmd.Owner.Username(), err.Error())
 
 		return err
 	}
@@ -256,16 +264,16 @@ func (s *articleAppService) UpdateArticle(cmd *dto.UpdateArticleCmd) error {
 	if err := s.cate.RemoveRelationWithArticle(cmd.Id); err != nil {
 
 		log.Errorf("user %s remove all cates relations of article %s failed, err: %s",
-			cmd.User.Username(), cmd.Id.Id(), err.Error())
+			cmd.AddArticleCmd.Owner.Username(), cmd.Id.Id(), err.Error())
 
 		return err
 	}
 
 	// make relationship with category
-	if err := s.cate.BuildRelationWithArticle(cmd.Id, cmd.CategoryId); err != nil {
+	if err := s.cate.BuildRelationWithArticle(cmd.Id, cmd.AddArticleCmd.Category); err != nil {
 
 		log.Errorf("user %s build category relation with article failed, err: %s",
-			cmd.User.Username(), err.Error())
+			cmd.AddArticleCmd.Owner.Username(), err.Error())
 
 		return err
 	}
@@ -277,6 +285,9 @@ func (s *articleAppService) UpdateArticle(cmd *dto.UpdateArticleCmd) error {
 
 		return err
 	}
+
+	log.Infof("user %s update article %s success",
+		cmd.AddArticleCmd.Owner.Username(), cmd.Id.Id())
 
 	return nil
 }

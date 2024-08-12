@@ -3,12 +3,8 @@ package controller
 import (
 	"victorzhou123/vicblog/article/app/dto"
 	articleent "victorzhou123/vicblog/article/domain/article/entity"
-	articlesvc "victorzhou123/vicblog/article/domain/article/service"
 	"victorzhou123/vicblog/article/domain/category/entity"
-	categorysvc "victorzhou123/vicblog/article/domain/category/service"
 	tagent "victorzhou123/vicblog/article/domain/tag/entity"
-	"victorzhou123/vicblog/article/domain/tag/repository"
-	tagsvc "victorzhou123/vicblog/article/domain/tag/service"
 	cmctl "victorzhou123/vicblog/common/controller"
 	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
 )
@@ -25,36 +21,36 @@ type reqCategoryList struct {
 	cmctl.ReqList
 }
 
-func (req *reqCategoryList) toCmd() (cmd categorysvc.CategoryListCmd, err error) {
+func (req *reqCategoryList) toCmd() (cmd dto.ListCategoryCmd, err error) {
 
 	listCmd, err := req.ReqList.ToCmd()
 	if err != nil {
 		return
 	}
 
-	cmd = categorysvc.CategoryListCmd{
+	cmd = dto.ListCategoryCmd{
 		PaginationCmd: listCmd,
 	}
 
-	return cmd, cmd.Validate()
+	return
 }
 
 type reqTag struct {
 	Names []string `json:"names"`
 }
 
-func (req *reqTag) toTagNames() (repository.TagNames, error) {
+func (req *reqTag) toTagNames() ([]tagent.TagName, error) {
 	tagNames := make([]tagent.TagName, len(req.Names))
 
 	var err error
 	for i := range req.Names {
 		tagNames[i], err = tagent.NewTagName(req.Names[i])
 		if err != nil {
-			return repository.TagNames{}, err
+			return nil, err
 		}
 	}
 
-	return repository.TagNames{Names: tagNames}, nil
+	return tagNames, nil
 }
 
 type reqTagList struct {
@@ -65,18 +61,18 @@ func (req *reqTagList) emptyValue() bool {
 	return req.ReqList.EmptyValue()
 }
 
-func (req *reqTagList) toCmd() (cmd tagsvc.TagListCmd, err error) {
+func (req *reqTagList) toCmd() (cmd dto.ListTagCmd, err error) {
 
 	listCmd, err := req.ReqList.ToCmd()
 	if err != nil {
 		return
 	}
 
-	cmd = tagsvc.TagListCmd{
+	cmd = dto.ListTagCmd{
 		PaginationCmd: listCmd,
 	}
 
-	return cmd, cmd.Validate()
+	return
 }
 
 type reqArticle struct {
@@ -122,33 +118,31 @@ type reqListArticle struct {
 	cmctl.ReqList
 }
 
-func (req *reqListArticle) toCmd(user cmprimitive.Username) (cmd articlesvc.ArticleListCmd, err error) {
+func (req *reqListArticle) toCmd(user cmprimitive.Username) (cmd dto.GetArticleListCmd, err error) {
 
 	listCmd, err := req.ReqList.ToCmd()
 	if err != nil {
 		return
 	}
 
-	cmd = articlesvc.ArticleListCmd{
+	return dto.GetArticleListCmd{
 		PaginationCmd: listCmd,
 		User:          user,
-	}
-
-	return cmd, cmd.Validate()
+	}, nil
 }
 
 type reqListAllArticle struct {
 	cmctl.ReqList
 }
 
-func (req *reqListAllArticle) toCmd() (cmd articlesvc.ListAllArticleCmd, err error) {
+func (req *reqListAllArticle) toCmd() (cmd dto.GetArticleListCmd, err error) {
 
 	listCmd, err := req.ReqList.ToCmd()
 	if err != nil {
 		return
 	}
 
-	cmd = articlesvc.ListAllArticleCmd{
+	cmd = dto.GetArticleListCmd{
 		PaginationCmd: listCmd,
 	}
 
@@ -156,44 +150,18 @@ func (req *reqListAllArticle) toCmd() (cmd articlesvc.ListAllArticleCmd, err err
 }
 
 type reqUpdateArticle struct {
-	Id         uint   `json:"id"`
-	Title      string `json:"title"`
-	Content    string `json:"content"`
-	Cover      string `json:"cover"`
-	Summary    string `json:"summary"`
-	CategoryId uint   `json:"categoryId"`
-	TagIds     []uint `json:"tags"`
+	reqArticle
+
+	Id uint `json:"id"`
 }
 
 func (req *reqUpdateArticle) toCmd(user cmprimitive.Username) (cmd dto.UpdateArticleCmd, err error) {
 
-	if cmd.Title, err = cmprimitive.NewTitle(req.Title); err != nil {
+	if cmd.AddArticleCmd, err = req.reqArticle.toCmd(user); err != nil {
 		return
 	}
-
-	if cmd.Content, err = cmprimitive.NewArticleContent(req.Content); err != nil {
-		return
-	}
-
-	if cmd.Cover, err = cmprimitive.NewUrlx(req.Cover); err != nil {
-		return
-	}
-
-	if cmd.Summary, err = articleent.NewArticleSummary(req.Summary); err != nil {
-		return
-	}
-
-	tagIds := make([]cmprimitive.Id, len(req.TagIds))
-	for i := range req.TagIds {
-		tagIds[i] = cmprimitive.NewIdByUint(req.TagIds[i])
-	}
-	cmd.TagIds = tagIds
 
 	cmd.Id = cmprimitive.NewIdByUint(req.Id)
-
-	cmd.User = user
-
-	cmd.CategoryId = cmprimitive.NewIdByUint(req.CategoryId)
 
 	return
 }

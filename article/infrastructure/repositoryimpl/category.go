@@ -3,9 +3,9 @@ package repositoryimpl
 import (
 	"victorzhou123/vicblog/article/domain/category/entity"
 	"victorzhou123/vicblog/article/domain/category/repository"
+	cment "victorzhou123/vicblog/common/domain/entity"
 	cmdmerror "victorzhou123/vicblog/common/domain/error"
 	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
-	cmrepo "victorzhou123/vicblog/common/domain/repository"
 	"victorzhou123/vicblog/common/infrastructure/mysql"
 )
 
@@ -40,12 +40,12 @@ func (impl *categoryRepoImpl) GetCategory(cateId cmprimitive.Id) (entity.Categor
 	return do.toCategory()
 }
 
-func (impl *categoryRepoImpl) GetCategoryList(opt cmrepo.PageListOpt) ([]entity.Category, int, error) {
+func (impl *categoryRepoImpl) GetCategoryList(opt cment.Pagination) ([]entity.Category, int, error) {
 	categoryDos := []CategoryDO{}
 
 	options := mysql.PaginationOpt{
-		CurPage:  opt.CurPage,
-		PageSize: opt.PageSize,
+		CurPage:  opt.CurPage.CurPage(),
+		PageSize: opt.PageSize.PageSize(),
 	}
 
 	total, err := impl.GetRecordsByPagination(&CategoryDO{}, &CategoryDO{}, &categoryDos, options)

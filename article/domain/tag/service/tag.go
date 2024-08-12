@@ -1,7 +1,9 @@
 package service
 
 import (
+	"victorzhou123/vicblog/article/domain/tag/entity"
 	"victorzhou123/vicblog/article/domain/tag/repository"
+	cment "victorzhou123/vicblog/common/domain/entity"
 	cmdmerror "victorzhou123/vicblog/common/domain/error"
 	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
 	"victorzhou123/vicblog/common/log"
@@ -9,9 +11,9 @@ import (
 
 type TagService interface {
 	AddTags(repository.TagNames) error
-	GetArticleTag(articleId cmprimitive.Id) ([]TagDto, error)
-	GetTagList(*TagListCmd) (TagListDto, error)
-	ListAllTag() ([]TagDto, error)
+	GetArticleTag(articleId cmprimitive.Id) ([]entity.Tag, error)
+	ListTag(*cment.Pagination) (TagListDto, error)
+	ListAllTag() ([]entity.Tag, error)
 	Delete(cmprimitive.Id) error
 
 	GetRelationWithArticle(articleId cmprimitive.Id) (tags []cmprimitive.Id, err error)
@@ -53,7 +55,7 @@ func (s *tagService) AddTags(names repository.TagNames) error {
 	return nil
 }
 
-func (s *tagService) GetArticleTag(articleId cmprimitive.Id) ([]TagDto, error) {
+func (s *tagService) GetArticleTag(articleId cmprimitive.Id) ([]entity.Tag, error) {
 
 	// get article relate tags
 	tagIds, err := s.tagArticleRepo.GetRelationWithArticle(articleId)
@@ -61,23 +63,12 @@ func (s *tagService) GetArticleTag(articleId cmprimitive.Id) ([]TagDto, error) {
 		return nil, err
 	}
 
-	// get tags information
-	tags, err := s.repo.GetBatchTags(tagIds)
-	if err != nil {
-		return nil, err
-	}
-
-	dtos := make([]TagDto, len(tags))
-	for i := range tags {
-		dtos[i] = toTagDto(tags[i])
-	}
-
-	return dtos, nil
+	return s.repo.GetBatchTags(tagIds)
 }
 
-func (s *tagService) GetTagList(cmd *TagListCmd) (TagListDto, error) {
+func (s *tagService) ListTag(pagination *cment.Pagination) (TagListDto, error) {
 
-	tags, total, err := s.repo.GetTagList(cmd.ToPageListOpt())
+	tags, total, err := s.repo.GetTagList(*pagination)
 	if err != nil {
 		if cmdmerror.IsNotFound(err) {
 			return TagListDto{}, nil
@@ -86,22 +77,14 @@ func (s *tagService) GetTagList(cmd *TagListCmd) (TagListDto, error) {
 		return TagListDto{}, err
 	}
 
-	return toTagListDto(tags, cmd, total), nil
+	return TagListDto{
+		PaginationStatus: pagination.ToPaginationStatus(total),
+		Tags:             tags,
+	}, nil
 }
 
-func (s *tagService) ListAllTag() ([]TagDto, error) {
-
-	tags, err := s.repo.GetAllTagList()
-	if err != nil {
-		return nil, err
-	}
-
-	dtos := make([]TagDto, len(tags))
-	for i := range tags {
-		dtos[i] = toTagDto(tags[i])
-	}
-
-	return dtos, nil
+func (s *tagService) ListAllTag() ([]entity.Tag, error) {
+	return s.repo.GetAllTagList()
 }
 
 func (s *tagService) Delete(id cmprimitive.Id) error {
