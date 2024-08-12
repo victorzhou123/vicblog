@@ -79,44 +79,6 @@ func (cmd *ListAllArticleCmd) toPageListOpt() repository.PageListOpt {
 	return cmd.PaginationCmd.ToPageListOpt()
 }
 
-// type ArticleDetailListDto struct {
-// 	dmservice.PaginationDto
-
-// 	Articles []ArticleDetailDto
-// }
-
-// func toArticleDetailListDto(articles []entity.Article, cmd *ListAllArticleCmd, total int) ArticleDetailListDto {
-
-// 	articleDtos := make([]ArticleDetailDto, len(articles))
-// 	for i := range articles {
-// 		articleDtos[i] = toArticleDetailDto(articles[i])
-// 	}
-
-// 	return ArticleDetailListDto{cmd.ToPaginationDto(total), articleDtos}
-// }
-
-type ArticleDetailDto struct {
-	Id        uint   `json:"id"`
-	Title     string `json:"title"`
-	Summary   string `json:"summary"`
-	Cover     string `json:"cover"`
-	IsPublish bool   `json:"isPublish"`
-	IsTop     bool   `json:"isTop"`
-	CreatedAt string `json:"createTime"`
-}
-
-func toArticleDetailDto(v entity.Article) ArticleDetailDto {
-	return ArticleDetailDto{
-		Id:        v.Id.IdNum(),
-		Title:     v.Title.Text(),
-		Summary:   v.Summary.ArticleSummary(),
-		Cover:     v.Cover.Urlx(),
-		IsPublish: v.IsPublish,
-		IsTop:     v.IsTop,
-		CreatedAt: v.CreatedAt.TimeYearToSecond(),
-	}
-}
-
 // add article
 type ArticleCmd struct {
 	Owner   cmprimitive.Username
