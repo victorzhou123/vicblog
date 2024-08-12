@@ -33,7 +33,7 @@ func (impl *tagArticleImpl) GetRelationWithArticle(articleId cmprimitive.Id) ([]
 
 	tagIds := make([]cmprimitive.Id, len(dos))
 	for i := range dos {
-		tagIds[i] = cmprimitive.NewIdByUint(dos[i].ID)
+		tagIds[i] = cmprimitive.NewIdByUint(dos[i].TagId)
 	}
 
 	return tagIds, nil

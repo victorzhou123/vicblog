@@ -47,7 +47,7 @@ func (impl *tagRepoImpl) GetBatchTags(tagIds []cmprimitive.Id) ([]entity.Tag, er
 
 	dos := []TagDO{}
 
-	if err := impl.Impl.Model(&TagDO{}).Where(impl.InFilter("id"), ids).Find(&dos); err != nil {
+	if err := impl.Impl.Model(&TagDO{}).Where(impl.InFilter("id"), ids).Find(&dos).Error; err != nil {
 		return nil, cmdmerror.NewNotFound(cmdmerror.ErrorCodeResourceNotFound, "")
 	}
 

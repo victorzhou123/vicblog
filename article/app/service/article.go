@@ -100,6 +100,8 @@ func (s *articleAppService) PaginationListArticle(cmd *dto.ListAllArticlesCmd) (
 		if articleDetailListDtos[i].Category, err = s.cate.GetArticleCategory(articleId); err != nil {
 			return dto.ArticleDetailsListDto{}, err
 		}
+
+		articleDetailListDtos[i].ArticleDto = articleDto.Articles[i]
 	}
 
 	return dto.ArticleDetailsListDto{
