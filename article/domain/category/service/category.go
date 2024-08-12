@@ -12,6 +12,7 @@ type CategoryService interface {
 	AddCategory(entity.CategoryName) error
 	ListCategory(*CategoryListCmd) (CategoryListDto, error)
 	ListAllCategory() ([]CategoryDto, error)
+	GetArticleCategory(articleId cmprimitive.Id) (CategoryDto, error)
 	DelCategory(cmprimitive.Id) error
 
 	GetRelationWithArticle(articleId cmprimitive.Id) (cateId cmprimitive.Id, err error)
@@ -73,6 +74,23 @@ func (s *categoryService) ListAllCategory() ([]CategoryDto, error) {
 	}
 
 	return dtos, nil
+}
+
+func (s *categoryService) GetArticleCategory(articleId cmprimitive.Id) (CategoryDto, error) {
+
+	// get article relate category
+	cateId, err := s.categoryArticleRepo.GetRelationWithArticle(articleId)
+	if err != nil {
+		return CategoryDto{}, err
+	}
+
+	// get category information
+	category, err := s.repo.GetCategory(cateId)
+	if err != nil {
+		return CategoryDto{}, err
+	}
+
+	return toCategoryDto(category), nil
 }
 
 func (s *categoryService) DelCategory(id cmprimitive.Id) error {

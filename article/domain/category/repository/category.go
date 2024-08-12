@@ -8,7 +8,10 @@ import (
 
 type Category interface {
 	AddCategory(entity.CategoryName) error
+
+	GetCategory(cateId cmprimitive.Id) (entity.Category, error)
 	GetCategoryList(repository.PageListOpt) ([]entity.Category, int, error)
 	GetAllCategoryList() ([]entity.Category, error)
+
 	DelCategory(cmprimitive.Id) error
 }
