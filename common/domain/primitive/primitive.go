@@ -1,6 +1,7 @@
 package primitive
 
 import (
+	"errors"
 	"strconv"
 	"time"
 	"victorzhou123/vicblog/common/validator"
@@ -79,4 +80,34 @@ func NewUrlx(v string) (Urlx, error) {
 
 func (u urlx) Urlx() string {
 	return string(u)
+}
+
+// amount
+type Amount interface {
+	Amount() int
+}
+
+type amount int
+
+func NewAmount(v int) (Amount, error) {
+
+	if err := validator.IsAmount(v); err != nil {
+		return nil, err
+	}
+
+	return amount(v), nil
+}
+
+func NewAmountByString(v string) (Amount, error) {
+
+	amount, err := strconv.Atoi(v)
+	if err != nil {
+		return nil, errors.New("input amount is not a number")
+	}
+
+	return NewAmount(amount)
+}
+
+func (r amount) Amount() int {
+	return int(r)
 }
