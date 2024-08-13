@@ -10,8 +10,8 @@ type Category interface {
 	AddCategory(entity.CategoryName) error
 
 	GetCategory(cateId cmprimitive.Id) (entity.Category, error)
-	GetCategoryList(cment.Pagination) ([]entity.Category, int, error)
-	GetAllCategoryList() ([]entity.Category, error)
+	GetCategoryListByPagination(cment.Pagination) ([]entity.Category, int, error)
+	GetCategoryList(amount cmprimitive.Amount) ([]entity.Category, error) // nil means get all
 
 	DelCategory(cmprimitive.Id) error
 }

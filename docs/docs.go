@@ -186,7 +186,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/service.CategoryDto"
+                                "$ref": "#/definitions/dto.CategoryDto"
                             }
                         }
                     }
@@ -384,6 +384,38 @@ const docTemplate = `{
                             "type": "array",
                             "items": {
                                 "$ref": "#/definitions/dto.BlogInformationDto"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/category/{amount}": {
+            "get": {
+                "description": "show category list, limited by amount",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Category"
+                ],
+                "summary": "List category amount limit",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "amount of category",
+                        "name": "amount",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dto.CategoryDto"
                             }
                         }
                     }
@@ -601,39 +633,27 @@ const docTemplate = `{
                 }
             }
         },
-        "service.ArticleDto": {
+        "dto.CategoryDto": {
             "type": "object",
             "properties": {
-                "cover": {
-                    "type": "string"
-                },
                 "createTime": {
                     "type": "string"
                 },
                 "id": {
                     "type": "integer"
                 },
-                "isPublish": {
-                    "type": "boolean"
-                },
-                "isTop": {
-                    "type": "boolean"
-                },
-                "summary": {
-                    "type": "string"
-                },
-                "title": {
+                "name": {
                     "type": "string"
                 }
             }
         },
-        "service.ArticleListDto": {
+        "dto.CategoryListDto": {
             "type": "object",
             "properties": {
-                "articles": {
+                "category": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/service.ArticleDto"
+                        "$ref": "#/definitions/dto.CategoryDto"
                     }
                 },
                 "current": {
@@ -650,38 +670,50 @@ const docTemplate = `{
                 }
             }
         },
-        "service.CategoryDto": {
+        "entity.Article": {
             "type": "object",
             "properties": {
-                "createTime": {
-                    "type": "string"
+                "content": {},
+                "cover": {},
+                "createdAt": {},
+                "id": {},
+                "isPublish": {
+                    "type": "boolean"
                 },
-                "id": {
-                    "type": "string"
+                "isTop": {
+                    "type": "boolean"
                 },
-                "name": {
-                    "type": "string"
-                }
+                "owner": {},
+                "readTimes": {
+                    "type": "integer"
+                },
+                "summary": {},
+                "title": {},
+                "updatedAt": {}
             }
         },
-        "service.CategoryListDto": {
+        "entity.Tag": {
             "type": "object",
             "properties": {
-                "category": {
+                "createdAt": {},
+                "id": {},
+                "name": {}
+            }
+        },
+        "service.ArticleListDto": {
+            "type": "object",
+            "properties": {
+                "articles": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/service.CategoryDto"
+                        "$ref": "#/definitions/entity.Article"
                     }
                 },
-                "current": {
+                "curPage": {},
+                "pageCount": {
                     "type": "integer"
                 },
-                "pages": {
-                    "type": "integer"
-                },
-                "size": {
-                    "type": "integer"
-                },
+                "pageSize": {},
                 "total": {
                     "type": "integer"
                 }
@@ -695,36 +727,18 @@ const docTemplate = `{
                 }
             }
         },
-        "service.TagDto": {
-            "type": "object",
-            "properties": {
-                "createTime": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
         "service.TagListDto": {
             "type": "object",
             "properties": {
-                "current": {
+                "curPage": {},
+                "pageCount": {
                     "type": "integer"
                 },
-                "pages": {
-                    "type": "integer"
-                },
-                "size": {
-                    "type": "integer"
-                },
-                "tag": {
+                "pageSize": {},
+                "tags": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/service.TagDto"
+                        "$ref": "#/definitions/entity.Tag"
                     }
                 },
                 "total": {

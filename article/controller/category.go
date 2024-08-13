@@ -21,6 +21,7 @@ func AddRouterForCategoryController(
 
 	rg.POST("/v1/admin/category", auth.VerifyToken, ctl.Add)
 	rg.GET("/v1/admin/category", auth.VerifyToken, ctl.List)
+	rg.GET("/v1/category/:amount", auth.VerifyToken, ctl.LimitList)
 	rg.DELETE("/v1/admin/category/:id", auth.VerifyToken, ctl.Delete)
 }
 
@@ -66,8 +67,8 @@ func (ctl *categoryController) Add(ctx *gin.Context) {
 // @Accept   json
 // @Param    current  query  int  true  "current page of user queried"
 // @Param    size  query  int  true  "single page size of user queried"
-// @Success  201   {array}  service.CategoryListDto
-// @Success  201   array  service.CategoryDto
+// @Success  201   {array}  dto.CategoryListDto
+// @Success  201   array  dto.CategoryDto
 // @Router   /v1/admin/category [get]
 func (ctl *categoryController) List(ctx *gin.Context) {
 	var req = reqCategoryList{
@@ -79,7 +80,7 @@ func (ctl *categoryController) List(ctx *gin.Context) {
 
 	if req.EmptyValue() {
 		// list all category
-		dtos, err := ctl.category.ListAllCategory()
+		dtos, err := ctl.category.ListCategories(nil)
 		if err != nil {
 			cmctl.SendError(ctx, err)
 
@@ -97,7 +98,7 @@ func (ctl *categoryController) List(ctx *gin.Context) {
 			return
 		}
 
-		dto, err := ctl.category.ListCategory(&cmd)
+		dto, err := ctl.category.ListCategoryByPagination(&cmd)
 		if err != nil {
 			cmctl.SendError(ctx, err)
 
@@ -106,6 +107,28 @@ func (ctl *categoryController) List(ctx *gin.Context) {
 
 		cmctl.SendRespOfGet(ctx, dto)
 	}
+}
+
+// @Summary  List category amount limit
+// @Description  show category list, limited by amount
+// @Tags     Category
+// @Accept   json
+// @Param    amount  path  int  true  "amount of category"
+// @Success  201   {array}  dto.CategoryListDto
+// @Success  201   array  dto.CategoryDto
+// @Router   /v1/category/{amount} [get]
+func (ctl *categoryController) LimitList(ctx *gin.Context) {
+
+	amount, _ := cmprimitive.NewAmountByString(ctx.Param("amount"))
+
+	dto, err := ctl.category.ListCategories(amount)
+	if err != nil {
+		cmctl.SendError(ctx, err)
+
+		return
+	}
+
+	cmctl.SendRespOfGet(ctx, dto)
 }
 
 // @Summary  Delete category

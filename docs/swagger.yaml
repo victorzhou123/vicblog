@@ -116,28 +116,20 @@ definitions:
       zhihuHomepage:
         type: string
     type: object
-  service.ArticleDto:
+  dto.CategoryDto:
     properties:
-      cover:
-        type: string
       createTime:
         type: string
       id:
         type: integer
-      isPublish:
-        type: boolean
-      isTop:
-        type: boolean
-      summary:
-        type: string
-      title:
+      name:
         type: string
     type: object
-  service.ArticleListDto:
+  dto.CategoryListDto:
     properties:
-      articles:
+      category:
         items:
-          $ref: '#/definitions/service.ArticleDto'
+          $ref: '#/definitions/dto.CategoryDto'
         type: array
       current:
         type: integer
@@ -148,27 +140,39 @@ definitions:
       total:
         type: integer
     type: object
-  service.CategoryDto:
+  entity.Article:
     properties:
-      createTime:
-        type: string
-      id:
-        type: string
-      name:
-        type: string
+      content: {}
+      cover: {}
+      createdAt: {}
+      id: {}
+      isPublish:
+        type: boolean
+      isTop:
+        type: boolean
+      owner: {}
+      readTimes:
+        type: integer
+      summary: {}
+      title: {}
+      updatedAt: {}
     type: object
-  service.CategoryListDto:
+  entity.Tag:
     properties:
-      category:
+      createdAt: {}
+      id: {}
+      name: {}
+    type: object
+  service.ArticleListDto:
+    properties:
+      articles:
         items:
-          $ref: '#/definitions/service.CategoryDto'
+          $ref: '#/definitions/entity.Article'
         type: array
-      current:
+      curPage: {}
+      pageCount:
         type: integer
-      pages:
-        type: integer
-      size:
-        type: integer
+      pageSize: {}
       total:
         type: integer
     type: object
@@ -177,26 +181,15 @@ definitions:
       url:
         type: string
     type: object
-  service.TagDto:
-    properties:
-      createTime:
-        type: string
-      id:
-        type: string
-      name:
-        type: string
-    type: object
   service.TagListDto:
     properties:
-      current:
+      curPage: {}
+      pageCount:
         type: integer
-      pages:
-        type: integer
-      size:
-        type: integer
-      tag:
+      pageSize: {}
+      tags:
         items:
-          $ref: '#/definitions/service.TagDto'
+          $ref: '#/definitions/entity.Tag'
         type: array
       total:
         type: integer
@@ -319,7 +312,7 @@ paths:
           description: Created
           schema:
             items:
-              $ref: '#/definitions/service.CategoryDto'
+              $ref: '#/definitions/dto.CategoryDto'
             type: array
       summary: List category
       tags:
@@ -455,6 +448,27 @@ paths:
       summary: Get blog information
       tags:
       - Blog
+  /v1/category/{amount}:
+    get:
+      consumes:
+      - application/json
+      description: show category list, limited by amount
+      parameters:
+      - description: amount of category
+        in: path
+        name: amount
+        required: true
+        type: integer
+      responses:
+        "201":
+          description: Created
+          schema:
+            items:
+              $ref: '#/definitions/dto.CategoryDto'
+            type: array
+      summary: List category amount limit
+      tags:
+      - Category
   /v1/login:
     post:
       consumes:
