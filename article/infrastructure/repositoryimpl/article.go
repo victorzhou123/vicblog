@@ -35,7 +35,7 @@ func (impl *articleRepoImpl) GetArticle(
 	do.ID = articleId.IdNum()
 	do.Owner = user.Username()
 
-	if err := impl.db.GetByPrimaryKey(&ArticleDO{}, &do); err != nil {
+	if err := impl.db.GetRecord(&ArticleDO{}, &do, &do); err != nil {
 
 		if cmdmerror.IsNotFound(err) {
 			return entity.Article{}, cmdmerror.NewNoPermission("")
