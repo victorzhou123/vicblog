@@ -7,6 +7,7 @@ import (
 )
 
 type Article interface {
+	GetArticleById(articleId cmprimitive.Id) (entity.Article, error)
 	GetArticle(user cmprimitive.Username, articleId cmprimitive.Id) (entity.Article, error)
 	ListArticles(cmprimitive.Username, cment.Pagination) ([]entity.Article, int, error)
 	ListAllArticles(cment.Pagination) ([]entity.Article, int, error)
