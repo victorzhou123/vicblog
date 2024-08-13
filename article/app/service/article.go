@@ -87,7 +87,7 @@ func (s *articleAppService) GetArticle(cmd *dto.GetArticleCmd) (dto.ArticleDetai
 
 func (s *articleAppService) GetArticleList(cmd *dto.GetArticleListCmd) (dto.ArticleListDto, error) {
 
-	articleDto, err := s.article.GetArticleList(&articledmsvc.ArticleListCmd{
+	articleSummaryDto, err := s.article.GetArticleList(&articledmsvc.ArticleListCmd{
 		Pagination: *cmd.ToPagination(),
 		User:       cmd.User,
 	})
@@ -95,37 +95,37 @@ func (s *articleAppService) GetArticleList(cmd *dto.GetArticleListCmd) (dto.Arti
 		return dto.ArticleListDto{}, err
 	}
 
-	return dto.ToArticleListDto(articleDto.PaginationStatus, articleDto.Articles), nil
+	return dto.ToArticleListDto(articleSummaryDto.PaginationStatus, articleSummaryDto.Articles), nil
 }
 
 func (s *articleAppService) PaginationListArticle(cmd *dto.ListAllArticlesCmd) (dto.ArticleDetailsListDto, error) {
 
 	// list articles
-	articleDto, err := s.article.PaginationListArticle(&entity.Pagination{
+	articleSummaryDto, err := s.article.PaginationListArticle(&entity.Pagination{
 		CurPage: cmd.CurPage, PageSize: cmd.PageSize,
 	})
 	if err != nil {
 		return dto.ArticleDetailsListDto{}, err
 	}
 
-	articleDetailListDtos := make([]dto.ArticleDetailListDto, len(articleDto.Articles))
-	for i := range articleDto.Articles {
+	articleDetailListDtos := make([]dto.ArticleDetailListDto, len(articleSummaryDto.Articles))
+	for i := range articleSummaryDto.Articles {
 
-		tags, err := s.tag.GetArticleTag(articleDto.Articles[i].Id)
+		tags, err := s.tag.GetArticleTag(articleSummaryDto.Articles[i].Id)
 		if err != nil {
 			return dto.ArticleDetailsListDto{}, err
 		}
 
-		category, err := s.cate.GetArticleCategory(articleDto.Articles[i].Id)
+		category, err := s.cate.GetArticleCategory(articleSummaryDto.Articles[i].Id)
 		if err != nil {
 			return dto.ArticleDetailsListDto{}, err
 		}
 
-		articleDetailListDtos[i] = dto.ToArticleDetailListDto(articleDto.Articles[i], category, tags)
+		articleDetailListDtos[i] = dto.ToArticleDetailListDto(articleSummaryDto.Articles[i], category, tags)
 	}
 
 	return dto.ArticleDetailsListDto{
-		PaginationDto: cmappdto.ToPaginationDto(articleDto.PaginationStatus),
+		PaginationDto: cmappdto.ToPaginationDto(articleSummaryDto.PaginationStatus),
 		Articles:      articleDetailListDtos,
 	}, nil
 }

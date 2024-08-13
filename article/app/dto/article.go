@@ -90,7 +90,7 @@ type GetArticleListCmd struct {
 type ArticleListDto struct {
 	cmappdto.PaginationDto
 
-	Articles []ArticleDto `json:"articles"`
+	Articles []ArticleSummaryDto `json:"articles"`
 }
 
 func ToArticleListDto(
@@ -98,14 +98,14 @@ func ToArticleListDto(
 	articles []entity.Article,
 ) ArticleListDto {
 
-	articleDtos := make([]ArticleDto, len(articles))
+	articleSummaryDtos := make([]ArticleSummaryDto, len(articles))
 	for i := range articles {
-		articleDtos[i] = toArticleDto(articles[i])
+		articleSummaryDtos[i] = toArticleSummaryDto(articles[i])
 	}
 
 	return ArticleListDto{
 		PaginationDto: cmappdto.ToPaginationDto(ps),
-		Articles:      articleDtos,
+		Articles:      articleSummaryDtos,
 	}
 }
 
@@ -121,7 +121,7 @@ type ArticleDetailsListDto struct {
 }
 
 type ArticleDetailListDto struct {
-	ArticleDto
+	ArticleSummaryDto
 
 	Category CategoryDto `json:"category"`
 	Tags     []TagDto    `json:"tags"`
@@ -137,13 +137,13 @@ func ToArticleDetailListDto(
 	}
 
 	return ArticleDetailListDto{
-		ArticleDto: toArticleDto(article),
-		Category:   ToCategoryDto(category),
-		Tags:       tagDtos,
+		ArticleSummaryDto: toArticleSummaryDto(article),
+		Category:          ToCategoryDto(category),
+		Tags:              tagDtos,
 	}
 }
 
-type ArticleDto struct {
+type ArticleSummaryDto struct {
 	Id        uint   `json:"id"`
 	Title     string `json:"title"`
 	Summary   string `json:"summary"`
@@ -153,8 +153,8 @@ type ArticleDto struct {
 	CreatedAt string `json:"createTime"`
 }
 
-func toArticleDto(article entity.Article) ArticleDto {
-	return ArticleDto{
+func toArticleSummaryDto(article entity.Article) ArticleSummaryDto {
+	return ArticleSummaryDto{
 		Id:        article.Id.IdNum(),
 		Title:     article.Title.Text(),
 		Summary:   article.Summary.ArticleSummary(),
