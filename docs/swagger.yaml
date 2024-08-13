@@ -140,6 +140,15 @@ definitions:
       total:
         type: integer
     type: object
+  dto.TagDto:
+    properties:
+      createTime:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
   entity.Article:
     properties:
       content: {}
@@ -489,4 +498,25 @@ paths:
       summary: Login
       tags:
       - Login
+  /v1/tag/{amount}:
+    get:
+      consumes:
+      - application/json
+      description: show tag list, limited by amount
+      parameters:
+      - description: amount of tag
+        in: path
+        name: amount
+        required: true
+        type: integer
+      responses:
+        "201":
+          description: Created
+          schema:
+            items:
+              $ref: '#/definitions/dto.TagDto'
+            type: array
+      summary: List tag amount limit
+      tags:
+      - Tag
 swagger: "2.0"

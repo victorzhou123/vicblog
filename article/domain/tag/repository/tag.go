@@ -25,7 +25,7 @@ func (t *TagNames) NoDuplication() bool {
 type Tag interface {
 	AddBatches(TagNames) error
 	GetBatchTags(tagIds []cmprimitive.Id) ([]entity.Tag, error)
-	GetTagList(cment.Pagination) ([]entity.Tag, int, error)
-	GetAllTagList() ([]entity.Tag, error)
+	GetTagListByPagination(cment.Pagination) ([]entity.Tag, int, error)
+	GetTagList(cmprimitive.Amount) ([]entity.Tag, error)
 	Delete(cmprimitive.Id) error
 }

@@ -63,7 +63,7 @@ func (impl *tagRepoImpl) GetBatchTags(tagIds []cmprimitive.Id) ([]entity.Tag, er
 	return tags, nil
 }
 
-func (impl *tagRepoImpl) GetTagList(opt cment.Pagination) ([]entity.Tag, int, error) {
+func (impl *tagRepoImpl) GetTagListByPagination(opt cment.Pagination) ([]entity.Tag, int, error) {
 	dos := []TagDO{}
 
 	options := mysql.PaginationOpt{
@@ -90,10 +90,18 @@ func (impl *tagRepoImpl) GetTagList(opt cment.Pagination) ([]entity.Tag, int, er
 	return tags, total, nil
 }
 
-func (impl *tagRepoImpl) GetAllTagList() ([]entity.Tag, error) {
+func (impl *tagRepoImpl) GetTagList(amount cmprimitive.Amount) ([]entity.Tag, error) {
+	// convert amount to limit
+	var limit int
+	if amount == nil {
+		limit = -1
+	} else {
+		limit = amount.Amount()
+	}
+
 	dos := []TagDO{}
 
-	if err := impl.GetRecords(&TagDO{}, &TagDO{}, &dos); err != nil {
+	if err := impl.GetLimitRecords(&TagDO{}, &TagDO{}, &dos, limit); err != nil {
 		if cmdmerror.IsNotFound(err) {
 			return []entity.Tag{}, nil
 		}

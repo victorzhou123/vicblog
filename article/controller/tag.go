@@ -21,6 +21,7 @@ func AddRouterForTagController(
 
 	rg.POST("/v1/admin/tag", auth.VerifyToken, ctl.AddBatches)
 	rg.GET("/v1/admin/tag", auth.VerifyToken, ctl.List)
+	rg.GET("/v1/tag/:amount", ctl.LimitList)
 	rg.DELETE("/v1/admin/tag/:id", auth.VerifyToken, ctl.Delete)
 }
 
@@ -78,7 +79,7 @@ func (ctl *tagController) List(ctx *gin.Context) {
 
 	if req.emptyValue() {
 		// list all tags
-		dtos, err := ctl.tag.ListAllTag()
+		dtos, err := ctl.tag.ListTags(nil)
 		if err != nil {
 			cmctl.SendError(ctx, err)
 
@@ -95,7 +96,7 @@ func (ctl *tagController) List(ctx *gin.Context) {
 			return
 		}
 
-		dto, err := ctl.tag.ListTag(&cmd)
+		dto, err := ctl.tag.ListTagByPagination(&cmd)
 		if err != nil {
 			cmctl.SendError(ctx, err)
 
@@ -104,6 +105,27 @@ func (ctl *tagController) List(ctx *gin.Context) {
 
 		cmctl.SendRespOfGet(ctx, dto)
 	}
+}
+
+// @Summary  List tag amount limit
+// @Description  show tag list, limited by amount
+// @Tags     Tag
+// @Accept   json
+// @Param    amount  path  int  true  "amount of tag"
+// @Success  201   array  dto.TagDto
+// @Router   /v1/tag/{amount} [get]
+func (ctl *tagController) LimitList(ctx *gin.Context) {
+
+	amount, _ := cmprimitive.NewAmountByString(ctx.Param("amount"))
+
+	dto, err := ctl.tag.ListTags(amount)
+	if err != nil {
+		cmctl.SendError(ctx, err)
+
+		return
+	}
+
+	cmctl.SendRespOfGet(ctx, dto)
 }
 
 // @Summary  Delete tag

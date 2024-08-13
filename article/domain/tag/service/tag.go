@@ -12,8 +12,8 @@ import (
 type TagService interface {
 	AddTags(repository.TagNames) error
 	GetArticleTag(articleId cmprimitive.Id) ([]entity.Tag, error)
-	ListTag(*cment.Pagination) (TagListDto, error)
-	ListAllTag() ([]entity.Tag, error)
+	ListTagByPagination(*cment.Pagination) (TagListDto, error)
+	ListTags(cmprimitive.Amount) ([]entity.Tag, error)
 	Delete(cmprimitive.Id) error
 
 	GetRelationWithArticle(articleId cmprimitive.Id) (tags []cmprimitive.Id, err error)
@@ -66,9 +66,9 @@ func (s *tagService) GetArticleTag(articleId cmprimitive.Id) ([]entity.Tag, erro
 	return s.repo.GetBatchTags(tagIds)
 }
 
-func (s *tagService) ListTag(pagination *cment.Pagination) (TagListDto, error) {
+func (s *tagService) ListTagByPagination(pagination *cment.Pagination) (TagListDto, error) {
 
-	tags, total, err := s.repo.GetTagList(*pagination)
+	tags, total, err := s.repo.GetTagListByPagination(*pagination)
 	if err != nil {
 		if cmdmerror.IsNotFound(err) {
 			return TagListDto{}, nil
@@ -83,8 +83,8 @@ func (s *tagService) ListTag(pagination *cment.Pagination) (TagListDto, error) {
 	}, nil
 }
 
-func (s *tagService) ListAllTag() ([]entity.Tag, error) {
-	return s.repo.GetAllTagList()
+func (s *tagService) ListTags(amount cmprimitive.Amount) ([]entity.Tag, error) {
+	return s.repo.GetTagList(amount)
 }
 
 func (s *tagService) Delete(id cmprimitive.Id) error {
