@@ -145,6 +145,7 @@ func ToArticleDetailListDto(
 
 type ArticleSummaryDto struct {
 	Id        uint   `json:"id"`
+	Owner     string `json:"owner"`
 	Title     string `json:"title"`
 	Summary   string `json:"summary"`
 	Cover     string `json:"cover"`
@@ -157,6 +158,7 @@ type ArticleSummaryDto struct {
 func toArticleSummaryDto(article entity.Article) ArticleSummaryDto {
 	return ArticleSummaryDto{
 		Id:        article.Id.IdNum(),
+		Owner:     article.Owner.Username(),
 		Title:     article.Title.Text(),
 		Summary:   article.Summary.ArticleSummary(),
 		Cover:     article.Cover.Urlx(),
