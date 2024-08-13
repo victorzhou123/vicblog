@@ -90,7 +90,7 @@ type GetArticleListCmd struct {
 type ArticleListDto struct {
 	cmappdto.PaginationDto
 
-	Articles []ArticleDto `json:"articles"`
+	Articles []ArticleSummaryDto `json:"articles"`
 }
 
 func ToArticleListDto(
@@ -98,14 +98,14 @@ func ToArticleListDto(
 	articles []entity.Article,
 ) ArticleListDto {
 
-	articleDtos := make([]ArticleDto, len(articles))
+	articleSummaryDtos := make([]ArticleSummaryDto, len(articles))
 	for i := range articles {
-		articleDtos[i] = toArticleDto(articles[i])
+		articleSummaryDtos[i] = toArticleSummaryDto(articles[i])
 	}
 
 	return ArticleListDto{
 		PaginationDto: cmappdto.ToPaginationDto(ps),
-		Articles:      articleDtos,
+		Articles:      articleSummaryDtos,
 	}
 }
 
@@ -121,7 +121,7 @@ type ArticleDetailsListDto struct {
 }
 
 type ArticleDetailListDto struct {
-	ArticleDto
+	ArticleSummaryDto
 
 	Category CategoryDto `json:"category"`
 	Tags     []TagDto    `json:"tags"`
@@ -137,31 +137,35 @@ func ToArticleDetailListDto(
 	}
 
 	return ArticleDetailListDto{
-		ArticleDto: toArticleDto(article),
-		Category:   ToCategoryDto(category),
-		Tags:       tagDtos,
+		ArticleSummaryDto: toArticleSummaryDto(article),
+		Category:          ToCategoryDto(category),
+		Tags:              tagDtos,
 	}
 }
 
-type ArticleDto struct {
+type ArticleSummaryDto struct {
 	Id        uint   `json:"id"`
+	Owner     string `json:"owner"`
 	Title     string `json:"title"`
 	Summary   string `json:"summary"`
 	Cover     string `json:"cover"`
 	IsPublish bool   `json:"isPublish"`
 	IsTop     bool   `json:"isTop"`
-	CreatedAt string `json:"createTime"`
+	CreatedAt string `json:"createdAt"`
+	UpdatedAt string `json:"updatedAt"`
 }
 
-func toArticleDto(article entity.Article) ArticleDto {
-	return ArticleDto{
+func toArticleSummaryDto(article entity.Article) ArticleSummaryDto {
+	return ArticleSummaryDto{
 		Id:        article.Id.IdNum(),
+		Owner:     article.Owner.Username(),
 		Title:     article.Title.Text(),
 		Summary:   article.Summary.ArticleSummary(),
 		Cover:     article.Cover.Urlx(),
 		IsPublish: article.IsPublish,
 		IsTop:     article.IsTop,
 		CreatedAt: article.CreatedAt.TimeYearToSecond(),
+		UpdatedAt: article.UpdatedAt.TimeYearToSecond(),
 	}
 }
 
@@ -170,4 +174,42 @@ type UpdateArticleCmd struct {
 	AddArticleCmd
 
 	Id cmprimitive.Id
+}
+
+type ArticleDto struct {
+	ArticleSummaryDto
+
+	Content   string `json:"content"`
+	ReadTimes int    `json:"readTimes"`
+}
+
+func toArticleDto(article entity.Article) ArticleDto {
+	return ArticleDto{
+		ArticleSummaryDto: toArticleSummaryDto(article),
+		Content:           article.Content.Text(),
+		ReadTimes:         article.ReadTimes,
+	}
+}
+
+type ArticleWithTagCateDto struct {
+	ArticleDto
+
+	Category CategoryDto `json:"category"`
+	Tags     []TagDto    `json:"tags"`
+}
+
+func ToArticleWithTagCateDto(
+	article entity.Article, tags []tagent.Tag, cate cateent.Category,
+) ArticleWithTagCateDto {
+
+	tagDtos := make([]TagDto, len(tags))
+	for i := range tags {
+		tagDtos[i] = ToTagDto(tags[i])
+	}
+
+	return ArticleWithTagCateDto{
+		ArticleDto: toArticleDto(article),
+		Category:   ToCategoryDto(cate),
+		Tags:       tagDtos,
+	}
 }

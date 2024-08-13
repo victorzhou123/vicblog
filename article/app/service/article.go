@@ -14,7 +14,7 @@ import (
 )
 
 type ArticleAppService interface {
-	GetArticleById(articleId cmprimitive.Id) (dto.ArticleDetailDto, error)
+	GetArticleById(articleId cmprimitive.Id) (dto.ArticleWithTagCateDto, error)
 	GetArticle(*dto.GetArticleCmd) (dto.ArticleDetailDto, error)
 	GetArticleList(*dto.GetArticleListCmd) (dto.ArticleListDto, error)
 	PaginationListArticle(*dto.ListAllArticlesCmd) (dto.ArticleDetailsListDto, error)
@@ -47,21 +47,27 @@ func NewArticleAppService(
 	}
 }
 
-func (s *articleAppService) GetArticleById(articleId cmprimitive.Id) (dto.ArticleDetailDto, error) {
+func (s *articleAppService) GetArticleById(articleId cmprimitive.Id) (dto.ArticleWithTagCateDto, error) {
 
 	// get article (has parsed content to html)
 	article, err := s.article.GetArticleByIdWithContentParsed(articleId)
 	if err != nil {
-		return dto.ArticleDetailDto{}, err
+		return dto.ArticleWithTagCateDto{}, err
 	}
 
-	// get tags and category of article
-	tagIds, cateId, err := s.getArticleTagsAndCategoryById(article.Id)
+	// get tags by article id
+	tags, err := s.tag.GetArticleTag(articleId)
 	if err != nil {
-		return dto.ArticleDetailDto{}, err
+		return dto.ArticleWithTagCateDto{}, err
 	}
 
-	return dto.ToArticleDetailDto(article, tagIds, cateId), nil
+	// get categories by article id
+	cates, err := s.cate.GetArticleCategory(articleId)
+	if err != nil {
+		return dto.ArticleWithTagCateDto{}, err
+	}
+
+	return dto.ToArticleWithTagCateDto(article, tags, cates), nil
 }
 
 func (s *articleAppService) GetArticle(cmd *dto.GetArticleCmd) (dto.ArticleDetailDto, error) {
@@ -87,7 +93,7 @@ func (s *articleAppService) GetArticle(cmd *dto.GetArticleCmd) (dto.ArticleDetai
 
 func (s *articleAppService) GetArticleList(cmd *dto.GetArticleListCmd) (dto.ArticleListDto, error) {
 
-	articleDto, err := s.article.GetArticleList(&articledmsvc.ArticleListCmd{
+	articleSummaryDto, err := s.article.GetArticleList(&articledmsvc.ArticleListCmd{
 		Pagination: *cmd.ToPagination(),
 		User:       cmd.User,
 	})
@@ -95,37 +101,37 @@ func (s *articleAppService) GetArticleList(cmd *dto.GetArticleListCmd) (dto.Arti
 		return dto.ArticleListDto{}, err
 	}
 
-	return dto.ToArticleListDto(articleDto.PaginationStatus, articleDto.Articles), nil
+	return dto.ToArticleListDto(articleSummaryDto.PaginationStatus, articleSummaryDto.Articles), nil
 }
 
 func (s *articleAppService) PaginationListArticle(cmd *dto.ListAllArticlesCmd) (dto.ArticleDetailsListDto, error) {
 
 	// list articles
-	articleDto, err := s.article.PaginationListArticle(&entity.Pagination{
+	articleSummaryDto, err := s.article.PaginationListArticle(&entity.Pagination{
 		CurPage: cmd.CurPage, PageSize: cmd.PageSize,
 	})
 	if err != nil {
 		return dto.ArticleDetailsListDto{}, err
 	}
 
-	articleDetailListDtos := make([]dto.ArticleDetailListDto, len(articleDto.Articles))
-	for i := range articleDto.Articles {
+	articleDetailListDtos := make([]dto.ArticleDetailListDto, len(articleSummaryDto.Articles))
+	for i := range articleSummaryDto.Articles {
 
-		tags, err := s.tag.GetArticleTag(articleDto.Articles[i].Id)
+		tags, err := s.tag.GetArticleTag(articleSummaryDto.Articles[i].Id)
 		if err != nil {
 			return dto.ArticleDetailsListDto{}, err
 		}
 
-		category, err := s.cate.GetArticleCategory(articleDto.Articles[i].Id)
+		category, err := s.cate.GetArticleCategory(articleSummaryDto.Articles[i].Id)
 		if err != nil {
 			return dto.ArticleDetailsListDto{}, err
 		}
 
-		articleDetailListDtos[i] = dto.ToArticleDetailListDto(articleDto.Articles[i], category, tags)
+		articleDetailListDtos[i] = dto.ToArticleDetailListDto(articleSummaryDto.Articles[i], category, tags)
 	}
 
 	return dto.ArticleDetailsListDto{
-		PaginationDto: cmappdto.ToPaginationDto(articleDto.PaginationStatus),
+		PaginationDto: cmappdto.ToPaginationDto(articleSummaryDto.PaginationStatus),
 		Articles:      articleDetailListDtos,
 	}, nil
 }

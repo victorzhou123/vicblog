@@ -673,7 +673,7 @@
         "dto.CategoryDto": {
             "type": "object",
             "properties": {
-                "createTime": {
+                "createdAt": {
                     "type": "string"
                 },
                 "id": {
@@ -710,7 +710,7 @@
         "dto.TagDto": {
             "type": "object",
             "properties": {
-                "createTime": {
+                "createdAt": {
                     "type": "string"
                 },
                 "id": {
