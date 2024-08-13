@@ -22,6 +22,7 @@ import (
 	blogrepoimpl "victorzhou123/vicblog/blog/infrastructure/repositoryimpl"
 	cmapp "victorzhou123/vicblog/common/app"
 	cminfraauthimpl "victorzhou123/vicblog/common/infrastructure/authimpl"
+	"victorzhou123/vicblog/common/infrastructure/md2htmlimpl"
 	cminframysql "victorzhou123/vicblog/common/infrastructure/mysql"
 	"victorzhou123/vicblog/common/infrastructure/oss"
 	cmutil "victorzhou123/vicblog/common/util"
@@ -58,6 +59,7 @@ func setRouter(engine *gin.Engine, cfg *mconfig.Config) {
 	timeCreator := cmutil.NewTimerCreator()
 	mysqlImpl := cminframysql.DAO()
 	transactionImpl := cminframysql.NewTransaction()
+	m2h := md2htmlimpl.NewMd2Html()
 
 	// repo: following are the dependencies of service
 	ossRepo := articlerepoimpl.NewPictureImpl(oss.Client())
@@ -72,7 +74,7 @@ func setRouter(engine *gin.Engine, cfg *mconfig.Config) {
 
 	// domain: following are domain services
 	tagService := tagsvc.NewTagService(tagRepo, tagArticleRepo)
-	articleService := articlesvc.NewArticleService(articleRepo)
+	articleService := articlesvc.NewArticleService(articleRepo, m2h)
 	categoryService := categorysvc.NewCategoryService(categoryRepo, categoryArticleRepo)
 	pictureService := picturesvc.NewFileService(ossRepo)
 	blogService := blogsvc.NewBlogService(blogRepo)

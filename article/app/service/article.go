@@ -14,6 +14,7 @@ import (
 )
 
 type ArticleAppService interface {
+	GetArticleById(articleId cmprimitive.Id) (dto.ArticleDetailDto, error)
 	GetArticle(*dto.GetArticleCmd) (dto.ArticleDetailDto, error)
 	GetArticleList(*dto.GetArticleListCmd) (dto.ArticleListDto, error)
 	PaginationListArticle(*dto.ListAllArticlesCmd) (dto.ArticleDetailsListDto, error)
@@ -46,6 +47,23 @@ func NewArticleAppService(
 	}
 }
 
+func (s *articleAppService) GetArticleById(articleId cmprimitive.Id) (dto.ArticleDetailDto, error) {
+
+	// get article (has parsed content to html)
+	article, err := s.article.GetArticleByIdWithContentParsed(articleId)
+	if err != nil {
+		return dto.ArticleDetailDto{}, err
+	}
+
+	// get tags and category of article
+	tagIds, cateId, err := s.getArticleTagsAndCategoryById(article.Id)
+	if err != nil {
+		return dto.ArticleDetailDto{}, err
+	}
+
+	return dto.ToArticleDetailDto(article, tagIds, cateId), nil
+}
+
 func (s *articleAppService) GetArticle(cmd *dto.GetArticleCmd) (dto.ArticleDetailDto, error) {
 
 	// get article
@@ -58,23 +76,9 @@ func (s *articleAppService) GetArticle(cmd *dto.GetArticleCmd) (dto.ArticleDetai
 		return dto.ArticleDetailDto{}, err
 	}
 
-	// get relation tags
-	tagIds, err := s.tag.GetRelationWithArticle(article.Id)
+	// get tags and category of article
+	tagIds, cateId, err := s.getArticleTagsAndCategoryById(article.Id)
 	if err != nil {
-
-		log.Errorf("get all tags of article %s failed, err: %s",
-			article.Id.Id(), err.Error())
-
-		return dto.ArticleDetailDto{}, err
-	}
-
-	// get relation category
-	cateId, err := s.cate.GetRelationWithArticle(article.Id)
-	if err != nil {
-
-		log.Errorf("get category of article %s failed, err: %s",
-			article.Id.Id(), err.Error())
-
 		return dto.ArticleDetailDto{}, err
 	}
 
@@ -290,4 +294,28 @@ func (s *articleAppService) UpdateArticle(cmd *dto.UpdateArticleCmd) error {
 		cmd.AddArticleCmd.Owner.Username(), cmd.Id.Id())
 
 	return nil
+}
+
+func (s *articleAppService) getArticleTagsAndCategoryById(articleId cmprimitive.Id) ([]cmprimitive.Id, cmprimitive.Id, error) {
+	// get relation tags
+	tagIds, err := s.tag.GetRelationWithArticle(articleId)
+	if err != nil {
+
+		log.Errorf("get all tags of article %s failed, err: %s",
+			articleId.Id(), err.Error())
+
+		return nil, nil, err
+	}
+
+	// get relation category
+	cateId, err := s.cate.GetRelationWithArticle(articleId)
+	if err != nil {
+
+		log.Errorf("get category of article %s failed, err: %s",
+			articleId.Id(), err.Error())
+
+		return nil, nil, err
+	}
+
+	return tagIds, cateId, nil
 }

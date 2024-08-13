@@ -5,6 +5,7 @@ import (
 	"victorzhou123/vicblog/article/domain/article/repository"
 	cmentt "victorzhou123/vicblog/common/domain/entity"
 	cmdmerror "victorzhou123/vicblog/common/domain/error"
+	cmdmmd2html "victorzhou123/vicblog/common/domain/md2html"
 	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
 	"victorzhou123/vicblog/common/log"
 )
@@ -12,6 +13,7 @@ import (
 const msgCannotFoundTheArticle = "can not found the article"
 
 type ArticleService interface {
+	GetArticleByIdWithContentParsed(articleId cmprimitive.Id) (entity.Article, error)
 	GetArticle(*GetArticleCmd) (entity.Article, error)
 	GetArticleList(*ArticleListCmd) (ArticleListDto, error)
 	PaginationListArticle(*cmentt.Pagination) (ArticleListDto, error)
@@ -25,12 +27,27 @@ type ArticleService interface {
 
 type articleService struct {
 	repo repository.Article
+	m2h  cmdmmd2html.Md2Html
 }
 
-func NewArticleService(repo repository.Article) ArticleService {
+func NewArticleService(repo repository.Article, m2h cmdmmd2html.Md2Html) ArticleService {
 	return &articleService{
 		repo: repo,
+		m2h:  m2h,
 	}
+}
+
+func (s *articleService) GetArticleByIdWithContentParsed(articleId cmprimitive.Id) (entity.Article, error) {
+
+	article, err := s.repo.GetArticleById(articleId)
+	if err != nil {
+		return entity.Article{}, err
+	}
+
+	// parse md to html
+	article.Content = s.m2h.Render(article.Content)
+
+	return article, nil
 }
 
 func (s *articleService) GetArticle(cmd *GetArticleCmd) (entity.Article, error) {

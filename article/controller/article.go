@@ -23,6 +23,7 @@ func AddRouterForArticleController(
 	}
 
 	rg.GET("/v1/admin/article/:id", auth.VerifyToken, ctl.Get)
+	rg.GET("/v1/article/:id", ctl.GetWithContentParsed)
 	rg.GET("/v1/admin/article", auth.VerifyToken, ctl.List)
 	rg.GET("/v1/article", ctl.ListAll)
 	rg.DELETE("/v1/admin/article/:id", auth.VerifyToken, ctl.Delete)
@@ -35,12 +36,12 @@ type articleController struct {
 	articleAppService articleappsvc.ArticleAppService
 }
 
-// @Summary  List articles
-// @Description  list articles of request user by pagination
+// @Summary  Get article
+// @Description  get an article by article id
 // @Tags     Article
 // @Accept   json
 // @Param	id	path	int	true	"article ID"
-// @Success  200   {array}  dto.ArticleDetailDto
+// @Success  200   {object}  dto.ArticleDetailDto
 func (ctl *articleController) Get(ctx *gin.Context) {
 
 	user, err := ctl.GetUser(ctx)
@@ -58,6 +59,27 @@ func (ctl *articleController) Get(ctx *gin.Context) {
 			},
 		},
 	)
+	if err != nil {
+		cmctl.SendError(ctx, err)
+
+		return
+	}
+
+	cmctl.SendRespOfGet(ctx, dto)
+}
+
+// @Summary  Get article
+// @Description  Get article which content parsed to html
+// @Tags     Article
+// @Accept   json
+// @Param	id	path	int	true	"article ID"
+// @Success  200   {object}  dto.ArticleDetailDto
+// @Failure	400	{object}	controller.ResponseData
+func (ctl *articleController) GetWithContentParsed(ctx *gin.Context) {
+
+	id := cmprimitive.NewId(ctx.Param("id"))
+
+	dto, err := ctl.articleAppService.GetArticleById(id)
 	if err != nil {
 		cmctl.SendError(ctx, err)
 

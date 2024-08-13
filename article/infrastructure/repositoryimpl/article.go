@@ -27,6 +27,18 @@ type articleRepoImpl struct {
 	tx mysql.Transaction
 }
 
+func (impl *articleRepoImpl) GetArticleById(articleId cmprimitive.Id) (entity.Article, error) {
+
+	do := ArticleDO{}
+	do.ID = articleId.IdNum()
+
+	if err := impl.db.GetByPrimaryKey(&ArticleDO{}, &do); err != nil {
+		return entity.Article{}, err
+	}
+
+	return do.toArticle()
+}
+
 func (impl *articleRepoImpl) GetArticle(
 	user cmprimitive.Username, articleId cmprimitive.Id,
 ) (entity.Article, error) {
@@ -35,7 +47,7 @@ func (impl *articleRepoImpl) GetArticle(
 	do.ID = articleId.IdNum()
 	do.Owner = user.Username()
 
-	if err := impl.db.GetByPrimaryKey(&ArticleDO{}, &do); err != nil {
+	if err := impl.db.GetRecord(&ArticleDO{}, &do, &do); err != nil {
 
 		if cmdmerror.IsNotFound(err) {
 			return entity.Article{}, cmdmerror.NewNoPermission("")
