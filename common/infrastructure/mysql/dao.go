@@ -12,9 +12,10 @@ import (
 type Impl interface {
 	Model(model any) *gorm.DB
 
-	// Query
+	// Get
 	GetRecord(model, filter, result any) error
 	GetRecords(model, filter, result any) error
+	GetLimitRecords(model, filter, result any, amount int) error
 	GetRecordsByPagination(model, filter, result any, opt PaginationOpt) (total int, err error)
 	GetByPrimaryKey(model, row any) error
 
@@ -59,6 +60,17 @@ func (dao *daoImpl) GetRecord(model, filter, result any) error {
 
 func (dao *daoImpl) GetRecords(model, filter, result any) error {
 	err := dao.Model(model).Where(filter).Find(result).Error
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return repository.NewErrorResourceNotExists(errors.New("not found"))
+	}
+
+	return err
+}
+
+func (dao *daoImpl) GetLimitRecords(model, filter, result any, amount int) error {
+
+	err := dao.Model(model).Where(filter).Limit(amount).Find(result).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return repository.NewErrorResourceNotExists(errors.New("not found"))
