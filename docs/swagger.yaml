@@ -9,6 +9,14 @@ definitions:
       username:
         type: string
     type: object
+  controller.ResponseData:
+    properties:
+      code:
+        type: string
+      data: {}
+      msg:
+        type: string
+    type: object
   controller.reqArticle:
     properties:
       categoryId:

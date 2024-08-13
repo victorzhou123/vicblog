@@ -501,6 +501,18 @@ const docTemplate = `{
                 }
             }
         },
+        "controller.ResponseData": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "data": {},
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
         "controller.reqArticle": {
             "type": "object",
             "properties": {
