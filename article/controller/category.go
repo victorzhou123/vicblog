@@ -114,7 +114,6 @@ func (ctl *categoryController) List(ctx *gin.Context) {
 // @Tags     Category
 // @Accept   json
 // @Param    amount  path  int  true  "amount of category"
-// @Success  201   {array}  dto.CategoryListDto
 // @Success  201   array  dto.CategoryDto
 // @Router   /v1/category/{amount} [get]
 func (ctl *categoryController) LimitList(ctx *gin.Context) {
