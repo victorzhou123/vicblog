@@ -150,7 +150,8 @@ type ArticleSummaryDto struct {
 	Cover     string `json:"cover"`
 	IsPublish bool   `json:"isPublish"`
 	IsTop     bool   `json:"isTop"`
-	CreatedAt string `json:"createTime"`
+	CreatedAt string `json:"createdAt"`
+	UpdatedAt string `json:"updatedAt"`
 }
 
 func toArticleSummaryDto(article entity.Article) ArticleSummaryDto {

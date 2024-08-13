@@ -14,7 +14,7 @@ type ListTagCmd struct {
 type TagDto struct {
 	Id        uint   `json:"id"`
 	Name      string `json:"name"`
-	CreatedAt string `json:"createTime"`
+	CreatedAt string `json:"createdAt"`
 }
 
 func ToTagDto(tag entity.Tag) TagDto {
