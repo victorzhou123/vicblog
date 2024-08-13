@@ -23,7 +23,7 @@ func NewTitle(v string) (Text, error) {
 }
 
 func NewArticleContent(v string) (Text, error) {
-	v = util.XssEscape(v)
+	// v = util.XssEscape(v)
 
 	if err := validator.IsArticleContent(v); err != nil {
 		return nil, err
