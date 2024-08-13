@@ -680,7 +680,7 @@ const docTemplate = `{
         "dto.CategoryDto": {
             "type": "object",
             "properties": {
-                "createTime": {
+                "createdAt": {
                     "type": "string"
                 },
                 "id": {
@@ -717,7 +717,7 @@ const docTemplate = `{
         "dto.TagDto": {
             "type": "object",
             "properties": {
-                "createTime": {
+                "createdAt": {
                     "type": "string"
                 },
                 "id": {

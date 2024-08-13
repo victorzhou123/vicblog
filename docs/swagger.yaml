@@ -126,7 +126,7 @@ definitions:
     type: object
   dto.CategoryDto:
     properties:
-      createTime:
+      createdAt:
         type: string
       id:
         type: integer
@@ -150,7 +150,7 @@ definitions:
     type: object
   dto.TagDto:
     properties:
-      createTime:
+      createdAt:
         type: string
       id:
         type: integer
