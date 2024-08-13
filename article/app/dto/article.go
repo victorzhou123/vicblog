@@ -165,6 +165,7 @@ func toArticleSummaryDto(article entity.Article) ArticleSummaryDto {
 		IsPublish: article.IsPublish,
 		IsTop:     article.IsTop,
 		CreatedAt: article.CreatedAt.TimeYearToSecond(),
+		UpdatedAt: article.UpdatedAt.TimeYearToSecond(),
 	}
 }
 
@@ -173,4 +174,42 @@ type UpdateArticleCmd struct {
 	AddArticleCmd
 
 	Id cmprimitive.Id
+}
+
+type ArticleDto struct {
+	ArticleSummaryDto
+
+	Content   string `json:"content"`
+	ReadTimes int    `json:"readTimes"`
+}
+
+func toArticleDto(article entity.Article) ArticleDto {
+	return ArticleDto{
+		ArticleSummaryDto: toArticleSummaryDto(article),
+		Content:           article.Content.Text(),
+		ReadTimes:         article.ReadTimes,
+	}
+}
+
+type ArticleWithTagCateDto struct {
+	ArticleDto
+
+	Category CategoryDto `json:"category"`
+	Tags     []TagDto    `json:"tags"`
+}
+
+func ToArticleWithTagCateDto(
+	article entity.Article, tags []tagent.Tag, cate cateent.Category,
+) ArticleWithTagCateDto {
+
+	tagDtos := make([]TagDto, len(tags))
+	for i := range tags {
+		tagDtos[i] = ToTagDto(tags[i])
+	}
+
+	return ArticleWithTagCateDto{
+		ArticleDto: toArticleDto(article),
+		Category:   ToCategoryDto(cate),
+		Tags:       tagDtos,
+	}
 }

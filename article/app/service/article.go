@@ -14,7 +14,7 @@ import (
 )
 
 type ArticleAppService interface {
-	GetArticleById(articleId cmprimitive.Id) (dto.ArticleDetailDto, error)
+	GetArticleById(articleId cmprimitive.Id) (dto.ArticleWithTagCateDto, error)
 	GetArticle(*dto.GetArticleCmd) (dto.ArticleDetailDto, error)
 	GetArticleList(*dto.GetArticleListCmd) (dto.ArticleListDto, error)
 	PaginationListArticle(*dto.ListAllArticlesCmd) (dto.ArticleDetailsListDto, error)
@@ -47,21 +47,27 @@ func NewArticleAppService(
 	}
 }
 
-func (s *articleAppService) GetArticleById(articleId cmprimitive.Id) (dto.ArticleDetailDto, error) {
+func (s *articleAppService) GetArticleById(articleId cmprimitive.Id) (dto.ArticleWithTagCateDto, error) {
 
 	// get article (has parsed content to html)
 	article, err := s.article.GetArticleByIdWithContentParsed(articleId)
 	if err != nil {
-		return dto.ArticleDetailDto{}, err
+		return dto.ArticleWithTagCateDto{}, err
 	}
 
-	// get tags and category of article
-	tagIds, cateId, err := s.getArticleTagsAndCategoryById(article.Id)
+	// get tags by article id
+	tags, err := s.tag.GetArticleTag(articleId)
 	if err != nil {
-		return dto.ArticleDetailDto{}, err
+		return dto.ArticleWithTagCateDto{}, err
 	}
 
-	return dto.ToArticleDetailDto(article, tagIds, cateId), nil
+	// get categories by article id
+	cates, err := s.cate.GetArticleCategory(articleId)
+	if err != nil {
+		return dto.ArticleWithTagCateDto{}, err
+	}
+
+	return dto.ToArticleWithTagCateDto(article, tags, cates), nil
 }
 
 func (s *articleAppService) GetArticle(cmd *dto.GetArticleCmd) (dto.ArticleDetailDto, error) {
