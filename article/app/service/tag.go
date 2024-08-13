@@ -46,7 +46,7 @@ func (s *tagAppService) ListTag(
 	cmd *dto.ListTagCmd,
 ) (dto.TagListDto, error) {
 
-	tagListDto, err := s.tag.ListTag(cmd.ToPagination())
+	tagListDto, err := s.tag.ListTagByPagination(cmd.ToPagination())
 	if err != nil {
 		return dto.TagListDto{}, err
 	}

@@ -63,7 +63,7 @@ func (impl *tagRepoImpl) GetBatchTags(tagIds []cmprimitive.Id) ([]entity.Tag, er
 	return tags, nil
 }
 
-func (impl *tagRepoImpl) GetTagList(opt cment.Pagination) ([]entity.Tag, int, error) {
+func (impl *tagRepoImpl) GetTagListByPagination(opt cment.Pagination) ([]entity.Tag, int, error) {
 	dos := []TagDO{}
 
 	options := mysql.PaginationOpt{

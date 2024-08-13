@@ -12,7 +12,7 @@ import (
 type TagService interface {
 	AddTags(repository.TagNames) error
 	GetArticleTag(articleId cmprimitive.Id) ([]entity.Tag, error)
-	ListTag(*cment.Pagination) (TagListDto, error)
+	ListTagByPagination(*cment.Pagination) (TagListDto, error)
 	ListAllTag() ([]entity.Tag, error)
 	Delete(cmprimitive.Id) error
 
@@ -66,9 +66,9 @@ func (s *tagService) GetArticleTag(articleId cmprimitive.Id) ([]entity.Tag, erro
 	return s.repo.GetBatchTags(tagIds)
 }
 
-func (s *tagService) ListTag(pagination *cment.Pagination) (TagListDto, error) {
+func (s *tagService) ListTagByPagination(pagination *cment.Pagination) (TagListDto, error) {
 
-	tags, total, err := s.repo.GetTagList(*pagination)
+	tags, total, err := s.repo.GetTagListByPagination(*pagination)
 	if err != nil {
 		if cmdmerror.IsNotFound(err) {
 			return TagListDto{}, nil
