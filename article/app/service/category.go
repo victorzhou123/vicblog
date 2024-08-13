@@ -8,7 +8,7 @@ import (
 )
 
 type CategoryAppService interface {
-	ListAllCategory() ([]dto.CategoryDto, error)
+	ListCategories(amount cmprimitive.Amount) ([]dto.CategoryDto, error)
 	ListCategoryByPagination(*dto.ListCategoryCmd) (dto.CategoryListDto, error)
 
 	AddCategory(entity.CategoryName) error
@@ -26,9 +26,9 @@ func NewCategoryAppService(cate categorydmsvc.CategoryService) CategoryAppServic
 	}
 }
 
-func (s *categoryAppService) ListAllCategory() ([]dto.CategoryDto, error) {
+func (s *categoryAppService) ListCategories(amount cmprimitive.Amount) ([]dto.CategoryDto, error) {
 
-	cates, err := s.cate.ListAllCategory()
+	cates, err := s.cate.ListCategories(amount)
 	if err != nil {
 		return nil, err
 	}

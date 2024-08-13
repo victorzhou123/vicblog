@@ -67,8 +67,8 @@ func (ctl *categoryController) Add(ctx *gin.Context) {
 // @Accept   json
 // @Param    current  query  int  true  "current page of user queried"
 // @Param    size  query  int  true  "single page size of user queried"
-// @Success  201   {array}  service.CategoryListDto
-// @Success  201   array  service.CategoryDto
+// @Success  201   {array}  dto.CategoryListDto
+// @Success  201   array  dto.CategoryDto
 // @Router   /v1/admin/category [get]
 func (ctl *categoryController) List(ctx *gin.Context) {
 	var req = reqCategoryList{
@@ -80,7 +80,7 @@ func (ctl *categoryController) List(ctx *gin.Context) {
 
 	if req.EmptyValue() {
 		// list all category
-		dtos, err := ctl.category.ListAllCategory()
+		dtos, err := ctl.category.ListCategories(nil)
 		if err != nil {
 			cmctl.SendError(ctx, err)
 
@@ -114,11 +114,21 @@ func (ctl *categoryController) List(ctx *gin.Context) {
 // @Tags     Category
 // @Accept   json
 // @Param    amount  path  int  true  "amount of category"
-// @Success  201   {array}  service.CategoryListDto
-// @Success  201   array  service.CategoryDto
+// @Success  201   {array}  dto.CategoryListDto
+// @Success  201   array  dto.CategoryDto
 // @Router   /v1/category/{amount} [get]
 func (ctl *categoryController) LimitList(ctx *gin.Context) {
-	
+
+	amount, _ := cmprimitive.NewAmountByString(ctx.Param("amount"))
+
+	dto, err := ctl.category.ListCategories(amount)
+	if err != nil {
+		cmctl.SendError(ctx, err)
+
+		return
+	}
+
+	cmctl.SendRespOfGet(ctx, dto)
 }
 
 // @Summary  Delete category

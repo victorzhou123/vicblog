@@ -40,7 +40,7 @@ func (impl *categoryRepoImpl) GetCategory(cateId cmprimitive.Id) (entity.Categor
 	return do.toCategory()
 }
 
-func (impl *categoryRepoImpl) GetCategoryList(opt cment.Pagination) ([]entity.Category, int, error) {
+func (impl *categoryRepoImpl) GetCategoryListByPagination(opt cment.Pagination) ([]entity.Category, int, error) {
 	categoryDos := []CategoryDO{}
 
 	options := mysql.PaginationOpt{
@@ -63,10 +63,18 @@ func (impl *categoryRepoImpl) GetCategoryList(opt cment.Pagination) ([]entity.Ca
 	return cates, total, nil
 }
 
-func (impl *categoryRepoImpl) GetAllCategoryList() ([]entity.Category, error) {
-	dos := []CategoryDO{}
+func (impl *categoryRepoImpl) GetCategoryList(amount cmprimitive.Amount) ([]entity.Category, error) {
+	// convert amount to size
+	var size int
+	if amount == nil {
+		size = -1
+	} else {
+		size = amount.Amount()
+	}
 
-	if err := impl.GetRecords(&CategoryDO{}, &CategoryDO{}, &dos); err != nil {
+	// get category records
+	dos := []CategoryDO{}
+	if err := impl.GetLimitRecords(&CategoryDO{}, &CategoryDO{}, &dos, size); err != nil {
 		if cmdmerror.IsNotFound(err) {
 			return []entity.Category{}, nil
 		}
