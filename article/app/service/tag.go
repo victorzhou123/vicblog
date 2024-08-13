@@ -9,8 +9,8 @@ import (
 )
 
 type TagAppService interface {
-	ListAllTag() ([]dto.TagDto, error)
-	ListTag(*dto.ListTagCmd) (dto.TagListDto, error)
+	ListTags(cmprimitive.Amount) ([]dto.TagDto, error)
+	ListTagByPagination(*dto.ListTagCmd) (dto.TagListDto, error)
 
 	AddTags([]entity.TagName) error
 
@@ -27,9 +27,9 @@ func NewTagAppService(tag tagdmsvc.TagService) TagAppService {
 	}
 }
 
-func (s *tagAppService) ListAllTag() ([]dto.TagDto, error) {
+func (s *tagAppService) ListTags(amount cmprimitive.Amount) ([]dto.TagDto, error) {
 
-	tags, err := s.tag.ListAllTag()
+	tags, err := s.tag.ListTags(amount)
 	if err != nil {
 		return nil, err
 	}
@@ -42,7 +42,7 @@ func (s *tagAppService) ListAllTag() ([]dto.TagDto, error) {
 	return tagDtos, nil
 }
 
-func (s *tagAppService) ListTag(
+func (s *tagAppService) ListTagByPagination(
 	cmd *dto.ListTagCmd,
 ) (dto.TagListDto, error) {
 

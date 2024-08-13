@@ -13,7 +13,7 @@ type TagService interface {
 	AddTags(repository.TagNames) error
 	GetArticleTag(articleId cmprimitive.Id) ([]entity.Tag, error)
 	ListTagByPagination(*cment.Pagination) (TagListDto, error)
-	ListAllTag() ([]entity.Tag, error)
+	ListTags(cmprimitive.Amount) ([]entity.Tag, error)
 	Delete(cmprimitive.Id) error
 
 	GetRelationWithArticle(articleId cmprimitive.Id) (tags []cmprimitive.Id, err error)
@@ -83,8 +83,8 @@ func (s *tagService) ListTagByPagination(pagination *cment.Pagination) (TagListD
 	}, nil
 }
 
-func (s *tagService) ListAllTag() ([]entity.Tag, error) {
-	return s.repo.GetAllTagList()
+func (s *tagService) ListTags(amount cmprimitive.Amount) ([]entity.Tag, error) {
+	return s.repo.GetTagList(amount)
 }
 
 func (s *tagService) Delete(id cmprimitive.Id) error {
