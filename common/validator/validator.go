@@ -76,7 +76,7 @@ func IsArticleSummary(v string) error {
 
 func IsCategoryName(v string) error {
 	if len(v) > categoryNameLengthLimit || len(v) <= 0 {
-		return fmt.Errorf("category name length must bigger than 0 and less than %d", categoryNameLengthLimit)
+		return fmt.Errorf("category name length must greater than 0 and less than %d", categoryNameLengthLimit)
 	}
 
 	return nil
@@ -84,7 +84,15 @@ func IsCategoryName(v string) error {
 
 func IsTagName(v string) error {
 	if len(v) > tagNameLengthLimit || len(v) <= 0 {
-		return fmt.Errorf("tag name length must bigger than 0 and less than %d", tagNameLengthLimit)
+		return fmt.Errorf("tag name length must greater than 0 and less than %d", tagNameLengthLimit)
+	}
+
+	return nil
+}
+
+func IsAmount(v int) error {
+	if v < 0 {
+		return errors.New("amount must greater than or equal to 0")
 	}
 
 	return nil
