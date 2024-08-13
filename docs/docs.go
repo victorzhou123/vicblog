@@ -452,6 +452,38 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/v1/tag/{amount}": {
+            "get": {
+                "description": "show tag list, limited by amount",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Tag"
+                ],
+                "summary": "List tag amount limit",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "amount of tag",
+                        "name": "amount",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dto.TagDto"
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -667,6 +699,20 @@ const docTemplate = `{
                 },
                 "total": {
                     "type": "integer"
+                }
+            }
+        },
+        "dto.TagDto": {
+            "type": "object",
+            "properties": {
+                "createTime": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
                 }
             }
         },
