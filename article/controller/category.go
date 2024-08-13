@@ -21,6 +21,7 @@ func AddRouterForCategoryController(
 
 	rg.POST("/v1/admin/category", auth.VerifyToken, ctl.Add)
 	rg.GET("/v1/admin/category", auth.VerifyToken, ctl.List)
+	rg.GET("/v1/category/:amount", auth.VerifyToken, ctl.LimitList)
 	rg.DELETE("/v1/admin/category/:id", auth.VerifyToken, ctl.Delete)
 }
 
@@ -97,7 +98,7 @@ func (ctl *categoryController) List(ctx *gin.Context) {
 			return
 		}
 
-		dto, err := ctl.category.ListCategory(&cmd)
+		dto, err := ctl.category.ListCategoryByPagination(&cmd)
 		if err != nil {
 			cmctl.SendError(ctx, err)
 
@@ -106,6 +107,18 @@ func (ctl *categoryController) List(ctx *gin.Context) {
 
 		cmctl.SendRespOfGet(ctx, dto)
 	}
+}
+
+// @Summary  List category amount limit
+// @Description  show category list, limited by amount
+// @Tags     Category
+// @Accept   json
+// @Param    amount  path  int  true  "amount of category"
+// @Success  201   {array}  service.CategoryListDto
+// @Success  201   array  service.CategoryDto
+// @Router   /v1/category/{amount} [get]
+func (ctl *categoryController) LimitList(ctx *gin.Context) {
+	
 }
 
 // @Summary  Delete category

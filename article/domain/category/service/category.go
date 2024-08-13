@@ -11,7 +11,7 @@ import (
 
 type CategoryService interface {
 	AddCategory(entity.CategoryName) error
-	ListCategory(*cment.Pagination) (CategoryListDto, error)
+	ListCategoryByPagination(*cment.Pagination) (CategoryListDto, error)
 	ListAllCategory() ([]entity.Category, error)
 	GetArticleCategory(articleId cmprimitive.Id) (entity.Category, error)
 	DelCategory(cmprimitive.Id) error
@@ -48,7 +48,7 @@ func (s *categoryService) AddCategory(category entity.CategoryName) error {
 	return nil
 }
 
-func (s *categoryService) ListCategory(pagination *cment.Pagination) (CategoryListDto, error) {
+func (s *categoryService) ListCategoryByPagination(pagination *cment.Pagination) (CategoryListDto, error) {
 
 	cates, total, err := s.repo.GetCategoryList(*pagination)
 	if err != nil {

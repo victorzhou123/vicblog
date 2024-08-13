@@ -9,7 +9,7 @@ import (
 
 type CategoryAppService interface {
 	ListAllCategory() ([]dto.CategoryDto, error)
-	ListCategory(*dto.ListCategoryCmd) (dto.CategoryListDto, error)
+	ListCategoryByPagination(*dto.ListCategoryCmd) (dto.CategoryListDto, error)
 
 	AddCategory(entity.CategoryName) error
 
@@ -41,9 +41,9 @@ func (s *categoryAppService) ListAllCategory() ([]dto.CategoryDto, error) {
 	return cateDtos, nil
 }
 
-func (s *categoryAppService) ListCategory(cmd *dto.ListCategoryCmd) (dto.CategoryListDto, error) {
+func (s *categoryAppService) ListCategoryByPagination(cmd *dto.ListCategoryCmd) (dto.CategoryListDto, error) {
 
-	cateListDto, err := s.cate.ListCategory(cmd.ToPagination())
+	cateListDto, err := s.cate.ListCategoryByPagination(cmd.ToPagination())
 	if err != nil {
 		return dto.CategoryListDto{}, err
 	}
