@@ -1,7 +1,9 @@
 package md2htmlimpl
 
 import (
-	"github.com/russross/blackfriday/v2"
+	"github.com/gomarkdown/markdown"
+	"github.com/gomarkdown/markdown/html"
+	"github.com/gomarkdown/markdown/parser"
 
 	"victorzhou123/vicblog/common/domain/md2html"
 	"victorzhou123/vicblog/common/domain/primitive"
@@ -15,7 +17,21 @@ func NewMd2Html() md2html.Md2Html {
 
 func (m *md2Html) Render(content primitive.Text) primitive.Text {
 
-	b := blackfriday.Run(content.Byte(), blackfriday.WithNoExtensions())
+	b := mdToHTML(content.Byte())
 
 	return primitive.NewOutPutArticleContent(string(b))
+}
+
+func mdToHTML(md []byte) []byte {
+	// create markdown parser with extensions
+	extensions := parser.CommonExtensions | parser.AutoHeadingIDs | parser.NoEmptyLineBeforeBlock
+	p := parser.NewWithExtensions(extensions)
+	doc := p.Parse(md)
+
+	// create HTML renderer with extensions
+	htmlFlags := html.CommonFlags | html.HrefTargetBlank
+	opts := html.RendererOptions{Flags: htmlFlags}
+	renderer := html.NewRenderer(opts)
+
+	return markdown.Render(doc, renderer)
 }
