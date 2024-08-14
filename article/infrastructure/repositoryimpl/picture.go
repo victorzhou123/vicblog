@@ -2,9 +2,10 @@ package repositoryimpl
 
 import (
 	"fmt"
-	"victorzhou123/vicblog/article/domain/picture/entity"
-	"victorzhou123/vicblog/article/domain/picture/repository"
-	"victorzhou123/vicblog/common/infrastructure/oss"
+
+	"github.com/victorzhou123/vicblog/article/domain/picture/entity"
+	"github.com/victorzhou123/vicblog/article/domain/picture/repository"
+	"github.com/victorzhou123/vicblog/common/infrastructure/oss"
 )
 
 func NewPictureImpl(o oss.OssService) repository.Picture {

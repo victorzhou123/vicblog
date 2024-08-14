@@ -3,12 +3,12 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 
-	"victorzhou123/vicblog/article/app/dto"
-	articleappsvc "victorzhou123/vicblog/article/app/service"
-	"victorzhou123/vicblog/article/domain/article/service"
-	cmapp "victorzhou123/vicblog/common/app"
-	cmctl "victorzhou123/vicblog/common/controller"
-	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
+	"github.com/victorzhou123/vicblog/article/app/dto"
+	articleappsvc "github.com/victorzhou123/vicblog/article/app/service"
+	"github.com/victorzhou123/vicblog/article/domain/article/service"
+	cmapp "github.com/victorzhou123/vicblog/common/app"
+	cmctl "github.com/victorzhou123/vicblog/common/controller"
+	cmprimitive "github.com/victorzhou123/vicblog/common/domain/primitive"
 )
 
 func AddRouterForArticleController(

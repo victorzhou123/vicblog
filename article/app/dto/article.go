@@ -1,13 +1,13 @@
 package dto
 
 import (
-	"victorzhou123/vicblog/article/domain/article/entity"
-	articledmsvc "victorzhou123/vicblog/article/domain/article/service"
-	cateent "victorzhou123/vicblog/article/domain/category/entity"
-	tagent "victorzhou123/vicblog/article/domain/tag/entity"
-	cmappdto "victorzhou123/vicblog/common/app/dto"
-	cment "victorzhou123/vicblog/common/domain/entity"
-	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
+	"github.com/victorzhou123/vicblog/article/domain/article/entity"
+	articledmsvc "github.com/victorzhou123/vicblog/article/domain/article/service"
+	cateent "github.com/victorzhou123/vicblog/article/domain/category/entity"
+	tagent "github.com/victorzhou123/vicblog/article/domain/tag/entity"
+	cmappdto "github.com/victorzhou123/vicblog/common/app/dto"
+	cment "github.com/victorzhou123/vicblog/common/domain/entity"
+	cmprimitive "github.com/victorzhou123/vicblog/common/domain/primitive"
 )
 
 // add article

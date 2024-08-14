@@ -1,8 +1,8 @@
 package service
 
 import (
-	"victorzhou123/vicblog/article/domain/category/entity"
-	cment "victorzhou123/vicblog/common/domain/entity"
+	"github.com/victorzhou123/vicblog/article/domain/category/entity"
+	cment "github.com/victorzhou123/vicblog/common/domain/entity"
 )
 
 type CategoryListDto struct {

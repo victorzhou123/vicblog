@@ -1,9 +1,9 @@
 package dto
 
 import (
-	"victorzhou123/vicblog/article/domain/tag/entity"
-	cmappdto "victorzhou123/vicblog/common/app/dto"
-	cment "victorzhou123/vicblog/common/domain/entity"
+	"github.com/victorzhou123/vicblog/article/domain/tag/entity"
+	cmappdto "github.com/victorzhou123/vicblog/common/app/dto"
+	cment "github.com/victorzhou123/vicblog/common/domain/entity"
 )
 
 // list tags

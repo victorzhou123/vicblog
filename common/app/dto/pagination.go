@@ -1,8 +1,8 @@
 package dto
 
 import (
-	"victorzhou123/vicblog/common/domain/entity"
-	"victorzhou123/vicblog/common/domain/primitive"
+	"github.com/victorzhou123/vicblog/common/domain/entity"
+	"github.com/victorzhou123/vicblog/common/domain/primitive"
 )
 
 type PaginationCmd struct {

@@ -3,7 +3,7 @@ package controller
 import (
 	"net/http"
 
-	cmerror "victorzhou123/vicblog/common/domain/error"
+	cmerror "github.com/victorzhou123/vicblog/common/domain/error"
 )
 
 const (

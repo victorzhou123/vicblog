@@ -1,11 +1,11 @@
 package service
 
 import (
-	"victorzhou123/vicblog/article/app/dto"
-	"victorzhou123/vicblog/article/domain/tag/entity"
-	"victorzhou123/vicblog/article/domain/tag/repository"
-	tagdmsvc "victorzhou123/vicblog/article/domain/tag/service"
-	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
+	"github.com/victorzhou123/vicblog/article/app/dto"
+	"github.com/victorzhou123/vicblog/article/domain/tag/entity"
+	"github.com/victorzhou123/vicblog/article/domain/tag/repository"
+	tagdmsvc "github.com/victorzhou123/vicblog/article/domain/tag/service"
+	cmprimitive "github.com/victorzhou123/vicblog/common/domain/primitive"
 )
 
 type TagAppService interface {

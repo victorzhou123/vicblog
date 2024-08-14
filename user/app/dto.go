@@ -1,9 +1,9 @@
 package app
 
 import (
-	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
-	"victorzhou123/vicblog/user/domain"
-	"victorzhou123/vicblog/user/domain/repository"
+	cmprimitive "github.com/victorzhou123/vicblog/common/domain/primitive"
+	"github.com/victorzhou123/vicblog/user/domain"
+	"github.com/victorzhou123/vicblog/user/domain/repository"
 )
 
 type AccountCmd struct {

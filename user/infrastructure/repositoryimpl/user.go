@@ -1,9 +1,9 @@
 package repositoryimpl
 
 import (
-	"victorzhou123/vicblog/common/infrastructure/mysql"
-	"victorzhou123/vicblog/user/domain"
-	"victorzhou123/vicblog/user/domain/repository"
+	"github.com/victorzhou123/vicblog/common/infrastructure/mysql"
+	"github.com/victorzhou123/vicblog/user/domain"
+	"github.com/victorzhou123/vicblog/user/domain/repository"
 )
 
 func NewUserRepo(db mysql.Impl) repository.User {

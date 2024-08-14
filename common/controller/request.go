@@ -1,8 +1,8 @@
 package controller
 
 import (
-	"victorzhou123/vicblog/common/app/dto"
-	"victorzhou123/vicblog/common/domain/primitive"
+	"github.com/victorzhou123/vicblog/common/app/dto"
+	"github.com/victorzhou123/vicblog/common/domain/primitive"
 )
 
 type ReqList struct {

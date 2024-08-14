@@ -1,12 +1,12 @@
 package controller
 
 import (
-	"victorzhou123/vicblog/article/app/dto"
-	articleent "victorzhou123/vicblog/article/domain/article/entity"
-	"victorzhou123/vicblog/article/domain/category/entity"
-	tagent "victorzhou123/vicblog/article/domain/tag/entity"
-	cmctl "victorzhou123/vicblog/common/controller"
-	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
+	"github.com/victorzhou123/vicblog/article/app/dto"
+	articleent "github.com/victorzhou123/vicblog/article/domain/article/entity"
+	"github.com/victorzhou123/vicblog/article/domain/category/entity"
+	tagent "github.com/victorzhou123/vicblog/article/domain/tag/entity"
+	cmctl "github.com/victorzhou123/vicblog/common/controller"
+	cmprimitive "github.com/victorzhou123/vicblog/common/domain/primitive"
 )
 
 type reqCategory struct {

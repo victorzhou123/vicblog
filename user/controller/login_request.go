@@ -1,9 +1,9 @@
 package controller
 
 import (
-	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
-	"victorzhou123/vicblog/user/app"
-	"victorzhou123/vicblog/user/domain"
+	cmprimitive "github.com/victorzhou123/vicblog/common/domain/primitive"
+	"github.com/victorzhou123/vicblog/user/app"
+	"github.com/victorzhou123/vicblog/user/domain"
 )
 
 type reqLogin struct {

@@ -1,9 +1,9 @@
 package config
 
 import (
-	"victorzhou123/vicblog/blog"
-	"victorzhou123/vicblog/common"
-	"victorzhou123/vicblog/common/util"
+	"github.com/victorzhou123/vicblog/blog"
+	"github.com/victorzhou123/vicblog/common"
+	"github.com/victorzhou123/vicblog/common/util"
 )
 
 func LoadConfig(path string, cfg *Config) error {

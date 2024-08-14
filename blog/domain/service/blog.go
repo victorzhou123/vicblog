@@ -1,8 +1,8 @@
 package service
 
 import (
-	"victorzhou123/vicblog/blog/domain/entity"
-	"victorzhou123/vicblog/blog/domain/repository"
+	"github.com/victorzhou123/vicblog/blog/domain/entity"
+	"github.com/victorzhou123/vicblog/blog/domain/repository"
 )
 
 type BlogService interface {

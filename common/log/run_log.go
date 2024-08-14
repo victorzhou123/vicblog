@@ -3,8 +3,8 @@ package log
 import (
 	"fmt"
 
-	"victorzhou123/vicblog/common/constant"
-	"victorzhou123/vicblog/common/util"
+	"github.com/victorzhou123/vicblog/common/constant"
+	"github.com/victorzhou123/vicblog/common/util"
 )
 
 type runLog struct {

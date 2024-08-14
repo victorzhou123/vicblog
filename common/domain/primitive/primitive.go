@@ -4,7 +4,8 @@ import (
 	"errors"
 	"strconv"
 	"time"
-	"victorzhou123/vicblog/common/validator"
+
+	"github.com/victorzhou123/vicblog/common/validator"
 )
 
 const timeFormatYearToSecond = "2006-01-02 15:04:05"

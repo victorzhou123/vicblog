@@ -5,10 +5,10 @@ import (
 
 	"gorm.io/gorm"
 
-	"victorzhou123/vicblog/article/domain/article/entity"
-	categoryent "victorzhou123/vicblog/article/domain/category/entity"
-	tagent "victorzhou123/vicblog/article/domain/tag/entity"
-	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
+	"github.com/victorzhou123/vicblog/article/domain/article/entity"
+	categoryent "github.com/victorzhou123/vicblog/article/domain/category/entity"
+	tagent "github.com/victorzhou123/vicblog/article/domain/tag/entity"
+	cmprimitive "github.com/victorzhou123/vicblog/common/domain/primitive"
 )
 
 var (

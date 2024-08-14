@@ -3,9 +3,9 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 
-	"victorzhou123/vicblog/article/domain/picture/service"
-	cmapp "victorzhou123/vicblog/common/app"
-	cmctl "victorzhou123/vicblog/common/controller"
+	"github.com/victorzhou123/vicblog/article/domain/picture/service"
+	cmapp "github.com/victorzhou123/vicblog/common/app"
+	cmctl "github.com/victorzhou123/vicblog/common/controller"
 )
 
 func AddRouterForFileController(

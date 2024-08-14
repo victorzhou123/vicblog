@@ -1,7 +1,7 @@
 package domain
 
 import (
-	"victorzhou123/vicblog/common/validator"
+	"github.com/victorzhou123/vicblog/common/validator"
 )
 
 // password

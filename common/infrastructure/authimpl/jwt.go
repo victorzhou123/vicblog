@@ -6,9 +6,9 @@ import (
 
 	"github.com/golang-jwt/jwt/v4"
 
-	"victorzhou123/vicblog/common/domain/auth"
-	cmdmerror "victorzhou123/vicblog/common/domain/error"
-	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
+	"github.com/victorzhou123/vicblog/common/domain/auth"
+	cmdmerror "github.com/victorzhou123/vicblog/common/domain/error"
+	cmprimitive "github.com/victorzhou123/vicblog/common/domain/primitive"
 )
 
 const (

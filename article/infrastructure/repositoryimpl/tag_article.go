@@ -1,9 +1,9 @@
 package repositoryimpl
 
 import (
-	"victorzhou123/vicblog/article/domain/tag/repository"
-	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
-	"victorzhou123/vicblog/common/infrastructure/mysql"
+	"github.com/victorzhou123/vicblog/article/domain/tag/repository"
+	cmprimitive "github.com/victorzhou123/vicblog/common/domain/primitive"
+	"github.com/victorzhou123/vicblog/common/infrastructure/mysql"
 )
 
 func NewTagArticleRepo(db mysql.Impl, tx mysql.Transaction) repository.TagArticle {

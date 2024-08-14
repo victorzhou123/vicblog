@@ -3,8 +3,8 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 
-	cmctl "victorzhou123/vicblog/common/controller"
-	"victorzhou123/vicblog/user/app"
+	cmctl "github.com/victorzhou123/vicblog/common/controller"
+	"github.com/victorzhou123/vicblog/user/app"
 )
 
 func AddRouterForLoginController(

@@ -1,16 +1,16 @@
 package service
 
 import (
-	"victorzhou123/vicblog/article/app/dto"
-	articledmsvc "victorzhou123/vicblog/article/domain/article/service"
-	categorydmsvc "victorzhou123/vicblog/article/domain/category/service"
-	tagdmsvc "victorzhou123/vicblog/article/domain/tag/service"
-	cmappdto "victorzhou123/vicblog/common/app/dto"
-	"victorzhou123/vicblog/common/domain/entity"
-	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
-	cmrepo "victorzhou123/vicblog/common/domain/repository"
-	"victorzhou123/vicblog/common/infrastructure/mysql"
-	"victorzhou123/vicblog/common/log"
+	"github.com/victorzhou123/vicblog/article/app/dto"
+	articledmsvc "github.com/victorzhou123/vicblog/article/domain/article/service"
+	categorydmsvc "github.com/victorzhou123/vicblog/article/domain/category/service"
+	tagdmsvc "github.com/victorzhou123/vicblog/article/domain/tag/service"
+	cmappdto "github.com/victorzhou123/vicblog/common/app/dto"
+	"github.com/victorzhou123/vicblog/common/domain/entity"
+	cmprimitive "github.com/victorzhou123/vicblog/common/domain/primitive"
+	cmrepo "github.com/victorzhou123/vicblog/common/domain/repository"
+	"github.com/victorzhou123/vicblog/common/infrastructure/mysql"
+	"github.com/victorzhou123/vicblog/common/log"
 )
 
 type ArticleAppService interface {

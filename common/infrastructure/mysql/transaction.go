@@ -5,8 +5,8 @@ import (
 
 	"gorm.io/gorm"
 
-	"victorzhou123/vicblog/common/domain/repository"
-	"victorzhou123/vicblog/common/util"
+	"github.com/victorzhou123/vicblog/common/domain/repository"
+	"github.com/victorzhou123/vicblog/common/util"
 )
 
 type Transaction interface {

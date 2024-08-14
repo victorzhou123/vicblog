@@ -1,11 +1,11 @@
 package app
 
 import (
-	cmdmauth "victorzhou123/vicblog/common/domain/auth"
-	cmdmerror "victorzhou123/vicblog/common/domain/error"
-	"victorzhou123/vicblog/common/log"
-	"victorzhou123/vicblog/user/domain/auth"
-	"victorzhou123/vicblog/user/domain/repository"
+	cmdmauth "github.com/victorzhou123/vicblog/common/domain/auth"
+	cmdmerror "github.com/victorzhou123/vicblog/common/domain/error"
+	"github.com/victorzhou123/vicblog/common/log"
+	"github.com/victorzhou123/vicblog/user/domain/auth"
+	"github.com/victorzhou123/vicblog/user/domain/repository"
 )
 
 type LoginService interface {
