@@ -1,8 +1,8 @@
 package common
 
 import (
-	"victorzhou123/vicblog/common/infrastructure"
-	"victorzhou123/vicblog/common/log"
+	"github.com/victorzhou123/vicblog/common/infrastructure"
+	"github.com/victorzhou123/vicblog/common/log"
 )
 
 type Config struct {

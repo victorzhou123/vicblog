@@ -1,6 +1,6 @@
 package auth
 
-import "victorzhou123/vicblog/common/domain/primitive"
+import "github.com/victorzhou123/vicblog/common/domain/primitive"
 
 type Payload struct {
 	UserName primitive.Username

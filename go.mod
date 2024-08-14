@@ -1,4 +1,4 @@
-module victorzhou123/vicblog
+module github.com/victorzhou123/vicblog
 
 go 1.18
 

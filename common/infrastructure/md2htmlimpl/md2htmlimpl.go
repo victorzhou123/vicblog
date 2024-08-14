@@ -5,8 +5,8 @@ import (
 	"github.com/gomarkdown/markdown/html"
 	"github.com/gomarkdown/markdown/parser"
 
-	"victorzhou123/vicblog/common/domain/md2html"
-	"victorzhou123/vicblog/common/domain/primitive"
+	"github.com/victorzhou123/vicblog/common/domain/md2html"
+	"github.com/victorzhou123/vicblog/common/domain/primitive"
 )
 
 type md2Html struct{}

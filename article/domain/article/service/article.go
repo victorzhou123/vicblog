@@ -1,13 +1,13 @@
 package service
 
 import (
-	"victorzhou123/vicblog/article/domain/article/entity"
-	"victorzhou123/vicblog/article/domain/article/repository"
-	cmentt "victorzhou123/vicblog/common/domain/entity"
-	cmdmerror "victorzhou123/vicblog/common/domain/error"
-	cmdmmd2html "victorzhou123/vicblog/common/domain/md2html"
-	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
-	"victorzhou123/vicblog/common/log"
+	"github.com/victorzhou123/vicblog/article/domain/article/entity"
+	"github.com/victorzhou123/vicblog/article/domain/article/repository"
+	cmentt "github.com/victorzhou123/vicblog/common/domain/entity"
+	cmdmerror "github.com/victorzhou123/vicblog/common/domain/error"
+	cmdmmd2html "github.com/victorzhou123/vicblog/common/domain/md2html"
+	cmprimitive "github.com/victorzhou123/vicblog/common/domain/primitive"
+	"github.com/victorzhou123/vicblog/common/log"
 )
 
 const msgCannotFoundTheArticle = "can not found the article"

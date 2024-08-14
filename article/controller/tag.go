@@ -3,10 +3,10 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 
-	"victorzhou123/vicblog/article/app/service"
-	cmapp "victorzhou123/vicblog/common/app"
-	cmctl "victorzhou123/vicblog/common/controller"
-	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
+	"github.com/victorzhou123/vicblog/article/app/service"
+	cmapp "github.com/victorzhou123/vicblog/common/app"
+	cmctl "github.com/victorzhou123/vicblog/common/controller"
+	cmprimitive "github.com/victorzhou123/vicblog/common/domain/primitive"
 )
 
 func AddRouterForTagController(

@@ -1,10 +1,10 @@
 package service
 
 import (
-	"victorzhou123/vicblog/article/app/dto"
-	"victorzhou123/vicblog/article/domain/category/entity"
-	categorydmsvc "victorzhou123/vicblog/article/domain/category/service"
-	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
+	"github.com/victorzhou123/vicblog/article/app/dto"
+	"github.com/victorzhou123/vicblog/article/domain/category/entity"
+	categorydmsvc "github.com/victorzhou123/vicblog/article/domain/category/service"
+	cmprimitive "github.com/victorzhou123/vicblog/common/domain/primitive"
 )
 
 type CategoryAppService interface {

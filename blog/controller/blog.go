@@ -3,8 +3,8 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 
-	"victorzhou123/vicblog/blog/app/service"
-	cmctl "victorzhou123/vicblog/common/controller"
+	"github.com/victorzhou123/vicblog/blog/app/service"
+	cmctl "github.com/victorzhou123/vicblog/common/controller"
 )
 
 func AddRouterForBlogController(

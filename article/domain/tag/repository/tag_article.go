@@ -1,6 +1,6 @@
 package repository
 
-import cmprimitive "victorzhou123/vicblog/common/domain/primitive"
+import cmprimitive "github.com/victorzhou123/vicblog/common/domain/primitive"
 
 type TagArticle interface {
 	GetRelationWithArticle(articleId cmprimitive.Id) (tags []cmprimitive.Id, err error)

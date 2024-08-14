@@ -1,9 +1,9 @@
 package repositoryimpl
 
 import (
-	"victorzhou123/vicblog/article/domain/category/repository"
-	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
-	"victorzhou123/vicblog/common/infrastructure/mysql"
+	"github.com/victorzhou123/vicblog/article/domain/category/repository"
+	cmprimitive "github.com/victorzhou123/vicblog/common/domain/primitive"
+	"github.com/victorzhou123/vicblog/common/infrastructure/mysql"
 )
 
 func NewCategoryArticleRepo(db mysql.Impl, tx mysql.Transaction) repository.CategoryArticle {

@@ -1,12 +1,12 @@
 package service
 
 import (
-	"victorzhou123/vicblog/article/domain/category/entity"
-	"victorzhou123/vicblog/article/domain/category/repository"
-	cment "victorzhou123/vicblog/common/domain/entity"
-	cmdmerror "victorzhou123/vicblog/common/domain/error"
-	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
-	"victorzhou123/vicblog/common/log"
+	"github.com/victorzhou123/vicblog/article/domain/category/entity"
+	"github.com/victorzhou123/vicblog/article/domain/category/repository"
+	cment "github.com/victorzhou123/vicblog/common/domain/entity"
+	cmdmerror "github.com/victorzhou123/vicblog/common/domain/error"
+	cmprimitive "github.com/victorzhou123/vicblog/common/domain/primitive"
+	"github.com/victorzhou123/vicblog/common/log"
 )
 
 type CategoryService interface {

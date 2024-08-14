@@ -6,7 +6,7 @@ import (
 
 	"gorm.io/gorm"
 
-	"victorzhou123/vicblog/common/domain/repository"
+	"github.com/victorzhou123/vicblog/common/domain/repository"
 )
 
 type Impl interface {

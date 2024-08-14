@@ -3,10 +3,10 @@ package app
 import (
 	"github.com/gin-gonic/gin"
 
-	"victorzhou123/vicblog/common/controller"
-	"victorzhou123/vicblog/common/domain/auth"
-	cmdmerror "victorzhou123/vicblog/common/domain/error"
-	"victorzhou123/vicblog/common/domain/primitive"
+	"github.com/victorzhou123/vicblog/common/controller"
+	"github.com/victorzhou123/vicblog/common/domain/auth"
+	cmdmerror "github.com/victorzhou123/vicblog/common/domain/error"
+	"github.com/victorzhou123/vicblog/common/domain/primitive"
 )
 
 const (

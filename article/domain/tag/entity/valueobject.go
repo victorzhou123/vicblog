@@ -1,8 +1,8 @@
 package entity
 
 import (
-	"victorzhou123/vicblog/common/util"
-	"victorzhou123/vicblog/common/validator"
+	"github.com/victorzhou123/vicblog/common/util"
+	"github.com/victorzhou123/vicblog/common/validator"
 )
 
 type TagName interface {

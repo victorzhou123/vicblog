@@ -1,9 +1,9 @@
 package repository
 
 import (
-	"victorzhou123/vicblog/article/domain/category/entity"
-	cment "victorzhou123/vicblog/common/domain/entity"
-	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
+	"github.com/victorzhou123/vicblog/article/domain/category/entity"
+	cment "github.com/victorzhou123/vicblog/common/domain/entity"
+	cmprimitive "github.com/victorzhou123/vicblog/common/domain/primitive"
 )
 
 type Category interface {

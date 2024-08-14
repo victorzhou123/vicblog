@@ -1,9 +1,9 @@
 package repositoryimpl
 
 import (
-	"victorzhou123/vicblog/blog/domain/entity"
-	"victorzhou123/vicblog/blog/domain/repository"
-	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
+	"github.com/victorzhou123/vicblog/blog/domain/entity"
+	"github.com/victorzhou123/vicblog/blog/domain/repository"
+	cmprimitive "github.com/victorzhou123/vicblog/common/domain/primitive"
 )
 
 type blogInfoImpl struct {

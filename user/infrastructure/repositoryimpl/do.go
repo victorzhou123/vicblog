@@ -3,8 +3,8 @@ package repositoryimpl
 import (
 	"gorm.io/gorm"
 
-	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
-	"victorzhou123/vicblog/user/domain"
+	cmprimitive "github.com/victorzhou123/vicblog/common/domain/primitive"
+	"github.com/victorzhou123/vicblog/user/domain"
 )
 
 const tableNameUser = "user"

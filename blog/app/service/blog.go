@@ -1,8 +1,8 @@
 package service
 
 import (
-	"victorzhou123/vicblog/blog/app/dto"
-	"victorzhou123/vicblog/blog/domain/service"
+	"github.com/victorzhou123/vicblog/blog/app/dto"
+	"github.com/victorzhou123/vicblog/blog/domain/service"
 )
 
 type BlogAppService interface {

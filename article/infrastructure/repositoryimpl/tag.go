@@ -1,13 +1,13 @@
 package repositoryimpl
 
 import (
-	"victorzhou123/vicblog/article/domain/tag/entity"
-	"victorzhou123/vicblog/article/domain/tag/repository"
-	cment "victorzhou123/vicblog/common/domain/entity"
-	cmdmerror "victorzhou123/vicblog/common/domain/error"
-	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
-	cmrepo "victorzhou123/vicblog/common/domain/repository"
-	"victorzhou123/vicblog/common/infrastructure/mysql"
+	"github.com/victorzhou123/vicblog/article/domain/tag/entity"
+	"github.com/victorzhou123/vicblog/article/domain/tag/repository"
+	cment "github.com/victorzhou123/vicblog/common/domain/entity"
+	cmdmerror "github.com/victorzhou123/vicblog/common/domain/error"
+	cmprimitive "github.com/victorzhou123/vicblog/common/domain/primitive"
+	cmrepo "github.com/victorzhou123/vicblog/common/domain/repository"
+	"github.com/victorzhou123/vicblog/common/infrastructure/mysql"
 )
 
 func NewTagRepo(db mysql.Impl) repository.Tag {

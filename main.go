@@ -3,11 +3,11 @@ package main
 import (
 	"fmt"
 
-	"victorzhou123/vicblog/common/infrastructure/mysql"
-	"victorzhou123/vicblog/common/infrastructure/oss"
-	"victorzhou123/vicblog/common/log"
-	"victorzhou123/vicblog/config"
-	"victorzhou123/vicblog/server"
+	"github.com/victorzhou123/vicblog/common/infrastructure/mysql"
+	"github.com/victorzhou123/vicblog/common/infrastructure/oss"
+	"github.com/victorzhou123/vicblog/common/log"
+	"github.com/victorzhou123/vicblog/config"
+	"github.com/victorzhou123/vicblog/server"
 )
 
 // @title            vicBlog server API

@@ -3,9 +3,9 @@ package service
 import (
 	"errors"
 
-	"victorzhou123/vicblog/article/domain/article/entity"
-	cment "victorzhou123/vicblog/common/domain/entity"
-	cmprimitive "victorzhou123/vicblog/common/domain/primitive"
+	"github.com/victorzhou123/vicblog/article/domain/article/entity"
+	cment "github.com/victorzhou123/vicblog/common/domain/entity"
+	cmprimitive "github.com/victorzhou123/vicblog/common/domain/primitive"
 )
 
 // list article

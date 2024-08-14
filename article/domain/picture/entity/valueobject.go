@@ -1,6 +1,6 @@
 package entity
 
-import "victorzhou123/vicblog/common/validator"
+import "github.com/victorzhou123/vicblog/common/validator"
 
 type PictureName interface {
 	PictureName() string

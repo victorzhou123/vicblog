@@ -1,9 +1,9 @@
 package infrastructure
 
 import (
-	"victorzhou123/vicblog/common/infrastructure/authimpl"
-	"victorzhou123/vicblog/common/infrastructure/mysql"
-	"victorzhou123/vicblog/common/infrastructure/oss"
+	"github.com/victorzhou123/vicblog/common/infrastructure/authimpl"
+	"github.com/victorzhou123/vicblog/common/infrastructure/mysql"
+	"github.com/victorzhou123/vicblog/common/infrastructure/oss"
 )
 
 type Config struct {
