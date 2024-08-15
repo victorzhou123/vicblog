@@ -141,6 +141,7 @@ func (s *articleService) UpdateArticle(articleId cmprimitive.Id, articleInfo *en
 		Title:   articleInfo.Title,
 		Content: articleInfo.Content,
 		Summary: articleInfo.Summary,
+		Cover:   articleInfo.Cover,
 	}); err != nil {
 
 		log.Errorf("user %s update article %s failed, err: %s",
