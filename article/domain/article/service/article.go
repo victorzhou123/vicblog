@@ -21,6 +21,7 @@ type ArticleService interface {
 	Delete(cmprimitive.Username, cmprimitive.Id) error
 
 	AddArticle(*entity.ArticleInfo) (articleId cmprimitive.Id, err error)
+	AddArticleReadTimes(articleId cmprimitive.Id, plus cmprimitive.Amount) error
 
 	UpdateArticle(articleId cmprimitive.Id, articleInfo *entity.ArticleInfo) error
 }
@@ -127,6 +128,10 @@ func (s *articleService) AddArticle(articleInfo *entity.ArticleInfo) (cmprimitiv
 	}
 
 	return articleId, nil
+}
+
+func (s *articleService) AddArticleReadTimes(articleId cmprimitive.Id, plus cmprimitive.Amount) error {
+	return s.repo.AddArticleReadTimes(articleId, plus)
 }
 
 func (s *articleService) UpdateArticle(articleId cmprimitive.Id, articleInfo *entity.ArticleInfo) error {

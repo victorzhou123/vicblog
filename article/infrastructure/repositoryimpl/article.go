@@ -142,6 +142,14 @@ func (impl *articleRepoImpl) AddArticle(info *entity.ArticleInfo) (cmprimitive.I
 	return cmprimitive.NewIdByUint(do.ID), nil
 }
 
+func (impl *articleRepoImpl) AddArticleReadTimes(articleId cmprimitive.Id, plusNum cmprimitive.Amount) error {
+
+	filterDo := ArticleDO{}
+	filterDo.ID = articleId.IdNum()
+
+	return impl.db.Increase(&ArticleDO{}, &filterDo, fieldNameArticleReadTimes, plusNum.Amount())
+}
+
 func (impl *articleRepoImpl) Update(
 	articleId cmprimitive.Id, articleInfo *entity.ArticleInfo,
 ) error {

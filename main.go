@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 
+	"github.com/victorzhou123/vicblog/common/infrastructure/mqimpl"
 	"github.com/victorzhou123/vicblog/common/infrastructure/mysql"
 	"github.com/victorzhou123/vicblog/common/infrastructure/oss"
 	"github.com/victorzhou123/vicblog/common/log"
@@ -43,6 +44,9 @@ func main() {
 	if err := oss.Init(&cfg.Common.Infra.Oss); err != nil {
 		log.Warnf("object storage init failed, error: %s", err.Error())
 	}
+
+	// mq
+	mqimpl.Init()
 
 	if err := server.StartWebServer(cfg); err != nil {
 		log.Fatalf("start web server error: %s", err.Error())

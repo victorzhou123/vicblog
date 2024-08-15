@@ -24,6 +24,7 @@ type Impl interface {
 
 	// Update
 	Update(model, filter, values any) error
+	Increase(model, filter any, column string, increaseNum int) error
 
 	// Delete
 	Delete(model, filter any) error
@@ -117,6 +118,22 @@ func (dao *daoImpl) Add(model, value any) error {
 
 func (dao *daoImpl) Update(model, filter, values any) error {
 	err := dao.Model(model).Where(filter).Updates(values).Error
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return repository.NewErrorResourceNotExists(errors.New("not found"))
+	}
+
+	if errors.Is(err, gorm.ErrCheckConstraintViolated) {
+		return repository.NewErrorConstraintViolated(err)
+	}
+
+	return err
+}
+
+func (dao *daoImpl) Increase(model, filter any, column string, increaseNum int) error {
+
+	err := dao.Model(model).Where(filter).
+		UpdateColumn(column, gorm.Expr(fmt.Sprintf("%s + ?", column), increaseNum)).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return repository.NewErrorResourceNotExists(errors.New("not found"))

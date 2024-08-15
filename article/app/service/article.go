@@ -7,10 +7,17 @@ import (
 	tagdmsvc "github.com/victorzhou123/vicblog/article/domain/tag/service"
 	cmappdto "github.com/victorzhou123/vicblog/common/app/dto"
 	"github.com/victorzhou123/vicblog/common/domain/entity"
+	cmevent "github.com/victorzhou123/vicblog/common/domain/event"
 	cmprimitive "github.com/victorzhou123/vicblog/common/domain/primitive"
 	cmrepo "github.com/victorzhou123/vicblog/common/domain/repository"
 	"github.com/victorzhou123/vicblog/common/infrastructure/mysql"
 	"github.com/victorzhou123/vicblog/common/log"
+)
+
+const (
+	topicAddArticleReadTimes = "get_article"
+
+	fieldArticleId = "articleId"
 )
 
 type ArticleAppService interface {
@@ -27,10 +34,11 @@ type ArticleAppService interface {
 }
 
 type articleAppService struct {
-	tx      cmrepo.Transaction
-	article articledmsvc.ArticleService
-	cate    categorydmsvc.CategoryService
-	tag     tagdmsvc.TagService
+	tx        cmrepo.Transaction
+	article   articledmsvc.ArticleService
+	cate      categorydmsvc.CategoryService
+	tag       tagdmsvc.TagService
+	publisher cmevent.EventPublisher
 }
 
 func NewArticleAppService(
@@ -38,12 +46,14 @@ func NewArticleAppService(
 	article articledmsvc.ArticleService,
 	cate categorydmsvc.CategoryService,
 	tag tagdmsvc.TagService,
+	publisher cmevent.EventPublisher,
 ) ArticleAppService {
 	return &articleAppService{
-		tx:      tx,
-		article: article,
-		cate:    cate,
-		tag:     tag,
+		tx:        tx,
+		article:   article,
+		cate:      cate,
+		tag:       tag,
+		publisher: publisher,
 	}
 }
 
@@ -66,6 +76,14 @@ func (s *articleAppService) GetArticleById(articleId cmprimitive.Id) (dto.Articl
 	if err != nil {
 		return dto.ArticleWithTagCateDto{}, err
 	}
+
+	// publish message
+	event, err := s.publisher.NewEvent(
+		topicAddArticleReadTimes, map[string]string{fieldArticleId: article.Id.Id()})
+	if err != nil {
+		log.Errorf("new event failed, err: %s", err.Error())
+	}
+	s.publisher.Publish(event)
 
 	return dto.ToArticleWithTagCateDto(article, tags, cates), nil
 }

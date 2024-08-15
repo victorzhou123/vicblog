@@ -11,6 +11,10 @@ import (
 	cmprimitive "github.com/victorzhou123/vicblog/common/domain/primitive"
 )
 
+const (
+	fieldNameArticleReadTimes = "read_times"
+)
+
 var (
 	tableNameArticle         = "article"
 	tableNameCategory        = "category"
