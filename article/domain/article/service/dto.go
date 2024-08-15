@@ -35,3 +35,9 @@ type GetArticleCmd struct {
 	User      cmprimitive.Username
 	ArticleId cmprimitive.Id
 }
+
+// get prev and next article
+type ArticlePrevAndNextDto struct {
+	Prev *entity.ArticleIdTitle
+	Next *entity.ArticleIdTitle
+}

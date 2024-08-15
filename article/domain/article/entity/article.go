@@ -23,3 +23,8 @@ type ArticleInfo struct {
 	Content cmprimitive.Text
 	Cover   cmprimitive.Urlx
 }
+
+type ArticleIdTitle struct {
+	Id    cmprimitive.Id
+	Title cmprimitive.Text
+}

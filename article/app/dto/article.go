@@ -199,12 +199,15 @@ func toArticleDto(article entity.Article) ArticleDto {
 type ArticleWithTagCateDto struct {
 	ArticleDto
 
-	Category CategoryDto `json:"category"`
-	Tags     []TagDto    `json:"tags"`
+	Category    CategoryDto        `json:"category"`
+	Tags        []TagDto           `json:"tags"`
+	PrevArticle *ArticleIdTitleDto `json:"prevArticle"`
+	NextArticle *ArticleIdTitleDto `json:"nextArticle"`
 }
 
 func ToArticleWithTagCateDto(
 	article entity.Article, tags []tagent.Tag, cate cateent.Category,
+	prevArticle, nextArticle *entity.ArticleIdTitle,
 ) ArticleWithTagCateDto {
 
 	tagDtos := make([]TagDto, len(tags))
@@ -213,8 +216,26 @@ func ToArticleWithTagCateDto(
 	}
 
 	return ArticleWithTagCateDto{
-		ArticleDto: toArticleDto(article),
-		Category:   ToCategoryDto(cate),
-		Tags:       tagDtos,
+		ArticleDto:  toArticleDto(article),
+		Category:    ToCategoryDto(cate),
+		Tags:        tagDtos,
+		PrevArticle: toArticleIdTitleDto(prevArticle),
+		NextArticle: toArticleIdTitleDto(nextArticle),
+	}
+}
+
+type ArticleIdTitleDto struct {
+	Id    uint   `json:"id"`
+	Title string `json:"title"`
+}
+
+func toArticleIdTitleDto(article *entity.ArticleIdTitle) *ArticleIdTitleDto {
+	if article == nil {
+		return nil
+	}
+
+	return &ArticleIdTitleDto{
+		Id:    article.Id.IdNum(),
+		Title: article.Title.Text(),
 	}
 }
