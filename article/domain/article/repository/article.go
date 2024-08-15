@@ -11,6 +11,7 @@ type Article interface {
 	GetArticle(user cmprimitive.Username, articleId cmprimitive.Id) (entity.Article, error)
 	ListArticles(cmprimitive.Username, cment.Pagination) ([]entity.Article, int, error)
 	ListAllArticles(cment.Pagination) ([]entity.Article, int, error)
+	GetPreAndNextArticle(articleId cmprimitive.Id) (articleArr [2]*entity.ArticleIdTitle, err error)
 
 	Delete(cmprimitive.Username, cmprimitive.Id) error
 

@@ -77,6 +77,12 @@ func (s *articleAppService) GetArticleById(articleId cmprimitive.Id) (dto.Articl
 		return dto.ArticleWithTagCateDto{}, err
 	}
 
+	// get prev and next article
+	preNextArticle, err := s.article.GetPrevAndNextArticle(articleId)
+	if err != nil {
+		return dto.ArticleWithTagCateDto{}, err
+	}
+
 	// publish message
 	event, err := s.publisher.NewEvent(
 		topicAddArticleReadTimes, map[string]string{fieldArticleId: article.Id.Id()})
@@ -85,7 +91,7 @@ func (s *articleAppService) GetArticleById(articleId cmprimitive.Id) (dto.Articl
 	}
 	s.publisher.Publish(event)
 
-	return dto.ToArticleWithTagCateDto(article, tags, cates), nil
+	return dto.ToArticleWithTagCateDto(article, tags, cates, preNextArticle.Prev, preNextArticle.Next), nil
 }
 
 func (s *articleAppService) GetArticle(cmd *dto.GetArticleCmd) (dto.ArticleDetailDto, error) {

@@ -1,6 +1,10 @@
 package repositoryimpl
 
 import (
+	"errors"
+
+	"gorm.io/gorm"
+
 	"github.com/victorzhou123/vicblog/article/domain/article/entity"
 	"github.com/victorzhou123/vicblog/article/domain/article/repository"
 	cment "github.com/victorzhou123/vicblog/common/domain/entity"
@@ -116,6 +120,50 @@ func (impl *articleRepoImpl) ListAllArticles(opt cment.Pagination) ([]entity.Art
 	}
 
 	return dmArticles, total, nil
+}
+
+func (impl *articleRepoImpl) GetPreAndNextArticle(articleId cmprimitive.Id) (articleArr [2]*entity.ArticleIdTitle, err error) {
+
+	preArticleDo := ArticleIdTitleDO{}
+	nextArticleDo := ArticleIdTitleDO{}
+
+	var preNotFound, nextNotFound bool
+
+	// find next article
+	err = impl.db.Model(&ArticleDO{}).Where(impl.db.GreaterQuery(fieldNamePrimaryKeyId), articleId.IdNum()).
+		First(&nextArticleDo).Error
+	if err != nil {
+		if !errors.Is(err, gorm.ErrRecordNotFound) {
+			return
+		}
+
+		nextNotFound = true
+	}
+
+	if !nextNotFound {
+		if articleArr[0], err = nextArticleDo.toArticleIdTitle(); err != nil {
+			return
+		}
+	}
+
+	// find prev article
+	err = impl.db.Model(&ArticleDO{}).Where(impl.db.LessQuery(fieldNamePrimaryKeyId), articleId.IdNum()).
+		Last(&preArticleDo).Error
+	if err != nil {
+		if !errors.Is(err, gorm.ErrRecordNotFound) {
+			return
+		}
+
+		preNotFound = true
+	}
+
+	if !preNotFound {
+		if articleArr[1], err = preArticleDo.toArticleIdTitle(); err != nil {
+			return
+		}
+	}
+
+	return articleArr, nil
 }
 
 func (impl *articleRepoImpl) Delete(user cmprimitive.Username, id cmprimitive.Id) error {

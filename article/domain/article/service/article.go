@@ -17,6 +17,7 @@ type ArticleService interface {
 	GetArticle(*GetArticleCmd) (entity.Article, error)
 	GetArticleList(*ArticleListCmd) (ArticleListDto, error)
 	PaginationListArticle(*cmentt.Pagination) (ArticleListDto, error)
+	GetPrevAndNextArticle(articleId cmprimitive.Id) (ArticlePrevAndNextDto, error)
 
 	Delete(cmprimitive.Username, cmprimitive.Id) error
 
@@ -97,6 +98,19 @@ func (s *articleService) PaginationListArticle(pagination *cmentt.Pagination) (A
 	return ArticleListDto{
 		PaginationStatus: pagination.ToPaginationStatus(total),
 		Articles:         articles,
+	}, nil
+}
+
+func (s *articleService) GetPrevAndNextArticle(articleId cmprimitive.Id) (ArticlePrevAndNextDto, error) {
+
+	articles, err := s.repo.GetPreAndNextArticle(articleId)
+	if err != nil {
+		return ArticlePrevAndNextDto{}, err
+	}
+
+	return ArticlePrevAndNextDto{
+		Prev: articles[0],
+		Next: articles[1],
 	}, nil
 }
 
