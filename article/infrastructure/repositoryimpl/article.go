@@ -162,6 +162,7 @@ func (impl *articleRepoImpl) Update(
 		Title:   articleInfo.Title.Text(),
 		Content: articleInfo.Content.Text(),
 		Summary: articleInfo.Summary.ArticleSummary(),
+		Cover:   articleInfo.Cover.Urlx(),
 	}
 
 	return impl.tx.Update(&ArticleDO{}, &filterDo, &do)
