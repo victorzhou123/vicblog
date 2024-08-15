@@ -30,9 +30,11 @@ type Impl interface {
 	Delete(model, filter any) error
 	DeleteByPrimaryKey(model, row any) error
 
-	// util interface
+	// Helper
 	EqualQuery(field string) string
 	NotEqualQuery(field string) string
+	GreaterQuery(field string) string
+	LessQuery(field string) string
 	OrderByDesc(field string) string
 	InFilter(field string) string
 }
@@ -166,12 +168,21 @@ func (dao *daoImpl) DeleteByPrimaryKey(model, row any) error {
 	return err
 }
 
+// helper
 func (dao *daoImpl) EqualQuery(field string) string {
 	return fmt.Sprintf(`%s = ?`, field)
 }
 
 func (dao *daoImpl) NotEqualQuery(field string) string {
 	return fmt.Sprintf(`%s <> ?`, field)
+}
+
+func (dao *daoImpl) GreaterQuery(field string) string {
+	return fmt.Sprintf(`%s > ?`, field)
+}
+
+func (dao *daoImpl) LessQuery(field string) string {
+	return fmt.Sprintf(`%s < ?`, field)
 }
 
 func (dao *daoImpl) OrderByDesc(field string) string {
