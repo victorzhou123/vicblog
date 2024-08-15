@@ -9,6 +9,9 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
+	sconsume "github.com/victorzhou123/simplemq/consume"
+	smq "github.com/victorzhou123/simplemq/mq"
+	articleappevent "github.com/victorzhou123/vicblog/article/app/event"
 	articleappsvc "github.com/victorzhou123/vicblog/article/app/service"
 	articlectl "github.com/victorzhou123/vicblog/article/controller"
 	articlesvc "github.com/victorzhou123/vicblog/article/domain/article/service"
@@ -22,7 +25,9 @@ import (
 	blogrepoimpl "github.com/victorzhou123/vicblog/blog/infrastructure/repositoryimpl"
 	cmapp "github.com/victorzhou123/vicblog/common/app"
 	cminfraauthimpl "github.com/victorzhou123/vicblog/common/infrastructure/authimpl"
+	"github.com/victorzhou123/vicblog/common/infrastructure/eventimpl"
 	"github.com/victorzhou123/vicblog/common/infrastructure/md2htmlimpl"
+	"github.com/victorzhou123/vicblog/common/infrastructure/mqimpl"
 	cminframysql "github.com/victorzhou123/vicblog/common/infrastructure/mysql"
 	"github.com/victorzhou123/vicblog/common/infrastructure/oss"
 	cmutil "github.com/victorzhou123/vicblog/common/util"
@@ -55,11 +60,16 @@ func StartWebServer(cfg *mconfig.Config) error {
 
 func setRouter(engine *gin.Engine, cfg *mconfig.Config) {
 
+	sdistributer := sconsume.NewDistributerImpl()
+	mq := mqimpl.MQ()
+
 	// infrastructure: following are the instance of infrastructure components
 	timeCreator := cmutil.NewTimerCreator()
 	mysqlImpl := cminframysql.DAO()
 	transactionImpl := cminframysql.NewTransaction()
 	m2h := md2htmlimpl.NewMd2Html()
+	publisher := eventimpl.NewPublisher(mq)
+	distributer := eventimpl.NewDistributerImpl(&sdistributer)
 
 	// repo: following are the dependencies of service
 	ossRepo := articlerepoimpl.NewPictureImpl(oss.Client())
@@ -82,10 +92,15 @@ func setRouter(engine *gin.Engine, cfg *mconfig.Config) {
 	// app: following are app services
 	authMiddleware := cmapp.NewAuthMiddleware(auth)
 	loginService := userapp.NewLoginService(userRepo, auth)
-	articleAppService := articleappsvc.NewArticleAppService(transactionImpl, articleService, categoryService, tagService)
+	articleAppService := articleappsvc.NewArticleAppService(transactionImpl, articleService, categoryService, tagService, publisher)
 	cateAppService := articleappsvc.NewCategoryAppService(categoryService)
 	tagAppService := articleappsvc.NewTagAppService(tagService)
 	blogAppService := blogappsvc.NewBlogAppService(blogService)
+
+	// subscriber
+	articleSubcriber := articleappevent.NewArticleSubscriber(articleService)
+
+	distributer.Subscribe(articleSubcriber)
 
 	// controller: add routers
 	v1 := engine.Group(BasePath)
@@ -116,6 +131,10 @@ func setRouter(engine *gin.Engine, cfg *mconfig.Config) {
 			v1, blogAppService,
 		)
 	}
+
+	// watch
+	mqWatcher := smq.NewWatcher(mq, &sdistributer)
+	go mqWatcher.Watch()
 }
 
 func addRouterForSwaggo(rg *gin.RouterGroup) {
