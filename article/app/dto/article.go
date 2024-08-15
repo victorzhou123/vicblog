@@ -8,6 +8,7 @@ import (
 	cmappdto "github.com/victorzhou123/vicblog/common/app/dto"
 	cment "github.com/victorzhou123/vicblog/common/domain/entity"
 	cmprimitive "github.com/victorzhou123/vicblog/common/domain/primitive"
+	"github.com/victorzhou123/vicblog/common/util"
 )
 
 // add article
@@ -179,8 +180,10 @@ type UpdateArticleCmd struct {
 type ArticleDto struct {
 	ArticleSummaryDto
 
-	Content   string `json:"content"`
-	ReadTimes int    `json:"readTimes"`
+	Content      string `json:"content"`
+	ReadTimes    int    `json:"readTimes"`
+	TotalChars   int    `json:"totalChars"`
+	ReadDuration string `json:"readDuration"`
 }
 
 func toArticleDto(article entity.Article) ArticleDto {
@@ -188,6 +191,8 @@ func toArticleDto(article entity.Article) ArticleDto {
 		ArticleSummaryDto: toArticleSummaryDto(article),
 		Content:           article.Content.Text(),
 		ReadTimes:         article.ReadTimes,
+		TotalChars:        util.CharacterLen(article.Content.Text()),
+		ReadDuration:      util.ReadDurationAnalyze(article.Content.Text()),
 	}
 }
 
