@@ -15,6 +15,7 @@ type Article interface {
 	Delete(cmprimitive.Username, cmprimitive.Id) error
 
 	AddArticle(*entity.ArticleInfo) (articleId cmprimitive.Id, err error)
+	AddArticleReadTimes(cmprimitive.Id, cmprimitive.Amount) error
 
 	Update(articleId cmprimitive.Id, articleInfo *entity.ArticleInfo) error
 }
