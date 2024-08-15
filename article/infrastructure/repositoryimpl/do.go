@@ -12,6 +12,7 @@ import (
 )
 
 const (
+	fieldNamePrimaryKeyId     = "id"
 	fieldNameArticleReadTimes = "read_times"
 )
 
@@ -76,6 +77,24 @@ func (do *ArticleDO) toArticle() (article entity.Article, err error) {
 
 func (do *ArticleDO) TableName() string {
 	return tableNameArticle
+}
+
+type ArticleIdTitleDO struct {
+	ID    uint
+	Title string `gorm:"column:title"`
+}
+
+func (do *ArticleIdTitleDO) toArticleIdTitle() (*entity.ArticleIdTitle, error) {
+
+	title, err := cmprimitive.NewTitle(do.Title)
+	if err != nil {
+		return &entity.ArticleIdTitle{}, err
+	}
+
+	return &entity.ArticleIdTitle{
+		Id:    cmprimitive.NewIdByUint(do.ID),
+		Title: title,
+	}, nil
 }
 
 // category
