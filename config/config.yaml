@@ -22,7 +22,7 @@ common:
       host: 127.0.0.1
       port: 3306
       username: "root"
-      password: "Password@1"
+      password: "147852369hh@"
       db_name: "vicblog"
     oss:
       id: "LTAI5tFnKogF9bTcvoJxrZor"

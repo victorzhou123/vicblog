@@ -273,7 +273,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/service.TagListDto"
+                                "$ref": "#/definitions/dto.TagListDto"
                             }
                         }
                     }
@@ -745,6 +745,46 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.TagListDto": {
+            "type": "object",
+            "properties": {
+                "current": {
+                    "type": "integer"
+                },
+                "pages": {
+                    "type": "integer"
+                },
+                "size": {
+                    "type": "integer"
+                },
+                "tag": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.TagWithRelatedArticleAmountDto"
+                    }
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.TagWithRelatedArticleAmountDto": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "relatedArticleAmount": {
+                    "type": "integer"
+                }
+            }
+        },
         "entity.Article": {
             "type": "object",
             "properties": {
@@ -765,14 +805,6 @@ const docTemplate = `{
                 "summary": {},
                 "title": {},
                 "updatedAt": {}
-            }
-        },
-        "entity.Tag": {
-            "type": "object",
-            "properties": {
-                "createdAt": {},
-                "id": {},
-                "name": {}
             }
         },
         "service.ArticleListDto": {
@@ -799,25 +831,6 @@ const docTemplate = `{
             "properties": {
                 "url": {
                     "type": "string"
-                }
-            }
-        },
-        "service.TagListDto": {
-            "type": "object",
-            "properties": {
-                "curPage": {},
-                "pageCount": {
-                    "type": "integer"
-                },
-                "pageSize": {},
-                "tags": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/entity.Tag"
-                    }
-                },
-                "total": {
-                    "type": "integer"
                 }
             }
         }
