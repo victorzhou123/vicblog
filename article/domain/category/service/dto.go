@@ -8,5 +8,5 @@ import (
 type CategoryListDto struct {
 	cment.PaginationStatus
 
-	Categories []entity.Category
+	Categories []entity.CategoryWithRelatedArticleAmount
 }
