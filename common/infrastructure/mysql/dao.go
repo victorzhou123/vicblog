@@ -103,6 +103,7 @@ func (dao *daoImpl) GetByPrimaryKey(model, row any) error {
 
 	return err
 }
+
 func (dao *daoImpl) Add(model, value any) error {
 
 	err := dao.Model(model).Create(value).Error

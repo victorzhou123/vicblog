@@ -25,6 +25,21 @@ func ToCategoryDto(cate entity.Category) CategoryDto {
 	}
 }
 
+type CategoryWithRelatedArticleAmountDto struct {
+	CategoryDto
+
+	RelatedArticleAmount int `json:"relatedArticleAmount"`
+}
+
+func ToCategoryWithRelatedArticleAmountDto(
+	c entity.CategoryWithRelatedArticleAmount,
+) CategoryWithRelatedArticleAmountDto {
+	return CategoryWithRelatedArticleAmountDto{
+		CategoryDto:          ToCategoryDto(c.Category),
+		RelatedArticleAmount: c.RelatedArticleAmount.Amount(),
+	}
+}
+
 type CategoryListDto struct {
 	cmappdto.PaginationDto
 

@@ -14,6 +14,7 @@ import (
 const (
 	fieldNamePrimaryKeyId     = "id"
 	fieldNameArticleReadTimes = "read_times"
+	fieldNameCategoryId       = "category_id"
 )
 
 var (
@@ -160,8 +161,8 @@ func (do *TagArticleDO) TableName() string {
 type CategoryArticleDO struct {
 	gorm.Model
 
-	CategoryId uint `gorm:"column:category_id;not null;uniqueIndex:idx_tag_id_article_id"`
-	ArticleId  uint `gorm:"column:article_id;not null;uniqueIndex:idx_tag_id_article_id"`
+	CategoryId uint `gorm:"column:category_id;not null;uniqueIndex:idx_category_id_article_id"`
+	ArticleId  uint `gorm:"column:article_id;not null;uniqueIndex:idx_category_id_article_id"`
 }
 
 func (do *CategoryArticleDO) TableName() string {
