@@ -137,7 +137,7 @@ definitions:
     properties:
       category:
         items:
-          $ref: '#/definitions/dto.CategoryDto'
+          $ref: '#/definitions/dto.CategoryWithRelatedArticleAmountDto'
         type: array
       current:
         type: integer
@@ -146,6 +146,17 @@ definitions:
       size:
         type: integer
       total:
+        type: integer
+    type: object
+  dto.CategoryWithRelatedArticleAmountDto:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      relatedArticleAmount:
         type: integer
     type: object
   dto.TagDto:
@@ -329,7 +340,7 @@ paths:
           description: Created
           schema:
             items:
-              $ref: '#/definitions/dto.CategoryDto'
+              $ref: '#/definitions/dto.CategoryListDto'
             type: array
       summary: List category
       tags:

@@ -59,9 +59,28 @@ func (s *categoryService) ListCategoryByPagination(pagination *cment.Pagination)
 		return CategoryListDto{}, err
 	}
 
+	categoryIds := make([]cmprimitive.Id, len(cates))
+	for i := range cates {
+		categoryIds[i] = cates[i].Id
+	}
+
+	// get amount of category related article
+	amountMap, err := s.categoryArticleRepo.GetRelatedArticleAmount(categoryIds)
+	if err != nil {
+		return CategoryListDto{}, err
+	}
+
+	cateWithAmounts := make([]entity.CategoryWithRelatedArticleAmount, len(cates))
+	for i := range cates {
+		cateWithAmounts[i] = entity.CategoryWithRelatedArticleAmount{
+			Category:             cates[i],
+			RelatedArticleAmount: amountMap[cates[i].Id.IdNum()],
+		}
+	}
+
 	return CategoryListDto{
 		PaginationStatus: pagination.ToPaginationStatus(total),
-		Categories:       cates,
+		Categories:       cateWithAmounts,
 	}, nil
 }
 

@@ -43,16 +43,16 @@ func ToCategoryWithRelatedArticleAmountDto(
 type CategoryListDto struct {
 	cmappdto.PaginationDto
 
-	Category []CategoryDto `json:"category"`
+	Category []CategoryWithRelatedArticleAmountDto `json:"category"`
 }
 
 func ToCategoryListDto(
-	ps cment.PaginationStatus, cates []entity.Category,
+	ps cment.PaginationStatus, cates []entity.CategoryWithRelatedArticleAmount,
 ) CategoryListDto {
 
-	cateDtos := make([]CategoryDto, len(cates))
+	cateDtos := make([]CategoryWithRelatedArticleAmountDto, len(cates))
 	for i := range cates {
-		cateDtos[i] = ToCategoryDto(cates[i])
+		cateDtos[i] = ToCategoryWithRelatedArticleAmountDto(cates[i])
 	}
 
 	return CategoryListDto{

@@ -179,7 +179,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/dto.CategoryDto"
+                                "$ref": "#/definitions/dto.CategoryListDto"
                             }
                         }
                     }
@@ -690,7 +690,7 @@
                 "category": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/dto.CategoryDto"
+                        "$ref": "#/definitions/dto.CategoryWithRelatedArticleAmountDto"
                     }
                 },
                 "current": {
@@ -703,6 +703,23 @@
                     "type": "integer"
                 },
                 "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.CategoryWithRelatedArticleAmountDto": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "relatedArticleAmount": {
                     "type": "integer"
                 }
             }
