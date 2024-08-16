@@ -1,6 +1,8 @@
 package repositoryimpl
 
 import (
+	"fmt"
+
 	"github.com/victorzhou123/vicblog/article/domain/tag/repository"
 	cmprimitive "github.com/victorzhou123/vicblog/common/domain/primitive"
 	"github.com/victorzhou123/vicblog/common/infrastructure/mysql"
@@ -37,6 +39,41 @@ func (impl *tagArticleImpl) GetRelationWithArticle(articleId cmprimitive.Id) ([]
 	}
 
 	return tagIds, nil
+}
+
+func (impl *tagArticleImpl) GetRelatedArticleAmount(tagIds []cmprimitive.Id) (map[uint]cmprimitive.Amount, error) {
+
+	ids := make([]uint, len(tagIds))
+	for i := range tagIds {
+		ids[i] = tagIds[i].IdNum()
+	}
+
+	type Result struct {
+		TagId uint  `gorm:"column:tag_id"`
+		Count int64 `gorm:"column:count"`
+	}
+	dos := []Result{}
+
+	err := impl.db.Model(&TagArticleDO{}).
+		Select(fmt.Sprintf("%s, COUNT(*) as count", fieldNameTagId)).
+		Group(fieldNameTagId).Having(impl.db.InFilter(fieldNameTagId), ids).Find(&dos).Error
+	if err != nil {
+		return nil, err
+	}
+
+	// to map
+	m := make(map[uint]cmprimitive.Amount, 0)
+	for i := range dos {
+
+		amount, err := cmprimitive.NewAmount(int(dos[i].Count))
+		if err != nil {
+			return nil, err
+		}
+
+		m[dos[i].TagId] = amount
+	}
+
+	return m, nil
 }
 
 func (impl *tagArticleImpl) BuildRelationWithArticle(

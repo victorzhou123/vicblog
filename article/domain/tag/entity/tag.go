@@ -7,3 +7,9 @@ type Tag struct {
 	Name      TagName
 	CreatedAt cmprimitive.Timex
 }
+
+type TagWithRelatedArticleAmount struct {
+	Tag
+
+	RelatedArticleAmount cmprimitive.Amount
+}
