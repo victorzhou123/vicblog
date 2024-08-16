@@ -15,6 +15,7 @@ const (
 	fieldNamePrimaryKeyId     = "id"
 	fieldNameArticleReadTimes = "read_times"
 	fieldNameCategoryId       = "category_id"
+	fieldNameTagId            = "tag_id"
 )
 
 var (

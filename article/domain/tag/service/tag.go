@@ -77,9 +77,34 @@ func (s *tagService) ListTagByPagination(pagination *cment.Pagination) (TagListD
 		return TagListDto{}, err
 	}
 
+	// get amount of tag related article
+	tagIds := make([]cmprimitive.Id, len(tags))
+	for i := range tags {
+		tagIds[i] = tags[i].Id
+	}
+
+	amountMap, err := s.tagArticleRepo.GetRelatedArticleAmount(tagIds)
+	if err != nil {
+		return TagListDto{}, err
+	}
+
+	tagWithAmounts := make([]entity.TagWithRelatedArticleAmount, len(tags))
+	for i := range tags {
+
+		v, ok := amountMap[tags[i].Id.IdNum()]
+		if !ok {
+			v, _ = cmprimitive.NewAmount(0) // set a default amount
+		}
+
+		tagWithAmounts[i] = entity.TagWithRelatedArticleAmount{
+			Tag:                  tags[i],
+			RelatedArticleAmount: v,
+		}
+	}
+
 	return TagListDto{
 		PaginationStatus: pagination.ToPaginationStatus(total),
-		Tags:             tags,
+		Tags:             tagWithAmounts,
 	}, nil
 }
 

@@ -67,7 +67,8 @@ func (ctl *tagController) AddBatches(ctx *gin.Context) {
 // @Accept   json
 // @Param    current  query  int  true  "current page of user queried"
 // @Param    size  query  int  true  "single page size of user queried"
-// @Success  200   {array}  service.TagListDto
+// @Success  200   {array}  []dto.TagListDto
+// @Success  200   {array}  dto.TagListDto
 // @Router   /v1/admin/tag [get]
 func (ctl *tagController) List(ctx *gin.Context) {
 	req := reqTagList{

@@ -25,23 +25,38 @@ func ToTagDto(tag entity.Tag) TagDto {
 	}
 }
 
+type TagWithRelatedArticleAmountDto struct {
+	TagDto
+
+	RelatedArticleAmount int `json:"relatedArticleAmount"`
+}
+
+func ToTagWithRelatedArticleAmountDto(
+	c entity.TagWithRelatedArticleAmount,
+) TagWithRelatedArticleAmountDto {
+	return TagWithRelatedArticleAmountDto{
+		TagDto:               ToTagDto(c.Tag),
+		RelatedArticleAmount: c.RelatedArticleAmount.Amount(),
+	}
+}
+
 type TagListDto struct {
 	cmappdto.PaginationDto
 
-	Tag []TagDto `json:"tag"`
+	Tag []TagWithRelatedArticleAmountDto `json:"tag"`
 }
 
 func ToTagListDto(
-	ps cment.PaginationStatus, tags []entity.Tag,
+	ps cment.PaginationStatus, tags []entity.TagWithRelatedArticleAmount,
 ) TagListDto {
 
-	cateDtos := make([]TagDto, len(tags))
+	tagDtos := make([]TagWithRelatedArticleAmountDto, len(tags))
 	for i := range tags {
-		cateDtos[i] = ToTagDto(tags[i])
+		tagDtos[i] = ToTagWithRelatedArticleAmountDto(tags[i])
 	}
 
 	return TagListDto{
 		PaginationDto: cmappdto.ToPaginationDto(ps),
-		Tag:           cateDtos,
+		Tag:           tagDtos,
 	}
 }

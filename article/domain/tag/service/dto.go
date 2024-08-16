@@ -8,5 +8,5 @@ import (
 type TagListDto struct {
 	cment.PaginationStatus
 
-	Tags []entity.Tag
+	Tags []entity.TagWithRelatedArticleAmount
 }
