@@ -1,6 +1,8 @@
 package repositoryimpl
 
 import (
+	"fmt"
+
 	"github.com/victorzhou123/vicblog/article/domain/category/repository"
 	cmprimitive "github.com/victorzhou123/vicblog/common/domain/primitive"
 	"github.com/victorzhou123/vicblog/common/infrastructure/mysql"
@@ -31,6 +33,41 @@ func (impl *categoryArticleImpl) GetRelationWithArticle(articleId cmprimitive.Id
 	}
 
 	return cmprimitive.NewIdByUint(do.ID), nil
+}
+
+func (impl *categoryArticleImpl) GetRelatedArticleAmount(categoryIds []cmprimitive.Id) (map[uint]cmprimitive.Amount, error) {
+
+	ids := make([]uint, len(categoryIds))
+	for i := range categoryIds {
+		ids[i] = categoryIds[i].IdNum()
+	}
+
+	type Result struct {
+		CategoryId uint  `gorm:"column:category_id"`
+		Count      int64 `gorm:"column:count"`
+	}
+	dos := []Result{}
+
+	err := impl.db.Model(&CategoryArticleDO{}).
+		Select(fmt.Sprintf("%s, COUNT(*) as count", fieldNameCategoryId)).
+		Group(fieldNameCategoryId).Having(impl.db.InFilter(fieldNameCategoryId), ids).Find(&dos).Error
+	if err != nil {
+		return nil, err
+	}
+
+	// to map
+	m := make(map[uint]cmprimitive.Amount, 0)
+	for i := range dos {
+
+		amount, err := cmprimitive.NewAmount(int(dos[i].Count))
+		if err != nil {
+			return nil, err
+		}
+
+		m[dos[i].CategoryId] = amount
+	}
+
+	return m, nil
 }
 
 func (impl *categoryArticleImpl) BuildRelationWithArticle(articleId, cateId cmprimitive.Id) error {

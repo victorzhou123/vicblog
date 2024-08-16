@@ -7,3 +7,9 @@ type Category struct {
 	Name      CategoryName
 	CreatedAt cmprimitive.Timex
 }
+
+type CategoryWithRelatedArticleAmount struct {
+	Category
+
+	RelatedArticleAmount cmprimitive.Amount
+}

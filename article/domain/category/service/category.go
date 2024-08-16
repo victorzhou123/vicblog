@@ -12,7 +12,7 @@ import (
 type CategoryService interface {
 	AddCategory(entity.CategoryName) error
 	ListCategoryByPagination(*cment.Pagination) (CategoryListDto, error)
-	ListCategories(amount cmprimitive.Amount) ([]entity.Category, error)
+	ListCategories(amount cmprimitive.Amount) ([]entity.CategoryWithRelatedArticleAmount, error)
 	GetArticleCategory(articleId cmprimitive.Id) (entity.Category, error)
 	DelCategory(cmprimitive.Id) error
 
@@ -65,8 +65,32 @@ func (s *categoryService) ListCategoryByPagination(pagination *cment.Pagination)
 	}, nil
 }
 
-func (s *categoryService) ListCategories(amount cmprimitive.Amount) ([]entity.Category, error) {
-	return s.repo.GetCategoryList(amount)
+func (s *categoryService) ListCategories(amount cmprimitive.Amount) ([]entity.CategoryWithRelatedArticleAmount, error) {
+
+	cates, err := s.repo.GetCategoryList(amount)
+	if err != nil {
+		return nil, err
+	}
+
+	categoryIds := make([]cmprimitive.Id, len(cates))
+	for i := range cates {
+		categoryIds[i] = cates[i].Id
+	}
+
+	amountMap, err := s.categoryArticleRepo.GetRelatedArticleAmount(categoryIds)
+	if err != nil {
+		return nil, err
+	}
+
+	cateWithAmounts := make([]entity.CategoryWithRelatedArticleAmount, len(cates))
+	for i := range cates {
+		cateWithAmounts[i] = entity.CategoryWithRelatedArticleAmount{
+			Category:             cates[i],
+			RelatedArticleAmount: amountMap[cates[i].Id.IdNum()],
+		}
+	}
+
+	return cateWithAmounts, nil
 }
 
 func (s *categoryService) GetArticleCategory(articleId cmprimitive.Id) (entity.Category, error) {

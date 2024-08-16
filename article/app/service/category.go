@@ -8,7 +8,7 @@ import (
 )
 
 type CategoryAppService interface {
-	ListCategories(amount cmprimitive.Amount) ([]dto.CategoryDto, error)
+	ListCategories(amount cmprimitive.Amount) ([]dto.CategoryWithRelatedArticleAmountDto, error)
 	ListCategoryByPagination(*dto.ListCategoryCmd) (dto.CategoryListDto, error)
 
 	AddCategory(entity.CategoryName) error
@@ -26,19 +26,19 @@ func NewCategoryAppService(cate categorydmsvc.CategoryService) CategoryAppServic
 	}
 }
 
-func (s *categoryAppService) ListCategories(amount cmprimitive.Amount) ([]dto.CategoryDto, error) {
+func (s *categoryAppService) ListCategories(amount cmprimitive.Amount) ([]dto.CategoryWithRelatedArticleAmountDto, error) {
 
-	cates, err := s.cate.ListCategories(amount)
+	cateWithAmounts, err := s.cate.ListCategories(amount)
 	if err != nil {
 		return nil, err
 	}
 
-	cateDtos := make([]dto.CategoryDto, len(cates))
-	for i := range cates {
-		cateDtos[i] = dto.ToCategoryDto(cates[i])
+	dtos := make([]dto.CategoryWithRelatedArticleAmountDto, len(cateWithAmounts))
+	for i := range cateWithAmounts {
+		dtos[i] = dto.ToCategoryWithRelatedArticleAmountDto(cateWithAmounts[i])
 	}
 
-	return cateDtos, nil
+	return dtos, nil
 }
 
 func (s *categoryAppService) ListCategoryByPagination(cmd *dto.ListCategoryCmd) (dto.CategoryListDto, error) {
