@@ -186,7 +186,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/dto.CategoryDto"
+                                "$ref": "#/definitions/dto.CategoryListDto"
                             }
                         }
                     }
@@ -697,7 +697,7 @@ const docTemplate = `{
                 "category": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/dto.CategoryDto"
+                        "$ref": "#/definitions/dto.CategoryWithRelatedArticleAmountDto"
                     }
                 },
                 "current": {
@@ -710,6 +710,23 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.CategoryWithRelatedArticleAmountDto": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "relatedArticleAmount": {
                     "type": "integer"
                 }
             }
