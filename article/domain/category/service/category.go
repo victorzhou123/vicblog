@@ -1,6 +1,8 @@
 package service
 
 import (
+	"errors"
+
 	"github.com/victorzhou123/vicblog/article/domain/category/entity"
 	"github.com/victorzhou123/vicblog/article/domain/category/repository"
 	cment "github.com/victorzhou123/vicblog/common/domain/entity"
@@ -17,6 +19,7 @@ type CategoryService interface {
 	DelCategory(cmprimitive.Id) error
 
 	GetRelationWithArticle(articleId cmprimitive.Id) (cateId cmprimitive.Id, err error)
+	GetRelatedArticleIdsThroughCateId(cateId cmprimitive.Id) (articleIds []cmprimitive.Id, err error)
 	BuildRelationWithArticle(articleId, cateId cmprimitive.Id) error
 	RemoveRelationWithArticle(articleId cmprimitive.Id) error
 }
@@ -155,6 +158,16 @@ func (s *categoryService) GetRelationWithArticle(
 	}
 
 	return cateId, nil
+}
+
+func (s *categoryService) GetRelatedArticleIdsThroughCateId(
+	cateId cmprimitive.Id) ([]cmprimitive.Id, error) {
+
+	if cateId == nil {
+		return nil, errors.New("category id must be provided")
+	}
+
+	return s.categoryArticleRepo.GetRelatedArticleIdsThoroughCateId(cateId)
 }
 
 func (s *categoryService) BuildRelationWithArticle(articleId, cateId cmprimitive.Id) error {
