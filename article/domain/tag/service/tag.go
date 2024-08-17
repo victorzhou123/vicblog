@@ -15,7 +15,7 @@ type TagService interface {
 	AddTags(repository.TagNames) error
 	GetArticleTag(articleId cmprimitive.Id) ([]entity.Tag, error)
 	ListTagByPagination(*cment.Pagination) (TagListDto, error)
-	ListTags(cmprimitive.Amount) ([]entity.Tag, error)
+	ListTags(cmprimitive.Amount) ([]entity.TagWithRelatedArticleAmount, error)
 	Delete(cmprimitive.Id) error
 
 	GetRelationWithArticle(articleId cmprimitive.Id) (tags []cmprimitive.Id, err error)
@@ -111,8 +111,33 @@ func (s *tagService) ListTagByPagination(pagination *cment.Pagination) (TagListD
 	}, nil
 }
 
-func (s *tagService) ListTags(amount cmprimitive.Amount) ([]entity.Tag, error) {
-	return s.repo.GetTagList(amount)
+func (s *tagService) ListTags(amount cmprimitive.Amount,
+) ([]entity.TagWithRelatedArticleAmount, error) {
+
+	tags, err := s.repo.GetTagList(amount)
+	if err != nil {
+		return nil, err
+	}
+
+	tagIds := make([]cmprimitive.Id, len(tags))
+	for i := range tags {
+		tagIds[i] = tags[i].Id
+	}
+
+	amountMap, err := s.tagArticleRepo.GetRelatedArticleAmount(tagIds)
+	if err != nil {
+		return nil, err
+	}
+
+	tagWithAmounts := make([]entity.TagWithRelatedArticleAmount, len(tags))
+	for i := range tags {
+		tagWithAmounts[i] = entity.TagWithRelatedArticleAmount{
+			Tag:                  tags[i],
+			RelatedArticleAmount: amountMap[tags[i].Id.IdNum()],
+		}
+	}
+
+	return tagWithAmounts, nil
 }
 
 func (s *tagService) Delete(id cmprimitive.Id) error {
