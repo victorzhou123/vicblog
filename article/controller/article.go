@@ -25,6 +25,7 @@ func AddRouterForArticleController(
 	rg.GET("/v1/admin/article/:id", auth.VerifyToken, ctl.Get)
 	rg.GET("/v1/article/:id", ctl.GetWithContentParsed)
 	rg.GET("/v1/admin/article", auth.VerifyToken, ctl.List)
+	rg.GET("/v1/article/category/:id", ctl.ListCards)
 	rg.GET("/v1/article", ctl.ListAll)
 	rg.DELETE("/v1/admin/article/:id", auth.VerifyToken, ctl.Delete)
 	rg.POST("/v1/admin/article", auth.VerifyToken, ctl.Add)
@@ -122,7 +123,43 @@ func (ctl *articleController) List(ctx *gin.Context) {
 
 	dto, err := ctl.articleAppService.GetArticleList(&cmd)
 	if err != nil {
-		cmctl.SendRespOfGet(ctx, dto)
+		cmctl.SendError(ctx, err)
+
+		return
+	}
+
+	cmctl.SendRespOfGet(ctx, dto)
+}
+
+// @Summary  List article cards
+// @Description  list articles by pagination under the category
+// @Tags     Article
+// @Accept   json
+// @Param	 id	 path	int	true	"category id"
+// @Param    current  query  int  true  "current page of user queried"
+// @Param    size  query  int  true  "single page size of user queried"
+// @Success  200   {array}  dto.ArticleCardListDto
+// @Router   /v1/article/category/:id [get]
+func (ctl *articleController) ListCards(ctx *gin.Context) {
+
+	req := reqListArticleCards{
+		ReqList: cmctl.ReqList{
+			CurPage:  ctx.Query("current"),
+			PageSize: ctx.Query("size"),
+		},
+		CategoryId: ctx.Param("id"),
+	}
+
+	cmd, err := req.toCmd()
+	if err != nil {
+		cmctl.SendBadRequestParam(ctx, err)
+
+		return
+	}
+
+	dto, err := ctl.articleAppService.GetArticleCardListByCateId(&cmd)
+	if err != nil {
+		cmctl.SendError(ctx, err)
 
 		return
 	}

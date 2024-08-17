@@ -94,6 +94,39 @@ func (impl *articleRepoImpl) ListArticles(
 	return dmArticles, total, nil
 }
 
+func (impl *articleRepoImpl) ListArticleCards(
+	articleIds []cmprimitive.Id, opt cment.Pagination,
+) ([]entity.ArticleCard, int, error) {
+
+	filter := impl.db.InFilter(fieldNamePrimaryKeyId)
+
+	option := mysql.PaginationOpt{
+		CurPage:  opt.CurPage.CurPage(),
+		PageSize: opt.PageSize.PageSize(),
+	}
+
+	ids := make([]uint, len(articleIds))
+	for i := range articleIds {
+		ids[i] = articleIds[i].IdNum()
+	}
+
+	dos := []ArticleCardDO{}
+
+	total, err := impl.db.GetRecordsByPagination(ArticleDO{}, filter, &dos, option, ids)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	articleCards := make([]entity.ArticleCard, len(dos))
+	for i := range dos {
+		if articleCards[i], err = dos[i].toArticleCard(); err != nil {
+			return nil, 0, err
+		}
+	}
+
+	return articleCards, total, nil
+}
+
 // TODO ignore content while list articles
 func (impl *articleRepoImpl) ListAllArticles(opt cment.Pagination) ([]entity.Article, int, error) {
 

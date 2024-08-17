@@ -7,6 +7,7 @@ import (
 type CategoryArticle interface {
 	GetRelationWithArticle(articleId cmprimitive.Id) (cateId cmprimitive.Id, err error)
 	GetRelatedArticleAmount(categoryIds []cmprimitive.Id) (map[uint]cmprimitive.Amount, error)
+	GetRelatedArticleIdsThoroughCateId(categoryId cmprimitive.Id) ([]cmprimitive.Id, error)
 
 	BuildRelationWithArticle(articleId, cateId cmprimitive.Id) error
 

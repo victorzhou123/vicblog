@@ -1,6 +1,8 @@
 package dto
 
 import (
+	"errors"
+
 	"github.com/victorzhou123/vicblog/common/domain/entity"
 	"github.com/victorzhou123/vicblog/common/domain/primitive"
 )
@@ -8,6 +10,18 @@ import (
 type PaginationCmd struct {
 	CurPage  primitive.CurPage
 	PageSize primitive.PageSize
+}
+
+func (cmd *PaginationCmd) Validate() error {
+	if cmd.CurPage == nil {
+		return errors.New("current page must exist")
+	}
+
+	if cmd.PageSize == nil {
+		return errors.New("page size must exist")
+	}
+
+	return nil
 }
 
 func (cmd *PaginationCmd) ToPaginationDto(total int) PaginationDto {

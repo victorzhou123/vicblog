@@ -1,6 +1,8 @@
 package dto
 
 import (
+	"errors"
+
 	"github.com/victorzhou123/vicblog/article/domain/article/entity"
 	articledmsvc "github.com/victorzhou123/vicblog/article/domain/article/service"
 	cateent "github.com/victorzhou123/vicblog/article/domain/category/entity"
@@ -237,5 +239,61 @@ func toArticleIdTitleDto(article *entity.ArticleIdTitle) *ArticleIdTitleDto {
 	return &ArticleIdTitleDto{
 		Id:    article.Id.IdNum(),
 		Title: article.Title.Text(),
+	}
+}
+
+// article cards
+type GetArticleCardListByCateIdCmd struct {
+	cmappdto.PaginationCmd
+
+	CategoryId cmprimitive.Id
+}
+
+func (cmd *GetArticleCardListByCateIdCmd) Validate() error {
+	if cmd.CategoryId == nil {
+		return errors.New("category id must exist")
+	}
+
+	return cmd.PaginationCmd.Validate()
+}
+
+type ArticleCardListDto struct {
+	cmappdto.PaginationDto
+
+	ArticleCards []ArticleCardsDto `json:"articleCards"`
+}
+
+func ToArticleCardListDto(ps cment.PaginationStatus,
+	articleCards []entity.ArticleCard,
+) ArticleCardListDto {
+
+	articleCadDtos := make([]ArticleCardsDto, len(articleCards))
+	for i := range articleCards {
+		articleCadDtos[i] = toArticleCardsDto(articleCards[i])
+	}
+
+	return ArticleCardListDto{
+		PaginationDto: cmappdto.ToPaginationDto(ps),
+		ArticleCards:  articleCadDtos,
+	}
+}
+
+type ArticleCardsDto struct {
+	Id        uint   `json:"id"`
+	Title     string `json:"title"`
+	Cover     string `json:"cover"`
+	ReadTimes int    `json:"readTimes"`
+	UpdatedAt string `json:"updatedAt"`
+	CreatedAt string `json:"createdAt"`
+}
+
+func toArticleCardsDto(articleCard entity.ArticleCard) ArticleCardsDto {
+	return ArticleCardsDto{
+		Id:        articleCard.Id.IdNum(),
+		Title:     articleCard.Title.Text(),
+		Cover:     articleCard.Cover.Urlx(),
+		ReadTimes: articleCard.ReadTimes,
+		UpdatedAt: articleCard.UpdatedAt.TimeYearToSecond(),
+		CreatedAt: articleCard.CreatedAt.TimeYearToSecond(),
 	}
 }

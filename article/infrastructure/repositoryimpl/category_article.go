@@ -1,6 +1,7 @@
 package repositoryimpl
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/victorzhou123/vicblog/article/domain/category/repository"
@@ -68,6 +69,31 @@ func (impl *categoryArticleImpl) GetRelatedArticleAmount(categoryIds []cmprimiti
 	}
 
 	return m, nil
+}
+
+func (impl *categoryArticleImpl) GetRelatedArticleIdsThoroughCateId(
+	categoryId cmprimitive.Id) ([]cmprimitive.Id, error) {
+
+	if categoryId == nil {
+		return nil, errors.New("category id must be provided")
+	}
+
+	filterDo := CategoryArticleDO{
+		CategoryId: categoryId.IdNum(),
+	}
+
+	dos := []CategoryArticleDO{}
+
+	if err := impl.db.GetRecords(&CategoryArticleDO{}, filterDo, &dos); err != nil {
+		return nil, err
+	}
+
+	ids := make([]cmprimitive.Id, len(dos))
+	for i := range dos {
+		ids[i] = cmprimitive.NewIdByUint(dos[i].ArticleId)
+	}
+
+	return ids, nil
 }
 
 func (impl *categoryArticleImpl) BuildRelationWithArticle(articleId, cateId cmprimitive.Id) error {
