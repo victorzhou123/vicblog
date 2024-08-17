@@ -167,19 +167,36 @@ func (req *reqUpdateArticle) toCmd(user cmprimitive.Username) (cmd dto.UpdateArt
 }
 
 // list article cards
-type reqListArticleCards struct {
+type reqListArticleCardsThroughCateId struct {
 	cmctl.ReqList
 
 	CategoryId string `json:"categoryId"`
 }
 
-func (req *reqListArticleCards) toCmd() (cmd dto.GetArticleCardListByCateIdCmd, err error) {
+func (req *reqListArticleCardsThroughCateId) toCmd() (cmd dto.GetArticleCardListByCateIdCmd, err error) {
 
 	if cmd.PaginationCmd, err = req.ReqList.ToCmd(); err != nil {
 		return
 	}
 
 	cmd.CategoryId = cmprimitive.NewId(req.CategoryId)
+
+	return
+}
+
+type reqListArticleCardsThroughTagId struct {
+	cmctl.ReqList
+
+	TagId string `json:"tagId"`
+}
+
+func (req *reqListArticleCardsThroughTagId) toCmd() (cmd dto.GetArticleCardListByTagIdCmd, err error) {
+
+	if cmd.PaginationCmd, err = req.ReqList.ToCmd(); err != nil {
+		return
+	}
+
+	cmd.TagId = cmprimitive.NewId(req.TagId)
 
 	return
 }

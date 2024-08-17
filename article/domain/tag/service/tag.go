@@ -1,6 +1,8 @@
 package service
 
 import (
+	"errors"
+
 	"github.com/victorzhou123/vicblog/article/domain/tag/entity"
 	"github.com/victorzhou123/vicblog/article/domain/tag/repository"
 	cment "github.com/victorzhou123/vicblog/common/domain/entity"
@@ -17,6 +19,7 @@ type TagService interface {
 	Delete(cmprimitive.Id) error
 
 	GetRelationWithArticle(articleId cmprimitive.Id) (tags []cmprimitive.Id, err error)
+	GetRelatedArticleIdsThroughTagId(tagId cmprimitive.Id) (tagIds []cmprimitive.Id, err error)
 	BuildRelationWithArticle(articleId cmprimitive.Id, tagIds []cmprimitive.Id) error
 	RemoveRelationWithArticle(articleId cmprimitive.Id) error
 }
@@ -126,6 +129,17 @@ func (s *tagService) Delete(id cmprimitive.Id) error {
 
 func (s *tagService) GetRelationWithArticle(articleId cmprimitive.Id) ([]cmprimitive.Id, error) {
 	return s.tagArticleRepo.GetRelationWithArticle(articleId)
+}
+
+func (s *tagService) GetRelatedArticleIdsThroughTagId(
+	tagId cmprimitive.Id) (tagIds []cmprimitive.Id, err error) {
+
+	if tagId == nil {
+		return nil, errors.New("tag id must be provided")
+	}
+
+	return s.tagArticleRepo.GetRelatedArticleIdsThoroughTagId(tagId)
+
 }
 
 func (s *tagService) BuildRelationWithArticle(
