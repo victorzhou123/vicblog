@@ -257,6 +257,20 @@ func (cmd *GetArticleCardListByCateIdCmd) Validate() error {
 	return cmd.PaginationCmd.Validate()
 }
 
+type GetArticleCardListByTagIdCmd struct {
+	cmappdto.PaginationCmd
+
+	TagId cmprimitive.Id
+}
+
+func (cmd *GetArticleCardListByTagIdCmd) Validate() error {
+	if cmd.TagId == nil {
+		return errors.New("tag id must exist")
+	}
+
+	return cmd.PaginationCmd.Validate()
+}
+
 type ArticleCardListDto struct {
 	cmappdto.PaginationDto
 

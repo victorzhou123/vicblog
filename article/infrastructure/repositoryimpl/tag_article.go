@@ -1,6 +1,7 @@
 package repositoryimpl
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/victorzhou123/vicblog/article/domain/tag/repository"
@@ -74,6 +75,31 @@ func (impl *tagArticleImpl) GetRelatedArticleAmount(tagIds []cmprimitive.Id) (ma
 	}
 
 	return m, nil
+}
+
+func (impl *tagArticleImpl) GetRelatedArticleIdsThoroughTagId(
+	tagId cmprimitive.Id) ([]cmprimitive.Id, error) {
+
+	if tagId == nil {
+		return nil, errors.New("tag id must be provided")
+	}
+
+	filterDo := TagArticleDO{
+		TagId: tagId.IdNum(),
+	}
+
+	dos := []TagArticleDO{}
+
+	if err := impl.db.GetRecords(&TagArticleDO{}, filterDo, &dos); err != nil {
+		return nil, err
+	}
+
+	ids := make([]cmprimitive.Id, len(dos))
+	for i := range dos {
+		ids[i] = cmprimitive.NewIdByUint(dos[i].ArticleId)
+	}
+
+	return ids, nil
 }
 
 func (impl *tagArticleImpl) BuildRelationWithArticle(
