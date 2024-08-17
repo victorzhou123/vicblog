@@ -30,6 +30,28 @@ type ArticleListDto struct {
 	Articles []entity.Article
 }
 
+// get article card
+type ArticleCardsCmd struct {
+	cment.Pagination
+
+	ArticleIds []cmprimitive.Id
+}
+
+func (cmd *ArticleCardsCmd) validate() error {
+
+	if len(cmd.ArticleIds) == 0 {
+		return errors.New("at least one article id required")
+	}
+
+	return nil
+}
+
+type ArticleCardsDto struct {
+	cment.PaginationStatus
+
+	ArticleCards []entity.ArticleCard
+}
+
 // get article
 type GetArticleCmd struct {
 	User      cmprimitive.Username

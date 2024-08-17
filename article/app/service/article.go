@@ -24,6 +24,7 @@ type ArticleAppService interface {
 	GetArticleById(articleId cmprimitive.Id) (dto.ArticleWithTagCateDto, error)
 	GetArticle(*dto.GetArticleCmd) (dto.ArticleDetailDto, error)
 	GetArticleList(*dto.GetArticleListCmd) (dto.ArticleListDto, error)
+	GetArticleCardListByCateId(*dto.GetArticleCardListByCateIdCmd) (dto.ArticleCardListDto, error)
 	PaginationListArticle(*dto.ListAllArticlesCmd) (dto.ArticleDetailsListDto, error)
 
 	AddArticle(*dto.AddArticleCmd) error
@@ -126,6 +127,32 @@ func (s *articleAppService) GetArticleList(cmd *dto.GetArticleListCmd) (dto.Arti
 	}
 
 	return dto.ToArticleListDto(articleSummaryDto.PaginationStatus, articleSummaryDto.Articles), nil
+}
+
+func (s *articleAppService) GetArticleCardListByCateId(
+	cmd *dto.GetArticleCardListByCateIdCmd,
+) (dto.ArticleCardListDto, error) {
+
+	if err := cmd.Validate(); err != nil {
+		return dto.ArticleCardListDto{}, err
+	}
+
+	// get article id list through category id
+	articleIds, err := s.cate.GetRelatedArticleIdsThroughCateId(cmd.CategoryId)
+	if err != nil {
+		return dto.ArticleCardListDto{}, err
+	}
+
+	// get article card list through batch article id
+	articleCardDto, err := s.article.GetArticleCardList(&articledmsvc.ArticleCardsCmd{
+		Pagination: *cmd.ToPagination(),
+		ArticleIds: articleIds,
+	})
+	if err != nil {
+		return dto.ArticleCardListDto{}, err
+	}
+
+	return dto.ToArticleCardListDto(articleCardDto.PaginationStatus, articleCardDto.ArticleCards), nil
 }
 
 func (s *articleAppService) PaginationListArticle(cmd *dto.ListAllArticlesCmd) (dto.ArticleDetailsListDto, error) {

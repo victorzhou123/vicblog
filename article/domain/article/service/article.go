@@ -16,6 +16,7 @@ type ArticleService interface {
 	GetArticleByIdWithContentParsed(articleId cmprimitive.Id) (entity.Article, error)
 	GetArticle(*GetArticleCmd) (entity.Article, error)
 	GetArticleList(*ArticleListCmd) (ArticleListDto, error)
+	GetArticleCardList(*ArticleCardsCmd) (ArticleCardsDto, error)
 	PaginationListArticle(*cmentt.Pagination) (ArticleListDto, error)
 	GetPrevAndNextArticle(articleId cmprimitive.Id) (ArticlePrevAndNextDto, error)
 
@@ -79,6 +80,23 @@ func (s *articleService) GetArticleList(cmd *ArticleListCmd) (ArticleListDto, er
 	return ArticleListDto{
 		PaginationStatus: cmd.ToPaginationStatus(total),
 		Articles:         articles,
+	}, nil
+}
+
+func (s *articleService) GetArticleCardList(cmd *ArticleCardsCmd) (ArticleCardsDto, error) {
+
+	if err := cmd.validate(); err != nil {
+		return ArticleCardsDto{}, err
+	}
+
+	articleCards, total, err := s.repo.ListArticleCards(cmd.ArticleIds, cmd.Pagination)
+	if err != nil {
+		return ArticleCardsDto{}, err
+	}
+
+	return ArticleCardsDto{
+		PaginationStatus: cmd.ToPaginationStatus(total),
+		ArticleCards:     articleCards,
 	}, nil
 }
 

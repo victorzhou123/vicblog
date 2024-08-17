@@ -165,3 +165,21 @@ func (req *reqUpdateArticle) toCmd(user cmprimitive.Username) (cmd dto.UpdateArt
 
 	return
 }
+
+// list article cards
+type reqListArticleCards struct {
+	cmctl.ReqList
+
+	CategoryId string `json:"categoryId"`
+}
+
+func (req *reqListArticleCards) toCmd() (cmd dto.GetArticleCardListByCateIdCmd, err error) {
+
+	if cmd.PaginationCmd, err = req.ReqList.ToCmd(); err != nil {
+		return
+	}
+
+	cmd.CategoryId = cmprimitive.NewId(req.CategoryId)
+
+	return
+}

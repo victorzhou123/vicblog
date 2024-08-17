@@ -2,6 +2,7 @@ package repositoryimpl
 
 import (
 	"strconv"
+	"time"
 
 	"gorm.io/gorm"
 
@@ -79,6 +80,34 @@ func (do *ArticleDO) toArticle() (article entity.Article, err error) {
 
 func (do *ArticleDO) TableName() string {
 	return tableNameArticle
+}
+
+type ArticleCardDO struct {
+	Id        uint      `gorm:"column:id"`
+	Title     string    `gorm:"column:title"`
+	Cover     string    `gorm:"column:cover"`
+	ReadTimes int       `gorm:"column:read_times"`
+	UpdatedAt time.Time `gorm:"column:updated_at"`
+	CreatedAt time.Time `gorm:"column:created_at"`
+}
+
+func (do *ArticleCardDO) toArticleCard() (articleCard entity.ArticleCard, err error) {
+
+	if articleCard.Title, err = cmprimitive.NewTitle(do.Title); err != nil {
+		return
+	}
+
+	if articleCard.Cover, err = cmprimitive.NewUrlx(do.Cover); err != nil {
+		return
+	}
+
+	articleCard.Id = cmprimitive.NewIdByUint(do.Id)
+
+	articleCard.UpdatedAt = cmprimitive.NewTimeXWithUnix(do.UpdatedAt.Unix())
+
+	articleCard.CreatedAt = cmprimitive.NewTimeXWithUnix(do.CreatedAt.Unix())
+
+	return
 }
 
 type ArticleIdTitleDO struct {

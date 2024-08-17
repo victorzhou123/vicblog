@@ -16,6 +16,15 @@ type Article struct {
 	CreatedAt cmprimitive.Timex
 }
 
+type ArticleCard struct {
+	Id        cmprimitive.Id
+	Title     cmprimitive.Text
+	Cover     cmprimitive.Urlx
+	ReadTimes int
+	UpdatedAt cmprimitive.Timex
+	CreatedAt cmprimitive.Timex
+}
+
 type ArticleInfo struct {
 	Owner   cmprimitive.Username
 	Title   cmprimitive.Text
