@@ -18,6 +18,7 @@ type Impl interface {
 	GetLimitRecords(model, filter, result any, amount int) error
 	GetRecordsByPagination(model, filter, result any, opt PaginationOpt, filterArgs ...any) (total int, err error)
 	GetByPrimaryKey(model, row any) error
+	GetTotalNumber(model, filter any, total *int64) error
 
 	// Add
 	Add(model, value any) error
@@ -102,6 +103,11 @@ func (dao *daoImpl) GetByPrimaryKey(model, row any) error {
 	}
 
 	return err
+}
+
+func (dao *daoImpl) GetTotalNumber(model, filter any, count *int64) error {
+
+	return dao.Model(model).Where(filter).Count(count).Error
 }
 
 func (dao *daoImpl) Add(model, value any) error {

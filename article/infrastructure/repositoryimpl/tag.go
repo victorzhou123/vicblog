@@ -121,6 +121,15 @@ func (impl *tagRepoImpl) GetTagList(amount cmprimitive.Amount) ([]entity.Tag, er
 	return tags, err
 }
 
+func (impl *tagRepoImpl) GetTotalNumberOfTag() (cmprimitive.Amount, error) {
+	var count int64
+	if err := impl.Impl.GetTotalNumber(&TagDO{}, &TagDO{}, &count); err != nil {
+		return nil, err
+	}
+
+	return cmprimitive.NewAmount(int(count))
+}
+
 func (impl *tagRepoImpl) Delete(id cmprimitive.Id) error {
 	do := TagDO{}
 	do.ID = id.IdNum()

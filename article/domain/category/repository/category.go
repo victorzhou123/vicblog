@@ -12,6 +12,7 @@ type Category interface {
 	GetCategory(cateId cmprimitive.Id) (entity.Category, error)
 	GetCategoryListByPagination(cment.Pagination) ([]entity.Category, int, error)
 	GetCategoryList(amount cmprimitive.Amount) ([]entity.Category, error) // nil means get all
+	GetTotalNumberOfCategories() (cmprimitive.Amount, error)
 
 	DelCategory(cmprimitive.Id) error
 }

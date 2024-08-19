@@ -16,6 +16,7 @@ type CategoryService interface {
 	ListCategoryByPagination(*cment.Pagination) (CategoryListDto, error)
 	ListCategories(amount cmprimitive.Amount) ([]entity.CategoryWithRelatedArticleAmount, error)
 	GetArticleCategory(articleId cmprimitive.Id) (entity.Category, error)
+	GetTotalNumberOfCategories() (cmprimitive.Amount, error)
 	DelCategory(cmprimitive.Id) error
 
 	GetRelationWithArticle(articleId cmprimitive.Id) (cateId cmprimitive.Id, err error)
@@ -136,6 +137,10 @@ func (s *categoryService) GetArticleCategory(articleId cmprimitive.Id) (entity.C
 	}
 
 	return s.repo.GetCategory(cateId)
+}
+
+func (s *categoryService) GetTotalNumberOfCategories() (cmprimitive.Amount, error) {
+	return s.repo.GetTotalNumberOfCategories()
 }
 
 func (s *categoryService) DelCategory(id cmprimitive.Id) error {

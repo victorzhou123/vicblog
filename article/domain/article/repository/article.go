@@ -13,6 +13,7 @@ type Article interface {
 	ListArticleCards(articleIds []cmprimitive.Id, pagination cment.Pagination) ([]entity.ArticleCard, int, error)
 	ListAllArticles(cment.Pagination) ([]entity.Article, int, error)
 	GetPreAndNextArticle(articleId cmprimitive.Id) (articleArr [2]*entity.ArticleIdTitle, err error)
+	GetTotalNumberOfArticle() (cmprimitive.Amount, error)
 
 	Delete(cmprimitive.Username, cmprimitive.Id) error
 

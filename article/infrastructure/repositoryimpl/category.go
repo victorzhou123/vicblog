@@ -94,6 +94,15 @@ func (impl *categoryRepoImpl) GetCategoryList(amount cmprimitive.Amount) ([]enti
 	return cates, err
 }
 
+func (impl *categoryRepoImpl) GetTotalNumberOfCategories() (cmprimitive.Amount, error) {
+	var count int64
+	if err := impl.Impl.GetTotalNumber(&CategoryDO{}, &CategoryDO{}, &count); err != nil {
+		return nil, err
+	}
+
+	return cmprimitive.NewAmount(int(count))
+}
+
 func (impl *categoryRepoImpl) DelCategory(id cmprimitive.Id) error {
 	do := &CategoryDO{}
 	do.ID = id.IdNum()
