@@ -31,6 +31,7 @@ type statisticsController struct {
 // @Tags     Statistics
 // @Accept   json
 // @Success  200   {object}  dto.DashboardDataDto
+// @Router   /v1/statistics/dashboard [get]
 func (ctl *statisticsController) DashboardData(ctx *gin.Context) {
 
 	dto, err := ctl.dashboard.GetDashboardData()
@@ -48,6 +49,7 @@ func (ctl *statisticsController) DashboardData(ctx *gin.Context) {
 // @Tags     Statistics
 // @Accept   json
 // @Success  200   {object}  dto.VisitsOfAWeekDto
+// @Router   /v1/statistics/dashboard/pv [get]
 func (ctl *statisticsController) PV(ctx *gin.Context) {
 
 	dto, err := ctl.articleVisits.GetArticleVisitsOfAWeek()
