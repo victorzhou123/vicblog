@@ -6,6 +6,7 @@ import (
 	categorydmsvc "github.com/victorzhou123/vicblog/article/domain/category/service"
 	tagdmsvc "github.com/victorzhou123/vicblog/article/domain/tag/service"
 	cmappdto "github.com/victorzhou123/vicblog/common/app/dto"
+	cmappevent "github.com/victorzhou123/vicblog/common/app/event"
 	"github.com/victorzhou123/vicblog/common/domain/entity"
 	cmevent "github.com/victorzhou123/vicblog/common/domain/event"
 	cmprimitive "github.com/victorzhou123/vicblog/common/domain/primitive"
@@ -15,9 +16,9 @@ import (
 )
 
 const (
-	topicAddArticleReadTimes = "get_article"
+	topicAddArticleReadTimes = cmappevent.TopicAddArticleReadTimes
 
-	fieldArticleId = "articleId"
+	fieldArticleId = cmappevent.FieldArticleId
 )
 
 type ArticleAppService interface {

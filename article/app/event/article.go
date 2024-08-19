@@ -4,15 +4,16 @@ import (
 	"encoding/json"
 
 	articledmsvc "github.com/victorzhou123/vicblog/article/domain/article/service"
+	cmappevent "github.com/victorzhou123/vicblog/common/app/event"
 	cmevent "github.com/victorzhou123/vicblog/common/domain/event"
 	cmprimitive "github.com/victorzhou123/vicblog/common/domain/primitive"
 	"github.com/victorzhou123/vicblog/common/log"
 )
 
 const (
-	topicAddArticleReadTimes = "get_article"
+	topicAddArticleReadTimes = cmappevent.TopicAddArticleReadTimes
 
-	fieldArticleId = "articleId"
+	fieldArticleId = cmappevent.FieldArticleId
 )
 
 type articleSubscriber struct {
