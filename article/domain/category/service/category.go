@@ -112,9 +112,15 @@ func (s *categoryService) ListCategories(amount cmprimitive.Amount) ([]entity.Ca
 
 	cateWithAmounts := make([]entity.CategoryWithRelatedArticleAmount, len(cates))
 	for i := range cates {
+
+		v, ok := amountMap[cates[i].Id.IdNum()]
+		if !ok {
+			v, _ = cmprimitive.NewAmount(0) // set a default amount
+		}
+
 		cateWithAmounts[i] = entity.CategoryWithRelatedArticleAmount{
 			Category:             cates[i],
-			RelatedArticleAmount: amountMap[cates[i].Id.IdNum()],
+			RelatedArticleAmount: v,
 		}
 	}
 
