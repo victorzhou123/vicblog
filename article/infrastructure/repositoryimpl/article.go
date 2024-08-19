@@ -199,6 +199,15 @@ func (impl *articleRepoImpl) GetPreAndNextArticle(articleId cmprimitive.Id) (art
 	return articleArr, nil
 }
 
+func (impl *articleRepoImpl) GetTotalNumberOfArticle() (cmprimitive.Amount, error) {
+	var count int64
+	if err := impl.db.GetTotalNumber(&ArticleDO{}, &ArticleDO{}, &count); err != nil {
+		return nil, err
+	}
+
+	return cmprimitive.NewAmount(int(count))
+}
+
 func (impl *articleRepoImpl) Delete(user cmprimitive.Username, id cmprimitive.Id) error {
 	articleDo := &ArticleDO{}
 	articleDo.Owner = user.Username()

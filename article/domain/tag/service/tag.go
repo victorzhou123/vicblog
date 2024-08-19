@@ -16,6 +16,7 @@ type TagService interface {
 	GetArticleTag(articleId cmprimitive.Id) ([]entity.Tag, error)
 	ListTagByPagination(*cment.Pagination) (TagListDto, error)
 	ListTags(cmprimitive.Amount) ([]entity.TagWithRelatedArticleAmount, error)
+	GetTotalNumberOfTags() (cmprimitive.Amount, error)
 	Delete(cmprimitive.Id) error
 
 	GetRelationWithArticle(articleId cmprimitive.Id) (tags []cmprimitive.Id, err error)
@@ -144,6 +145,10 @@ func (s *tagService) ListTags(amount cmprimitive.Amount,
 	}
 
 	return tagWithAmounts, nil
+}
+
+func (s *tagService) GetTotalNumberOfTags() (cmprimitive.Amount, error) {
+	return s.repo.GetTotalNumberOfTag()
 }
 
 func (s *tagService) Delete(id cmprimitive.Id) error {

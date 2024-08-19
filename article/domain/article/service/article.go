@@ -19,6 +19,7 @@ type ArticleService interface {
 	GetArticleCardList(*ArticleCardsCmd) (ArticleCardsDto, error)
 	PaginationListArticle(*cmentt.Pagination) (ArticleListDto, error)
 	GetPrevAndNextArticle(articleId cmprimitive.Id) (ArticlePrevAndNextDto, error)
+	GetTotalNumberOfArticles() (cmprimitive.Amount, error)
 
 	Delete(cmprimitive.Username, cmprimitive.Id) error
 
@@ -130,6 +131,10 @@ func (s *articleService) GetPrevAndNextArticle(articleId cmprimitive.Id) (Articl
 		Prev: articles[0],
 		Next: articles[1],
 	}, nil
+}
+
+func (s *articleService) GetTotalNumberOfArticles() (cmprimitive.Amount, error) {
+	return s.repo.GetTotalNumberOfArticle()
 }
 
 func (s *articleService) Delete(user cmprimitive.Username, id cmprimitive.Id) error {

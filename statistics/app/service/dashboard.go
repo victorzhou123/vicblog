@@ -43,7 +43,28 @@ func (s *dashboardAppService) GetDashboardData() (dto.DashboardDataDto, error) {
 		return dto.DashboardDataDto{}, err
 	}
 
+	// total number of articles
+	countOfArticles, err := s.article.GetTotalNumberOfArticles()
+	if err != nil {
+		return dto.DashboardDataDto{}, err
+	}
+
+	// total number of tag
+	countOfTags, err := s.tag.GetTotalNumberOfTags()
+	if err != nil {
+		return dto.DashboardDataDto{}, err
+	}
+
+	// total number of category
+	countOfCategories, err := s.category.GetTotalNumberOfCategories()
+	if err != nil {
+		return dto.DashboardDataDto{}, err
+	}
+
 	return dto.DashboardDataDto{
 		ArticleVisitsCounts: articleVisits.Amount(),
+		ArticleCounts:       countOfArticles.Amount(),
+		TagCounts:           countOfTags.Amount(),
+		CategoryCounts:      countOfCategories.Amount(),
 	}, nil
 }
