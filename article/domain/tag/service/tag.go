@@ -131,9 +131,15 @@ func (s *tagService) ListTags(amount cmprimitive.Amount,
 
 	tagWithAmounts := make([]entity.TagWithRelatedArticleAmount, len(tags))
 	for i := range tags {
+
+		amount, ok := amountMap[tags[i].Id.IdNum()]
+		if !ok {
+			amount, _ = cmprimitive.NewAmount(0)
+		}
+
 		tagWithAmounts[i] = entity.TagWithRelatedArticleAmount{
 			Tag:                  tags[i],
-			RelatedArticleAmount: amountMap[tags[i].Id.IdNum()],
+			RelatedArticleAmount: amount,
 		}
 	}
 

@@ -1,5 +1,14 @@
 package repository
 
+// ErrorNotAffected
+type ErrorNotAffected struct {
+	error
+}
+
+func NewErrorNotAffected(err error) ErrorNotAffected {
+	return ErrorNotAffected{err}
+}
+
 // ErrorDuplicateCreating
 type ErrorDuplicateCreating struct {
 	error
@@ -37,6 +46,11 @@ func NewErrorConstraintViolated(err error) ErrorConstraintViolated {
 }
 
 // helper
+func IsErrorNotAffected(err error) bool {
+	_, ok := err.(ErrorNotAffected)
+
+	return ok
+}
 
 func IsErrorResourceNotExists(err error) bool {
 	_, ok := err.(ErrorResourceNotExists)
