@@ -8,7 +8,10 @@ import (
 	"github.com/victorzhou123/vicblog/common/validator"
 )
 
-const timeFormatYearToSecond = "2006-01-02 15:04:05"
+const (
+	timeFormatYearToSecond = "2006-01-02 15:04:05"
+	timeFormatMonthDayOnly = "01-02"
+)
 
 // id
 type Id interface {
@@ -44,6 +47,7 @@ func (r id) IdNum() uint {
 type Timex interface {
 	TimeUnix() int64
 	TimeYearToSecond() string
+	TimeMonthDayOnly() string
 }
 
 type timex int64
@@ -62,6 +66,10 @@ func (t timex) TimeUnix() int64 {
 
 func (t timex) TimeYearToSecond() string {
 	return time.Unix(t.TimeUnix(), 0).Format(timeFormatYearToSecond)
+}
+
+func (t timex) TimeMonthDayOnly() string {
+	return time.Unix(t.TimeUnix(), 0).Format(timeFormatMonthDayOnly)
 }
 
 // url

@@ -33,6 +33,11 @@ import (
 	cmutil "github.com/victorzhou123/vicblog/common/util"
 	mconfig "github.com/victorzhou123/vicblog/config"
 	_ "github.com/victorzhou123/vicblog/docs"
+	statsappevent "github.com/victorzhou123/vicblog/statistics/app/event"
+	statsappsvc "github.com/victorzhou123/vicblog/statistics/app/service"
+	statsctl "github.com/victorzhou123/vicblog/statistics/controller"
+	statssvc "github.com/victorzhou123/vicblog/statistics/domain/service"
+	statsimpl "github.com/victorzhou123/vicblog/statistics/infrastructure/repositoryimpl"
 	userapp "github.com/victorzhou123/vicblog/user/app"
 	userctl "github.com/victorzhou123/vicblog/user/controller"
 	userrepoimpl "github.com/victorzhou123/vicblog/user/infrastructure/repositoryimpl"
@@ -81,6 +86,7 @@ func setRouter(engine *gin.Engine, cfg *mconfig.Config) {
 	tagRepo := articlerepoimpl.NewTagRepo(mysqlImpl)
 	tagArticleRepo := articlerepoimpl.NewTagArticleRepo(mysqlImpl, transactionImpl)
 	blogRepo := blogrepoimpl.NewBlogInfoImpl(&cfg.Blog.BlogInfo)
+	statsRepo := statsimpl.NewArticleVisitsRepo(mysqlImpl, &timeCreator)
 
 	// domain: following are domain services
 	tagService := tagsvc.NewTagService(tagRepo, tagArticleRepo)
@@ -88,6 +94,7 @@ func setRouter(engine *gin.Engine, cfg *mconfig.Config) {
 	categoryService := categorysvc.NewCategoryService(categoryRepo, categoryArticleRepo)
 	pictureService := picturesvc.NewFileService(ossRepo)
 	blogService := blogsvc.NewBlogService(blogRepo)
+	articleVisitsService := statssvc.NewArticleVisitsService(statsRepo)
 
 	// app: following are app services
 	authMiddleware := cmapp.NewAuthMiddleware(auth)
@@ -96,11 +103,15 @@ func setRouter(engine *gin.Engine, cfg *mconfig.Config) {
 	cateAppService := articleappsvc.NewCategoryAppService(categoryService)
 	tagAppService := articleappsvc.NewTagAppService(tagService)
 	blogAppService := blogappsvc.NewBlogAppService(blogService)
+	dashboardAppService := statsappsvc.NewDashboardAppService(articleService, tagService, categoryService, articleVisitsService)
+	articleVisitsAppService := statsappsvc.NewArticleVisitsAppService(articleVisitsService)
 
 	// subscriber
-	articleSubcriber := articleappevent.NewArticleSubscriber(articleService)
+	articleSubscriber := articleappevent.NewArticleSubscriber(articleService)
+	statsSubscriber := statsappevent.NewArticleVisitsSubscriber(articleVisitsService)
 
-	distributer.Subscribe(articleSubcriber)
+	distributer.Subscribe(articleSubscriber)
+	distributer.Subscribe(statsSubscriber)
 
 	// controller: add routers
 	v1 := engine.Group(BasePath)
@@ -129,6 +140,10 @@ func setRouter(engine *gin.Engine, cfg *mconfig.Config) {
 
 		blogctl.AddRouterForBlogController(
 			v1, blogAppService,
+		)
+
+		statsctl.AddRouterForStatisticsController(
+			v1, dashboardAppService, articleVisitsAppService,
 		)
 	}
 

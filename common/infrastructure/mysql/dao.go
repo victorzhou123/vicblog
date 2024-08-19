@@ -135,18 +135,22 @@ func (dao *daoImpl) Update(model, filter, values any) error {
 
 func (dao *daoImpl) Increase(model, filter any, column string, increaseNum int) error {
 
-	err := dao.Model(model).Where(filter).
-		UpdateColumn(column, gorm.Expr(fmt.Sprintf("%s + ?", column), increaseNum)).Error
+	db := dao.Model(model).Where(filter).
+		UpdateColumn(column, gorm.Expr(fmt.Sprintf("%s + ?", column), increaseNum))
 
-	if errors.Is(err, gorm.ErrRecordNotFound) {
+	if db.RowsAffected == 0 {
+		return repository.NewErrorNotAffected(errors.New("row not be affected"))
+	}
+
+	if errors.Is(db.Error, gorm.ErrRecordNotFound) {
 		return repository.NewErrorResourceNotExists(errors.New("not found"))
 	}
 
-	if errors.Is(err, gorm.ErrCheckConstraintViolated) {
-		return repository.NewErrorConstraintViolated(err)
+	if errors.Is(db.Error, gorm.ErrCheckConstraintViolated) {
+		return repository.NewErrorConstraintViolated(db.Error)
 	}
 
-	return err
+	return db.Error
 }
 
 func (dao *daoImpl) Delete(model, filter any) error {
