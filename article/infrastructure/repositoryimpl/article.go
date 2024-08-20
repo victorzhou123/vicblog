@@ -127,6 +127,30 @@ func (impl *articleRepoImpl) ListArticleCards(
 	return articleCards, total, nil
 }
 
+func (impl *articleRepoImpl) ListArticlesByPagination(opt cment.Pagination) ([]entity.ArticleCard, int, error) {
+
+	option := mysql.PaginationOpt{
+		CurPage:  opt.CurPage.CurPage(),
+		PageSize: opt.PageSize.PageSize(),
+	}
+
+	dos := []ArticleCardDO{}
+
+	total, err := impl.db.GetRecordsByPagination(ArticleDO{}, &ArticleCardDO{}, &dos, option)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	articleCards := make([]entity.ArticleCard, len(dos))
+	for i := range dos {
+		if articleCards[i], err = dos[i].toArticleCard(); err != nil {
+			return nil, 0, err
+		}
+	}
+
+	return articleCards, total, nil
+}
+
 // TODO ignore content while list articles
 func (impl *articleRepoImpl) ListAllArticles(opt cment.Pagination) ([]entity.Article, int, error) {
 

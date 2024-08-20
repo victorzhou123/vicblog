@@ -28,6 +28,7 @@ func AddRouterForArticleController(
 	rg.GET("/v1/article/tag/:id", ctl.ListCardsThroughTagId)
 	rg.GET("/v1/article/category/:id", ctl.ListCardsThroughCateId)
 	rg.GET("/v1/article", ctl.ListAll)
+	rg.GET("/v1/article/archive", ctl.Archive)
 	rg.DELETE("/v1/admin/article/:id", auth.VerifyToken, ctl.Delete)
 	rg.POST("/v1/admin/article", auth.VerifyToken, ctl.Add)
 	rg.PUT("/v1/admin/article", auth.VerifyToken, ctl.Update)
@@ -230,6 +231,38 @@ func (ctl *articleController) ListAll(ctx *gin.Context) {
 
 	dto, err := ctl.articleAppService.PaginationListArticle(
 		&dto.ListAllArticlesCmd{PaginationCmd: cmd.PaginationCmd})
+	if err != nil {
+		cmctl.SendError(ctx, err)
+
+		return
+	}
+
+	cmctl.SendRespOfGet(ctx, dto)
+}
+
+// @Summary  List archive
+// @Description  list archives by pagination
+// @Tags     Article
+// @Accept   json
+// @Param    current  query  int  true  "current page of user queried"
+// @Param    size  query  int  true  "single page size of user queried"
+// @Success  200   {array}  dto.ArticlesClassifiedByMonthDto
+// @Router   /v1/article/archive [get]
+func (ctl *articleController) Archive(ctx *gin.Context) {
+
+	req := cmctl.ReqList{
+		CurPage:  ctx.Query("current"),
+		PageSize: ctx.Query("size"),
+	}
+
+	cmd, err := req.ToCmd()
+	if err != nil {
+		cmctl.SendBadRequestParam(ctx, err)
+
+		return
+	}
+
+	dto, err := ctl.articleAppService.GetArticleListClassifiedByMonth(&cmd)
 	if err != nil {
 		cmctl.SendError(ctx, err)
 

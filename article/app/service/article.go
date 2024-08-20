@@ -27,6 +27,7 @@ type ArticleAppService interface {
 	GetArticleList(*dto.GetArticleListCmd) (dto.ArticleListDto, error)
 	GetArticleCardListByCateId(*dto.GetArticleCardListByCateIdCmd) (dto.ArticleCardListDto, error)
 	GetArticleCardListByTagId(*dto.GetArticleCardListByTagIdCmd) (dto.ArticleCardListDto, error)
+	GetArticleListClassifiedByMonth(*cmappdto.PaginationCmd) (dto.ArticlesClassifiedByMonthDto, error)
 	PaginationListArticle(*dto.ListAllArticlesCmd) (dto.ArticleDetailsListDto, error)
 
 	AddArticle(*dto.AddArticleCmd) error
@@ -211,6 +212,33 @@ func (s *articleAppService) PaginationListArticle(cmd *dto.ListAllArticlesCmd) (
 	return dto.ArticleDetailsListDto{
 		PaginationDto: cmappdto.ToPaginationDto(articleSummaryDto.PaginationStatus),
 		Articles:      articleDetailListDtos,
+	}, nil
+}
+
+func (s *articleAppService) GetArticleListClassifiedByMonth(cmd *cmappdto.PaginationCmd) (dto.ArticlesClassifiedByMonthDto, error) {
+
+	sub, err := s.article.ListArticlesClassifiedByMonth(cmd.ToPagination())
+	if err != nil {
+		return dto.ArticlesClassifiedByMonthDto{}, err
+	}
+
+	archives := make([]dto.ArticleCreatedInSameMonth, len(sub.ArticleArchives))
+	for i := range sub.ArticleArchives {
+
+		articles := make([]dto.ArticleCardsDto, len(sub.ArticleArchives[i].ArticleCards))
+		for j := range sub.ArticleArchives[i].ArticleCards {
+			articles[j] = dto.ToArticleCardsDto(sub.ArticleArchives[i].ArticleCards[j])
+		}
+
+		archives[i] = dto.ArticleCreatedInSameMonth{
+			Date:     sub.ArticleArchives[i].Time.TimeYearMonthOnly(),
+			Articles: articles,
+		}
+	}
+
+	return dto.ArticlesClassifiedByMonthDto{
+		PaginationDto:       cmappdto.ToPaginationDto(sub.PaginationStatus),
+		ArticlesInSameMonth: archives,
 	}, nil
 }
 

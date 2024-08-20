@@ -2,9 +2,11 @@ package service
 
 import (
 	"errors"
+	"sort"
 
 	"github.com/victorzhou123/vicblog/article/domain/article/entity"
 	cment "github.com/victorzhou123/vicblog/common/domain/entity"
+	cmentt "github.com/victorzhou123/vicblog/common/domain/entity"
 	cmprimitive "github.com/victorzhou123/vicblog/common/domain/primitive"
 )
 
@@ -28,6 +30,48 @@ type ArticleListDto struct {
 	cment.PaginationStatus
 
 	Articles []entity.Article
+}
+
+// get articles classify by month
+type ArticleListClassifyByMonthDto struct {
+	cment.PaginationStatus
+
+	ArticleArchives []ArticleArchiveDto
+}
+
+type ArticleArchiveDto struct {
+	Time         cmprimitive.Timex
+	ArticleCards []entity.ArticleCard
+}
+
+func toArticleListClassifyByMonthDto(articleCards []entity.ArticleCard, cmd *cmentt.Pagination, total int) ArticleListClassifyByMonthDto {
+
+	// ensure len of articles not 0
+	if len(articleCards) == 0 {
+		return ArticleListClassifyByMonthDto{PaginationStatus: cmd.ToPaginationStatus(total)}
+	}
+
+	// order by time desc
+	sort.Slice(articleCards, func(i, j int) bool {
+		return articleCards[i].CreatedAt.TimeUnix() > articleCards[j].CreatedAt.TimeUnix()
+	})
+
+	// convert
+	d := ArticleListClassifyByMonthDto{PaginationStatus: cmd.ToPaginationStatus(total)}
+	for i, j := 0, 0; i < len(articleCards) && j < len(articleCards); i++ {
+
+		if i+1 >= len(articleCards) || !articleCards[i].IsSameMonthCreated(articleCards[i+1]) {
+			d.ArticleArchives = append(d.ArticleArchives, ArticleArchiveDto{
+				Time:         articleCards[i].CreatedAt,
+				ArticleCards: articleCards[j : i+1],
+			})
+
+			j = i + 1
+		}
+	}
+
+	return d
+
 }
 
 // get article card

@@ -25,6 +25,10 @@ type ArticleCard struct {
 	CreatedAt cmprimitive.Timex
 }
 
+func (r *ArticleCard) IsSameMonthCreated(article ArticleCard) bool {
+	return r.CreatedAt.TimeYearMonthOnly() == article.CreatedAt.TimeYearMonthOnly()
+}
+
 type ArticleInfo struct {
 	Owner   cmprimitive.Username
 	Title   cmprimitive.Text

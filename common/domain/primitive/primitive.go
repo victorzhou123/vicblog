@@ -9,8 +9,9 @@ import (
 )
 
 const (
-	timeFormatYearToSecond = "2006-01-02 15:04:05"
-	timeFormatMonthDayOnly = "01-02"
+	timeFormatYearToSecond  = "2006-01-02 15:04:05"
+	timeFormatMonthDayOnly  = "01-02"
+	timeFormatYearMonthOnly = "2006-01"
 )
 
 // id
@@ -48,6 +49,7 @@ type Timex interface {
 	TimeUnix() int64
 	TimeYearToSecond() string
 	TimeMonthDayOnly() string
+	TimeYearMonthOnly() string
 }
 
 type timex int64
@@ -70,6 +72,10 @@ func (t timex) TimeYearToSecond() string {
 
 func (t timex) TimeMonthDayOnly() string {
 	return time.Unix(t.TimeUnix(), 0).Format(timeFormatMonthDayOnly)
+}
+
+func (t timex) TimeYearMonthOnly() string {
+	return time.Unix(t.TimeUnix(), 0).Format(timeFormatYearMonthOnly)
 }
 
 // url
