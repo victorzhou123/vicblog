@@ -18,6 +18,7 @@ type ArticleService interface {
 	GetArticleList(*ArticleListCmd) (ArticleListDto, error)
 	GetArticleCardList(*ArticleCardsCmd) (ArticleCardsDto, error)
 	PaginationListArticle(*cmentt.Pagination) (ArticleListDto, error)
+	ListArticlesClassifiedByMonth(*cmentt.Pagination) (ArticleListClassifyByMonthDto, error)
 	GetPrevAndNextArticle(articleId cmprimitive.Id) (ArticlePrevAndNextDto, error)
 	GetTotalNumberOfArticles() (cmprimitive.Amount, error)
 
@@ -118,6 +119,16 @@ func (s *articleService) PaginationListArticle(pagination *cmentt.Pagination) (A
 		PaginationStatus: pagination.ToPaginationStatus(total),
 		Articles:         articles,
 	}, nil
+}
+
+func (s *articleService) ListArticlesClassifiedByMonth(pagination *cmentt.Pagination) (ArticleListClassifyByMonthDto, error) {
+
+	articleCards, total, err := s.repo.ListArticlesByPagination(*pagination)
+	if err != nil {
+		return ArticleListClassifyByMonthDto{}, err
+	}
+
+	return toArticleListClassifyByMonthDto(articleCards, pagination, total), nil
 }
 
 func (s *articleService) GetPrevAndNextArticle(articleId cmprimitive.Id) (ArticlePrevAndNextDto, error) {

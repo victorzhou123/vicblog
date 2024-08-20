@@ -283,7 +283,7 @@ func ToArticleCardListDto(ps cment.PaginationStatus,
 
 	articleCadDtos := make([]ArticleCardsDto, len(articleCards))
 	for i := range articleCards {
-		articleCadDtos[i] = toArticleCardsDto(articleCards[i])
+		articleCadDtos[i] = ToArticleCardsDto(articleCards[i])
 	}
 
 	return ArticleCardListDto{
@@ -301,7 +301,7 @@ type ArticleCardsDto struct {
 	CreatedAt string `json:"createdAt"`
 }
 
-func toArticleCardsDto(articleCard entity.ArticleCard) ArticleCardsDto {
+func ToArticleCardsDto(articleCard entity.ArticleCard) ArticleCardsDto {
 	return ArticleCardsDto{
 		Id:        articleCard.Id.IdNum(),
 		Title:     articleCard.Title.Text(),
@@ -310,4 +310,16 @@ func toArticleCardsDto(articleCard entity.ArticleCard) ArticleCardsDto {
 		UpdatedAt: articleCard.UpdatedAt.TimeYearToSecond(),
 		CreatedAt: articleCard.CreatedAt.TimeYearToSecond(),
 	}
+}
+
+// list articles which is classified by month
+type ArticlesClassifiedByMonthDto struct {
+	cmappdto.PaginationDto
+
+	ArticlesInSameMonth []ArticleCreatedInSameMonth `json:"archives"`
+}
+
+type ArticleCreatedInSameMonth struct {
+	Date     string            `json:"date"` // yy-mm
+	Articles []ArticleCardsDto `json:"articles"`
 }
