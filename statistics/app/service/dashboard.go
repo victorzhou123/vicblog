@@ -10,6 +10,7 @@ import (
 
 type DashboardAppService interface {
 	GetDashboardData() (dto.DashboardDataDto, error)
+	GetHeatMapData() (dto.HeatMapDto, error)
 }
 
 type dashboardAppService struct {
@@ -67,4 +68,25 @@ func (s *dashboardAppService) GetDashboardData() (dto.DashboardDataDto, error) {
 		TagCounts:           countOfTags.Amount(),
 		CategoryCounts:      countOfCategories.Amount(),
 	}, nil
+}
+
+func (s *dashboardAppService) GetHeatMapData() (dto.HeatMapDto, error) {
+
+	articleCards, err := s.article.GetPastYearArticleCards()
+	if err != nil {
+		return dto.HeatMapDto{}, err
+	}
+
+	heatMap := map[string]int{}
+	for i := range articleCards {
+
+		v, ok := heatMap[articleCards[i].CreatedAt.TimeYearMonthDay()]
+		if !ok {
+			heatMap[articleCards[i].CreatedAt.TimeYearMonthDay()] = 1
+		} else {
+			heatMap[articleCards[i].CreatedAt.TimeYearMonthDay()] = v + 1
+		}
+	}
+
+	return dto.HeatMapDto{HeatMap: heatMap}, nil
 }

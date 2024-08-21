@@ -90,7 +90,7 @@ func setRouter(engine *gin.Engine, cfg *mconfig.Config) {
 
 	// domain: following are domain services
 	tagService := tagsvc.NewTagService(tagRepo, tagArticleRepo)
-	articleService := articlesvc.NewArticleService(articleRepo, m2h)
+	articleService := articlesvc.NewArticleService(articleRepo, m2h, &timeCreator)
 	categoryService := categorysvc.NewCategoryService(categoryRepo, categoryArticleRepo)
 	pictureService := picturesvc.NewFileService(ossRepo)
 	blogService := blogsvc.NewBlogService(blogRepo)

@@ -232,6 +232,29 @@ func (impl *articleRepoImpl) GetTotalNumberOfArticle() (cmprimitive.Amount, erro
 	return cmprimitive.NewAmount(int(count))
 }
 
+func (impl *articleRepoImpl) GetRecentArticleCards(startDate cmprimitive.Timex) ([]entity.ArticleCard, error) {
+
+	dos := []ArticleCardDO{}
+
+	err := impl.db.GetRecords(&ArticleDO{}, impl.db.GreaterQuery(fieldCreatedAt), &dos, startDate.TimeUnix())
+	if err != nil {
+		if cmdmerror.IsNotFound(err) {
+			return nil, nil
+		}
+
+		return nil, err
+	}
+
+	cards := make([]entity.ArticleCard, len(dos))
+	for i := range dos {
+		if cards[i], err = dos[i].toArticleCard(); err != nil {
+			return nil, err
+		}
+	}
+
+	return cards, nil
+}
+
 func (impl *articleRepoImpl) Delete(user cmprimitive.Username, id cmprimitive.Id) error {
 	articleDo := &ArticleDO{}
 	articleDo.Owner = user.Username()

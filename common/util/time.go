@@ -24,6 +24,10 @@ func (t *timeCreator) FirstTimeOfTodayBaseDay() time.Time {
 	return time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
 }
 
+func (t *timeCreator) GetPastYearUnixTime() int64 {
+	return t.AddUnix(-365 * 24 * time.Hour)
+}
+
 func TimeNowBaseSecond() string {
 	return timeNow(timeFormatYearMonthDayHourMinSecond)
 }

@@ -21,6 +21,7 @@ type ArticleService interface {
 	ListArticlesClassifiedByMonth(*cmentt.Pagination) (ArticleListClassifyByMonthDto, error)
 	GetPrevAndNextArticle(articleId cmprimitive.Id) (ArticlePrevAndNextDto, error)
 	GetTotalNumberOfArticles() (cmprimitive.Amount, error)
+	GetPastYearArticleCards() ([]entity.ArticleCard, error)
 
 	Delete(cmprimitive.Username, cmprimitive.Id) error
 
@@ -30,15 +31,25 @@ type ArticleService interface {
 	UpdateArticle(articleId cmprimitive.Id, articleInfo *entity.ArticleInfo) error
 }
 
-type articleService struct {
-	repo repository.Article
-	m2h  cmdmmd2html.Md2Html
+type TimeCreator interface {
+	GetPastYearUnixTime() int64
 }
 
-func NewArticleService(repo repository.Article, m2h cmdmmd2html.Md2Html) ArticleService {
+type articleService struct {
+	repo        repository.Article
+	m2h         cmdmmd2html.Md2Html
+	timeCreator TimeCreator
+}
+
+func NewArticleService(
+	repo repository.Article,
+	m2h cmdmmd2html.Md2Html,
+	tc TimeCreator,
+) ArticleService {
 	return &articleService{
-		repo: repo,
-		m2h:  m2h,
+		repo:        repo,
+		m2h:         m2h,
+		timeCreator: tc,
 	}
 }
 
@@ -150,6 +161,18 @@ func (s *articleService) GetPrevAndNextArticle(articleId cmprimitive.Id) (Articl
 
 func (s *articleService) GetTotalNumberOfArticles() (cmprimitive.Amount, error) {
 	return s.repo.GetTotalNumberOfArticle()
+}
+
+func (s *articleService) GetPastYearArticleCards() ([]entity.ArticleCard, error) {
+
+	pastYear := cmprimitive.NewTimeXWithUnix(s.timeCreator.GetPastYearUnixTime())
+
+	cards, err := s.repo.GetRecentArticleCards(pastYear)
+	if err != nil {
+		return nil, err
+	}
+
+	return cards, nil
 }
 
 func (s *articleService) Delete(user cmprimitive.Username, id cmprimitive.Id) error {

@@ -6,3 +6,7 @@ type DashboardDataDto struct {
 	TagCounts           int `json:"tagCounts"`
 	ArticleVisitsCounts int `json:"articleVisitsCounts"`
 }
+
+type HeatMapDto struct {
+	HeatMap map[string]int `json:"heatMap"`
+}
