@@ -236,7 +236,7 @@ func (impl *articleRepoImpl) GetRecentArticleCards(startDate cmprimitive.Timex) 
 
 	dos := []ArticleCardDO{}
 
-	err := impl.db.GetRecords(&ArticleDO{}, impl.db.GreaterQuery(fieldCreatedAt), &dos, startDate.TimeUnix())
+	err := impl.db.GetRecords(&ArticleDO{}, impl.db.GreaterQuery(fieldCreatedAt), &dos, startDate.Time())
 	if err != nil {
 		if cmdmerror.IsNotFound(err) {
 			return nil, nil
