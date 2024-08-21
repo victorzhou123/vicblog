@@ -261,6 +261,13 @@ definitions:
       tagCounts:
         type: integer
     type: object
+  dto.HeatMapDto:
+    properties:
+      heatMap:
+        additionalProperties:
+          type: integer
+        type: object
+    type: object
   dto.TagDto:
     properties:
       createdAt:
@@ -733,6 +740,23 @@ paths:
           schema:
             $ref: '#/definitions/dto.DashboardDataDto'
       summary: Get dashboard
+      tags:
+      - Statistics
+  /v1/statistics/dashboard/heatmap:
+    get:
+      consumes:
+      - application/json
+      description: get amount of publish article every day
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.HeatMapDto'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controller.ResponseData'
+      summary: Get heat map
       tags:
       - Statistics
   /v1/statistics/dashboard/pv:

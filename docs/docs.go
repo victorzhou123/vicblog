@@ -647,6 +647,32 @@ const docTemplate = `{
                 }
             }
         },
+        "/v1/statistics/dashboard/heatmap": {
+            "get": {
+                "description": "get amount of publish article every day",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Statistics"
+                ],
+                "summary": "Get heat map",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HeatMapDto"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ResponseData"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/statistics/dashboard/pv": {
             "get": {
                 "description": "get article visits of a week",
@@ -1098,6 +1124,17 @@ const docTemplate = `{
                 },
                 "tagCounts": {
                     "type": "integer"
+                }
+            }
+        },
+        "dto.HeatMapDto": {
+            "type": "object",
+            "properties": {
+                "heatMap": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "integer"
+                    }
                 }
             }
         },
