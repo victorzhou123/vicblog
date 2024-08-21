@@ -14,7 +14,7 @@ type Impl interface {
 
 	// Get
 	GetRecord(model, filter, result any) error
-	GetRecords(model, filter, result any) error
+	GetRecords(model, filter, result any, filterArgs ...any) error
 	GetLimitRecords(model, filter, result any, amount int) error
 	GetRecordsByPagination(model, filter, result any, opt PaginationOpt, filterArgs ...any) (total int, err error)
 	GetByPrimaryKey(model, row any) error
@@ -62,8 +62,8 @@ func (dao *daoImpl) GetRecord(model, filter, result any) error {
 	return err
 }
 
-func (dao *daoImpl) GetRecords(model, filter, result any) error {
-	err := dao.Model(model).Where(filter).Find(result).Error
+func (dao *daoImpl) GetRecords(model, filter, result any, filterArgs ...any) error {
+	err := dao.Model(model).Where(filter, filterArgs...).Find(result).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return repository.NewErrorResourceNotExists(errors.New("not found"))

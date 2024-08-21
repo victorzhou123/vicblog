@@ -17,6 +17,7 @@ const (
 	fieldNameArticleReadTimes = "read_times"
 	fieldNameCategoryId       = "category_id"
 	fieldNameTagId            = "tag_id"
+	fieldCreatedAt            = "created_at"
 )
 
 var (

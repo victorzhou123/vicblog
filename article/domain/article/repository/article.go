@@ -15,6 +15,7 @@ type Article interface {
 	ListAllArticles(cment.Pagination) ([]entity.Article, int, error)
 	GetPreAndNextArticle(articleId cmprimitive.Id) (articleArr [2]*entity.ArticleIdTitle, err error)
 	GetTotalNumberOfArticle() (cmprimitive.Amount, error)
+	GetRecentArticleCards(startDate cmprimitive.Timex) ([]entity.ArticleCard, error)
 
 	Delete(cmprimitive.Username, cmprimitive.Id) error
 

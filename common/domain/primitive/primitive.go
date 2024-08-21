@@ -10,6 +10,7 @@ import (
 
 const (
 	timeFormatYearToSecond  = "2006-01-02 15:04:05"
+	timeFormatYearMonthDay  = "2006-01-02"
 	timeFormatMonthDayOnly  = "01-02"
 	timeFormatYearMonthOnly = "2006-01"
 )
@@ -48,6 +49,7 @@ func (r id) IdNum() uint {
 type Timex interface {
 	TimeUnix() int64
 	TimeYearToSecond() string
+	TimeYearMonthDay() string
 	TimeMonthDayOnly() string
 	TimeYearMonthOnly() string
 }
@@ -68,6 +70,10 @@ func (t timex) TimeUnix() int64 {
 
 func (t timex) TimeYearToSecond() string {
 	return time.Unix(t.TimeUnix(), 0).Format(timeFormatYearToSecond)
+}
+
+func (t timex) TimeYearMonthDay() string {
+	return time.Unix(t.TimeUnix(), 0).Format(timeFormatYearMonthDay)
 }
 
 func (t timex) TimeMonthDayOnly() string {
