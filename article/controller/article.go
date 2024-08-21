@@ -45,6 +45,7 @@ type articleController struct {
 // @Accept   json
 // @Param	id	path	int	true	"article ID"
 // @Success  200   {object}  dto.ArticleDetailDto
+// @Failure	400	{object}	controller.ResponseData
 func (ctl *articleController) Get(ctx *gin.Context) {
 
 	user, err := ctl.GetUser(ctx)
@@ -78,6 +79,7 @@ func (ctl *articleController) Get(ctx *gin.Context) {
 // @Param	id	path	int	true	"article ID"
 // @Success  200   {object}  dto.ArticleDetailDto
 // @Failure	400	{object}	controller.ResponseData
+// @Router   /v1/article/:id [get]
 func (ctl *articleController) GetWithContentParsed(ctx *gin.Context) {
 
 	id := cmprimitive.NewId(ctx.Param("id"))
@@ -98,7 +100,7 @@ func (ctl *articleController) GetWithContentParsed(ctx *gin.Context) {
 // @Accept   json
 // @Param    current  query  int  true  "current page of user queried"
 // @Param    size  query  int  true  "single page size of user queried"
-// @Success  200   {array}  service.ArticleListDto
+// @Success  200   {array}  dto.ArticleListDto
 // @Router   /v1/admin/article/list [get]
 func (ctl *articleController) List(ctx *gin.Context) {
 
@@ -211,7 +213,7 @@ func (ctl *articleController) ListCardsThroughCateId(ctx *gin.Context) {
 // @Accept   json
 // @Param    current  query  int  true  "current page of user queried"
 // @Param    size  query  int  true  "single page size of user queried"
-// @Success  200   {array}  service.ArticleListDto
+// @Success  200   {array}  dto.ArticleListDto
 // @Router   /v1/article [get]
 func (ctl *articleController) ListAll(ctx *gin.Context) {
 
