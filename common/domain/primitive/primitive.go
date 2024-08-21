@@ -47,6 +47,7 @@ func (r id) IdNum() uint {
 
 // time
 type Timex interface {
+	Time() time.Time
 	TimeUnix() int64
 	TimeYearToSecond() string
 	TimeYearMonthDay() string
@@ -62,6 +63,10 @@ func NewTimeXWithUnix(v int64) Timex {
 
 func NewTimeXNow() Timex {
 	return timex(time.Now().Unix())
+}
+
+func (t timex) Time() time.Time {
+	return time.Unix(t.TimeUnix(), 0)
 }
 
 func (t timex) TimeUnix() int64 {
