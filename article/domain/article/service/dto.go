@@ -7,6 +7,7 @@ import (
 	"github.com/victorzhou123/vicblog/article/domain/article/entity"
 	cment "github.com/victorzhou123/vicblog/common/domain/entity"
 	cmentt "github.com/victorzhou123/vicblog/common/domain/entity"
+	cmdmerr "github.com/victorzhou123/vicblog/common/domain/error"
 	cmprimitive "github.com/victorzhou123/vicblog/common/domain/primitive"
 )
 
@@ -84,7 +85,7 @@ type ArticleCardsCmd struct {
 func (cmd *ArticleCardsCmd) validate() error {
 
 	if len(cmd.ArticleIds) == 0 {
-		return errors.New("at least one article id required")
+		return cmdmerr.NewInvalidParam("at least one article id required")
 	}
 
 	return nil
