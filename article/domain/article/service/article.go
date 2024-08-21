@@ -88,6 +88,10 @@ func (s *articleService) GetArticleList(cmd *ArticleListCmd) (ArticleListDto, er
 func (s *articleService) GetArticleCardList(cmd *ArticleCardsCmd) (ArticleCardsDto, error) {
 
 	if err := cmd.validate(); err != nil {
+		if cmdmerror.IsInvalidParamError(err) {
+			return ArticleCardsDto{PaginationStatus: cmd.ToPaginationStatus(0)}, nil
+		}
+
 		return ArticleCardsDto{}, err
 	}
 
