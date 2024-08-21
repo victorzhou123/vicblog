@@ -6,7 +6,6 @@ import (
 
 	"github.com/victorzhou123/vicblog/article/domain/article/entity"
 	cment "github.com/victorzhou123/vicblog/common/domain/entity"
-	cmentt "github.com/victorzhou123/vicblog/common/domain/entity"
 	cmdmerr "github.com/victorzhou123/vicblog/common/domain/error"
 	cmprimitive "github.com/victorzhou123/vicblog/common/domain/primitive"
 )
@@ -45,7 +44,7 @@ type ArticleArchiveDto struct {
 	ArticleCards []entity.ArticleCard
 }
 
-func toArticleListClassifyByMonthDto(articleCards []entity.ArticleCard, cmd *cmentt.Pagination, total int) ArticleListClassifyByMonthDto {
+func toArticleListClassifyByMonthDto(articleCards []entity.ArticleCard, cmd *cment.Pagination, total int) ArticleListClassifyByMonthDto {
 
 	// ensure len of articles not 0
 	if len(articleCards) == 0 {

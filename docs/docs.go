@@ -104,7 +104,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/service.ArticleListDto"
+                                "$ref": "#/definitions/dto.ArticleListDto"
                             }
                         }
                     }
@@ -212,7 +212,11 @@ const docTemplate = `{
                         }
                     }
                 ],
-                "responses": {}
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    }
+                }
             }
         },
         "/v1/admin/category/{id}": {
@@ -299,7 +303,11 @@ const docTemplate = `{
                         }
                     }
                 ],
-                "responses": {}
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    }
+                }
             },
             "delete": {
                 "description": "delete a tag item",
@@ -360,7 +368,81 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/service.ArticleListDto"
+                                "$ref": "#/definitions/dto.ArticleListDto"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/article/:id": {
+            "get": {
+                "description": "Get article which content parsed to html",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Article"
+                ],
+                "summary": "Get article",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "article ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ArticleDetailDto"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ResponseData"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/article/archive": {
+            "get": {
+                "description": "list archives by pagination",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Article"
+                ],
+                "summary": "List archive",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "current page of user queried",
+                        "name": "current",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "single page size of user queried",
+                        "name": "size",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dto.ArticlesClassifiedByMonthDto"
                             }
                         }
                     }
@@ -545,7 +627,47 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/tag/{amount}": {
+        "/v1/statistics/dashboard": {
+            "get": {
+                "description": "get dashboard data",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Statistics"
+                ],
+                "summary": "Get dashboard",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.DashboardDataDto"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/statistics/dashboard/pv": {
+            "get": {
+                "description": "get article visits of a week",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Statistics"
+                ],
+                "summary": "Get PV",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.VisitsOfAWeekDto"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/tag/:amount": {
             "get": {
                 "description": "show tag list, limited by amount",
                 "consumes": [
@@ -736,6 +858,21 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.ArticleCreatedInSameMonth": {
+            "type": "object",
+            "properties": {
+                "articles": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.ArticleCardsDto"
+                    }
+                },
+                "date": {
+                    "description": "yy-mm",
+                    "type": "string"
+                }
+            }
+        },
         "dto.ArticleDetailDto": {
             "type": "object",
             "properties": {
@@ -780,6 +917,84 @@ const docTemplate = `{
                 },
                 "updatedAt": {
                     "type": "string"
+                }
+            }
+        },
+        "dto.ArticleListDto": {
+            "type": "object",
+            "properties": {
+                "articles": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.ArticleSummaryDto"
+                    }
+                },
+                "current": {
+                    "type": "integer"
+                },
+                "pages": {
+                    "type": "integer"
+                },
+                "size": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.ArticleSummaryDto": {
+            "type": "object",
+            "properties": {
+                "cover": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "isPublish": {
+                    "type": "boolean"
+                },
+                "isTop": {
+                    "type": "boolean"
+                },
+                "owner": {
+                    "type": "string"
+                },
+                "summary": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.ArticlesClassifiedByMonthDto": {
+            "type": "object",
+            "properties": {
+                "archives": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.ArticleCreatedInSameMonth"
+                    }
+                },
+                "current": {
+                    "type": "integer"
+                },
+                "pages": {
+                    "type": "integer"
+                },
+                "size": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
                 }
             }
         },
@@ -869,6 +1084,23 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.DashboardDataDto": {
+            "type": "object",
+            "properties": {
+                "articleCounts": {
+                    "type": "integer"
+                },
+                "articleVisitsCounts": {
+                    "type": "integer"
+                },
+                "categoryCounts": {
+                    "type": "integer"
+                },
+                "tagCounts": {
+                    "type": "integer"
+                }
+            }
+        },
         "dto.TagDto": {
             "type": "object",
             "properties": {
@@ -923,44 +1155,20 @@ const docTemplate = `{
                 }
             }
         },
-        "entity.Article": {
+        "dto.VisitsOfAWeekDto": {
             "type": "object",
             "properties": {
-                "content": {},
-                "cover": {},
-                "createdAt": {},
-                "id": {},
-                "isPublish": {
-                    "type": "boolean"
-                },
-                "isTop": {
-                    "type": "boolean"
-                },
-                "owner": {},
-                "readTimes": {
-                    "type": "integer"
-                },
-                "summary": {},
-                "title": {},
-                "updatedAt": {}
-            }
-        },
-        "service.ArticleListDto": {
-            "type": "object",
-            "properties": {
-                "articles": {
+                "counts": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/entity.Article"
+                        "type": "integer"
                     }
                 },
-                "curPage": {},
-                "pageCount": {
-                    "type": "integer"
-                },
-                "pageSize": {},
-                "total": {
-                    "type": "integer"
+                "dates": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         },
