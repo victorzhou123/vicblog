@@ -114,8 +114,8 @@ github.com/twitchyliquid64/golang-asm v0.15.1 h1:SU5vSMR7hnwNxj24w34ZyCi/FmDZTkS
 github.com/twitchyliquid64/golang-asm v0.15.1/go.mod h1:a1lVb/DtPvCB8fslRZhAngC2+aY1QWCk3Cedj/Gdt08=
 github.com/ugorji/go/codec v1.2.12 h1:9LC83zGrHhuUA9l16C9AHXAqEV/2wBQ4nkvumAE65EE=
 github.com/ugorji/go/codec v1.2.12/go.mod h1:UNopzCgEMSXjBc6AOMqYvWC1ktqTAfzJZUZgYf6w6lg=
-github.com/victorzhou123/simplemq v0.0.0-20240815074301-1bec2610af54 h1:pe8pG5BcJMcKQ27GHY6owDvOnId8R4WTuYT9g4O06fA=
-github.com/victorzhou123/simplemq v0.0.0-20240815074301-1bec2610af54/go.mod h1:JIiUVYpAOodrN7/GlKiQ9q3Dn1wQ07rt78PnSMDubQo=
+github.com/victorzhou123/simplemq v0.0.4 h1:Zj+qy3J/5QOEsj63rSSIxfUmsFzFjg0ya6sqCBX0Cpc=
+github.com/victorzhou123/simplemq v0.0.4/go.mod h1:JIiUVYpAOodrN7/GlKiQ9q3Dn1wQ07rt78PnSMDubQo=
 github.com/yuin/goldmark v1.4.13/go.mod h1:6yULJ656Px+3vBD8DxQVa3kxgyrAnzto9xy5taEt/CY=
 go.uber.org/goleak v1.3.0 h1:2K3zAYmnTNqV73imy9J1T3WC+gmCePx2hEGkimedGto=
 go.uber.org/goleak v1.3.0/go.mod h1:CoHD4mav9JJNrW/WLlf7HGZPjdw8EucARQHekz1X6bE=
