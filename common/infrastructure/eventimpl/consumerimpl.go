@@ -1,15 +1,16 @@
 package eventimpl
 
 import (
-	sconsume "github.com/victorzhou123/simplemq/consume"
+	"github.com/victorzhou123/simplemq-driven/driven"
+
 	"github.com/victorzhou123/vicblog/common/domain/event"
 )
 
 type distributerImpl struct {
-	distributer sconsume.Distributer
+	distributer driven.Distributer
 }
 
-func NewDistributerImpl(dis sconsume.Distributer) event.Distributer {
+func NewDistributerImpl(dis driven.Distributer) event.Distributer {
 	return &distributerImpl{dis}
 }
 

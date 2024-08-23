@@ -5,7 +5,7 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
-	smq "github.com/victorzhou123/simplemq/mq"
+	smqdriven "github.com/victorzhou123/simplemq-driven/driven"
 	articleappevent "github.com/victorzhou123/vicblog/article/app/event"
 	articleappsvc "github.com/victorzhou123/vicblog/article/app/service"
 	articlectl "github.com/victorzhou123/vicblog/article/controller"
@@ -120,7 +120,7 @@ func setRouters(engine *gin.Engine, cfg *mconfig.Config) {
 	distributer := newDistributer(articleSubscriber, statsSubscriber)
 
 	// watch
-	mqWatcher := smq.NewWatcher(mq, distributer)
+	mqWatcher := smqdriven.NewWatcher(mq, distributer)
 	go mqWatcher.Watch()
 }
 

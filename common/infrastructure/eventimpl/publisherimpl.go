@@ -3,17 +3,17 @@ package eventimpl
 import (
 	"encoding/json"
 
+	"github.com/victorzhou123/simplemq-driven/driven"
 	smqevent "github.com/victorzhou123/simplemq/event"
-	"github.com/victorzhou123/simplemq/mq"
 
 	"github.com/victorzhou123/vicblog/common/domain/event"
 )
 
 type publisher struct {
-	mq mq.MQ
+	mq driven.MQ
 }
 
-func NewPublisher(mq mq.MQ) event.EventPublisher {
+func NewPublisher(mq driven.MQ) event.EventPublisher {
 	return &publisher{mq}
 }
 

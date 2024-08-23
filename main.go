@@ -46,7 +46,11 @@ func main() {
 	}
 
 	// mq
-	mqimpl.Init()
+	err, close := mqimpl.Init(&cfg.Common.Infra.Mq)
+	if err != nil {
+		log.Warnf("message queue init failed, error: %s", err.Error())
+	}
+	defer close()
 
 	if err := server.StartWebServer(cfg); err != nil {
 		log.Fatalf("start web server error: %s", err.Error())
