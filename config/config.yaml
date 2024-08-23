@@ -24,6 +24,9 @@ common:
       username: "root"
       password: "147852369hh@"
       db_name: "vicblog"
+    mq:
+      address: "127.0.0.1:50051"
+      expire: 10
     oss:
       id: "LTAI5tFnKogF9bTcvoJxrZor"
       secret: "W1veUccsXDy3mciIzAnNF1IpJ0u0CG"
