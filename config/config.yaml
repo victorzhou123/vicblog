@@ -1,5 +1,5 @@
 server:
-  port: "${SERVER_PORT}"
+  port: ${SERVER_PORT}
   read_timeout: 10000
   read_header_timeout: 2000
 common:
@@ -20,7 +20,7 @@ common:
       expire_time: 300
     mysql:
       host: "${MYSQL_HOST}"
-      port: "${MYSQL_PORT}"
+      port: ${MYSQL_PORT}
       username: "root"
       password: "147852369hh@"
       db_name: "vicblog"
