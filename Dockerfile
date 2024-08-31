@@ -9,6 +9,6 @@ FROM alpine:latest
 WORKDIR /opt/app/
 
 COPY --from=BUILDER /go/src/github.com/victorzhou123/vicblog/vicblog /opt/app
-COPY --from=BUILDER /go/src/github.com/victorzhou123/vicblog/config/config.yaml /opt/app/config
+COPY --from=BUILDER /go/src/github.com/victorzhou123/vicblog/config/config.yaml /opt/app/config/
 
 ENTRYPOINT ["/opt/app/vicblog"]
