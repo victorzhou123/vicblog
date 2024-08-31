@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: "${SERVER_PORT}"
   read_timeout: 10000
   read_header_timeout: 2000
 common:
@@ -19,13 +19,13 @@ common:
       secret_key: "~&bBD(92$8~JE^XZ"
       expire_time: 300
     mysql:
-      host: 127.0.0.1
-      port: 3306
+      host: "${MYSQL_HOST}"
+      port: "${MYSQL_PORT}"
       username: "root"
       password: "147852369hh@"
       db_name: "vicblog"
     mq:
-      address: "127.0.0.1:50051"
+      address: "${MQ_ADDR}"
       expire: 10
     oss:
       id: "LTAI5tFnKogF9bTcvoJxrZor"
