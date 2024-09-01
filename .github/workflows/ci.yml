@@ -25,7 +25,10 @@ jobs:
         uses: securego/gosec@master
         with:
           args: ./...
+      - name: Code Test
+        run: go test -v -coverprofile=profile.cov ./...
       - name: Build the Docker image
+        if: github.event_name == 'push'
         run: |
           docker version
           # 登录阿里云镜像仓库
@@ -34,4 +37,3 @@ jobs:
           docker build . --file Dockerfile --tag registry.cn-hangzhou.aliyuncs.com/vicblog/vicblog:latest
           # 推送镜像到镜像仓库
           docker push registry.cn-hangzhou.aliyuncs.com/vicblog/vicblog:latest
-      - run: go test -v -coverprofile=profile.cov ./...
