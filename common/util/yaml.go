@@ -1,7 +1,6 @@
 package util
 
 import (
-	"fmt"
 	"os"
 
 	"sigs.k8s.io/yaml"
@@ -13,10 +12,8 @@ func LoadFromYAML(path string, cfg interface{}) error {
 		return err
 	}
 
-	fmt.Printf("string(b): %v\n", string(b))
+	// parsing environments variables in yaml
+	t := []byte(os.ExpandEnv(string(b)))
 
-	pp := os.Getenv("SERVER_PORT") 
-	fmt.Printf("SERVER_PORT: %v\n", pp)
-
-	return yaml.Unmarshal(b, cfg)
+	return yaml.Unmarshal(t, cfg)
 }
