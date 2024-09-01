@@ -15,5 +15,8 @@ func LoadFromYAML(path string, cfg interface{}) error {
 
 	fmt.Printf("string(b): %v\n", string(b))
 
+	pp := os.Getenv("SERVER_PORT") 
+	fmt.Printf("SERVER_PORT: %v\n", pp)
+
 	return yaml.Unmarshal(b, cfg)
 }
