@@ -1,6 +1,7 @@
 package util
 
 import (
+	"fmt"
 	"os"
 
 	"sigs.k8s.io/yaml"
@@ -11,6 +12,8 @@ func LoadFromYAML(path string, cfg interface{}) error {
 	if err != nil {
 		return err
 	}
+
+	fmt.Printf("string(b): %v\n", string(b))
 
 	return yaml.Unmarshal(b, cfg)
 }
