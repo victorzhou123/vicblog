@@ -21,9 +21,9 @@ common:
     mysql:
       host: "${MYSQL_HOST}"
       port: ${MYSQL_PORT}
-      username: "root"
-      password: "147852369hh@"
-      db_name: "vicblog"
+      username: "${MYSQL_USERNAME}"
+      password: "${MYSQL_PASSWORD}"
+      db_name: "${MYSQL_DB_NAME}"
     mq:
       address: "${MQ_ADDR}"
       expire: 10
