@@ -12,5 +12,8 @@ func LoadFromYAML(path string, cfg interface{}) error {
 		return err
 	}
 
-	return yaml.Unmarshal(b, cfg)
+	// parsing environments variables in yaml
+	t := []byte(os.ExpandEnv(string(b)))
+
+	return yaml.Unmarshal(t, cfg)
 }
