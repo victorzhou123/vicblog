@@ -28,7 +28,7 @@ jobs:
       - name: Code Test
         run: go test -v -coverprofile=profile.cov ./...
       - name: Build the Docker image
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
         run: |
           docker version
           # 登录阿里云镜像仓库
