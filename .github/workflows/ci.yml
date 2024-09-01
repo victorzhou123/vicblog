@@ -25,7 +25,6 @@ jobs:
         uses: securego/gosec@master
         with:
           args: ./...
-      - run: go test -v -coverprofile=profile.cov ./...
       - name: Build the Docker image
         run: |
           docker version
@@ -36,3 +35,4 @@ jobs:
           docker build . --file Dockerfile --tag registry.cn-hangzhou.aliyuncs.com/vicblog/vicblog:latest
           # 推送镜像到镜像仓库
           docker push registry.cn-hangzhou.aliyuncs.com/vicblog/vicblog:latest
+      - run: go test -v -coverprofile=profile.cov ./...
