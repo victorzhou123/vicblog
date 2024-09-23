@@ -107,3 +107,10 @@ type ArticlePrevAndNextDto struct {
 	Prev *entity.ArticleIdTitle
 	Next *entity.ArticleIdTitle
 }
+
+// article search
+type ArticleCardWithSummaryDto struct {
+	cment.PaginationStatus
+
+	ArticleCardsWithSummary []entity.ArticleCardWithSummary
+}

@@ -22,6 +22,7 @@ type ArticleService interface {
 	GetPrevAndNextArticle(articleId cmprimitive.Id) (ArticlePrevAndNextDto, error)
 	GetTotalNumberOfArticles() (cmprimitive.Amount, error)
 	GetPastYearArticleCards() ([]entity.ArticleCard, error)
+	SearchArticles(word cmprimitive.Text, opt *cmentt.Pagination) (ArticleCardWithSummaryDto, error)
 
 	Delete(cmprimitive.Username, cmprimitive.Id) error
 
@@ -173,6 +174,19 @@ func (s *articleService) GetPastYearArticleCards() ([]entity.ArticleCard, error)
 	}
 
 	return cards, nil
+}
+
+func (s *articleService) SearchArticles(word cmprimitive.Text, opt *cmentt.Pagination) (ArticleCardWithSummaryDto, error) {
+
+	articleCardsWithSummary, total, err := s.repo.SearchArticle(word, *opt)
+	if err != nil {
+		return ArticleCardWithSummaryDto{}, err
+	}
+
+	return ArticleCardWithSummaryDto{
+		PaginationStatus:        opt.ToPaginationStatus(total),
+		ArticleCardsWithSummary: articleCardsWithSummary,
+	}, nil
 }
 
 func (s *articleService) Delete(user cmprimitive.Username, id cmprimitive.Id) error {

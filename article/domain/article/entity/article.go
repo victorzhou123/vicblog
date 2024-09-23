@@ -41,3 +41,9 @@ type ArticleIdTitle struct {
 	Id    cmprimitive.Id
 	Title cmprimitive.Text
 }
+
+type ArticleCardWithSummary struct {
+	ArticleCard
+
+	Summary ArticleSummary
+}

@@ -29,6 +29,7 @@ type ArticleAppService interface {
 	GetArticleCardListByTagId(*dto.GetArticleCardListByTagIdCmd) (dto.ArticleCardListDto, error)
 	GetArticleListClassifiedByMonth(*cmappdto.PaginationCmd) (dto.ArticlesClassifiedByMonthDto, error)
 	PaginationListArticle(*dto.ListAllArticlesCmd) (dto.ArticleDetailsListDto, error)
+	SearchArticle(*dto.SearchArticlesCmd) (dto.ArticleCardsWithSummaryDto, error)
 
 	AddArticle(*dto.AddArticleCmd) error
 
@@ -225,9 +226,9 @@ func (s *articleAppService) GetArticleListClassifiedByMonth(cmd *cmappdto.Pagina
 	archives := make([]dto.ArticleCreatedInSameMonth, len(sub.ArticleArchives))
 	for i := range sub.ArticleArchives {
 
-		articles := make([]dto.ArticleCardsDto, len(sub.ArticleArchives[i].ArticleCards))
+		articles := make([]dto.ArticleCardDto, len(sub.ArticleArchives[i].ArticleCards))
 		for j := range sub.ArticleArchives[i].ArticleCards {
-			articles[j] = dto.ToArticleCardsDto(sub.ArticleArchives[i].ArticleCards[j])
+			articles[j] = dto.ToArticleCardDto(sub.ArticleArchives[i].ArticleCards[j])
 		}
 
 		archives[i] = dto.ArticleCreatedInSameMonth{
@@ -240,6 +241,16 @@ func (s *articleAppService) GetArticleListClassifiedByMonth(cmd *cmappdto.Pagina
 		PaginationDto:       cmappdto.ToPaginationDto(sub.PaginationStatus),
 		ArticlesInSameMonth: archives,
 	}, nil
+}
+
+func (s *articleAppService) SearchArticle(cmd *dto.SearchArticlesCmd) (dto.ArticleCardsWithSummaryDto, error) {
+
+	sa, err := s.article.SearchArticles(cmd.Word, cmd.ToPagination())
+	if err != nil {
+		return dto.ArticleCardsWithSummaryDto{}, err
+	}
+
+	return dto.ToArticleCardsWithSummaryDto(sa), nil
 }
 
 func (s *articleAppService) AddArticle(cmd *dto.AddArticleCmd) error {

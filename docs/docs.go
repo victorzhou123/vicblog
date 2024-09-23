@@ -495,6 +495,45 @@ const docTemplate = `{
                 }
             }
         },
+        "/v1/article/search/:word": {
+            "get": {
+                "description": "search articles by key word",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Article"
+                ],
+                "summary": "Search articles",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "current page of user queried",
+                        "name": "current",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "single page size of user queried",
+                        "name": "size",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dto.ArticleCardsWithSummaryDto"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/v1/article/tag/:id": {
             "get": {
                 "description": "list articles by pagination under the tag",
@@ -838,30 +877,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.ArticleCardListDto": {
-            "type": "object",
-            "properties": {
-                "articleCards": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/dto.ArticleCardsDto"
-                    }
-                },
-                "current": {
-                    "type": "integer"
-                },
-                "pages": {
-                    "type": "integer"
-                },
-                "size": {
-                    "type": "integer"
-                },
-                "total": {
-                    "type": "integer"
-                }
-            }
-        },
-        "dto.ArticleCardsDto": {
+        "dto.ArticleCardDto": {
             "type": "object",
             "properties": {
                 "cover": {
@@ -884,13 +900,85 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.ArticleCardListDto": {
+            "type": "object",
+            "properties": {
+                "articleCards": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.ArticleCardDto"
+                    }
+                },
+                "current": {
+                    "type": "integer"
+                },
+                "pages": {
+                    "type": "integer"
+                },
+                "size": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.ArticleCardWithSummaryDto": {
+            "type": "object",
+            "properties": {
+                "cover": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "readTimes": {
+                    "type": "integer"
+                },
+                "summary": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.ArticleCardsWithSummaryDto": {
+            "type": "object",
+            "properties": {
+                "current": {
+                    "type": "integer"
+                },
+                "pages": {
+                    "type": "integer"
+                },
+                "searchResults": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.ArticleCardWithSummaryDto"
+                    }
+                },
+                "size": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
         "dto.ArticleCreatedInSameMonth": {
             "type": "object",
             "properties": {
                 "articles": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/dto.ArticleCardsDto"
+                        "$ref": "#/definitions/dto.ArticleCardDto"
                     }
                 },
                 "date": {

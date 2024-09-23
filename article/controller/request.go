@@ -200,3 +200,23 @@ func (req *reqListArticleCardsThroughTagId) toCmd() (cmd dto.GetArticleCardListB
 
 	return
 }
+
+// search articles by key word
+type reqSearchArticlesByWord struct {
+	cmctl.ReqList
+
+	Word string `json:"word"`
+}
+
+func (req *reqSearchArticlesByWord) toCmd() (cmd dto.SearchArticlesCmd, err error) {
+
+	if cmd.PaginationCmd, err = req.ReqList.ToCmd(); err != nil {
+		return
+	}
+
+	if cmd.Word, err = cmprimitive.NewKeyWord(req.Word); err != nil {
+		return
+	}
+
+	return
+}

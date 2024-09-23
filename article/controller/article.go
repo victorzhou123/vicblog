@@ -28,6 +28,7 @@ func AddRouterForArticleController(
 	rg.GET("/v1/article/tag/:id", ctl.ListCardsThroughTagId)
 	rg.GET("/v1/article/category/:id", ctl.ListCardsThroughCateId)
 	rg.GET("/v1/article", ctl.ListAll)
+	rg.GET("/v1/article/search/:word", ctl.Search)
 	rg.GET("/v1/article/archive", ctl.Archive)
 	rg.DELETE("/v1/admin/article/:id", auth.VerifyToken, ctl.Delete)
 	rg.POST("/v1/admin/article", auth.VerifyToken, ctl.Add)
@@ -265,6 +266,41 @@ func (ctl *articleController) Archive(ctx *gin.Context) {
 	}
 
 	dto, err := ctl.articleAppService.GetArticleListClassifiedByMonth(&cmd)
+	if err != nil {
+		cmctl.SendError(ctx, err)
+
+		return
+	}
+
+	cmctl.SendRespOfGet(ctx, dto)
+}
+
+// @Summary  Search articles
+// @Description  search articles by key word
+// @Tags     Article
+// @Accept   json
+// @Param    current  query  int  true  "current page of user queried"
+// @Param    size  query  int  true  "single page size of user queried"
+// @Success  200   {array}  dto.ArticleCardsWithSummaryDto
+// @Router   /v1/article/search/:word [get]
+func (ctl *articleController) Search(ctx *gin.Context) {
+
+	req := reqSearchArticlesByWord{
+		ReqList: cmctl.ReqList{
+			CurPage:  ctx.Query("current"),
+			PageSize: ctx.Query("size"),
+		},
+		Word: ctx.Param("word"),
+	}
+
+	cmd, err := req.toCmd()
+	if err != nil {
+		cmctl.SendBadRequestParam(ctx, err)
+
+		return
+	}
+
+	dto, err := ctl.articleAppService.SearchArticle(&cmd)
 	if err != nil {
 		cmctl.SendError(ctx, err)
 
