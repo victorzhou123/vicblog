@@ -12,6 +12,16 @@ type Text interface {
 
 type text string
 
+func NewKeyWord(v string) (Text, error) {
+	v = util.XssEscape(v)
+
+	if err := validator.IsKeyWord(v); err != nil {
+		return nil, err
+	}
+
+	return text(v), nil
+}
+
 func NewTitle(v string) (Text, error) {
 	v = util.XssEscape(v)
 

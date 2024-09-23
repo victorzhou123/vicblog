@@ -18,6 +18,7 @@ const (
 	fieldNameCategoryId       = "category_id"
 	fieldNameTagId            = "tag_id"
 	fieldCreatedAt            = "created_at"
+	fieldTitle                = "title"
 )
 
 var (
@@ -34,7 +35,7 @@ type ArticleDO struct {
 
 	Owner     string `gorm:"column:owner;index:owner_index;size:255"`
 	Summary   string `gorm:"column:summary;size:255"`
-	Title     string `gorm:"column:title;size:255"`
+	Title     string `gorm:"column:title;index:title_index;size:255"`
 	Content   string `gorm:"column:content;type:text;size:40000"`
 	Cover     string `gorm:"column:cover;size:255"`
 	ReadTimes int    `gorm:"column:read_times;size:11"`
@@ -127,6 +128,24 @@ func (do *ArticleIdTitleDO) toArticleIdTitle() (*entity.ArticleIdTitle, error) {
 		Id:    cmprimitive.NewIdByUint(do.ID),
 		Title: title,
 	}, nil
+}
+
+type ArticleCardWithSummaryDO struct {
+	ArticleCardDO
+	Summary string `gorm:"column:summary"`
+}
+
+func (do *ArticleCardWithSummaryDO) toArticleCardWithSummary() (as entity.ArticleCardWithSummary, err error) {
+
+	if as.ArticleCard, err = do.ArticleCardDO.toArticleCard(); err != nil {
+		return
+	}
+
+	if as.Summary, err = entity.NewArticleSummary(do.Summary); err != nil {
+		return
+	}
+
+	return
 }
 
 // category

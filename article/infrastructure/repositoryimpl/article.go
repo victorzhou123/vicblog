@@ -255,6 +255,35 @@ func (impl *articleRepoImpl) GetRecentArticleCards(startDate cmprimitive.Timex) 
 	return cards, nil
 }
 
+func (impl *articleRepoImpl) SearchArticle(word cmprimitive.Text, opt cment.Pagination) ([]entity.ArticleCardWithSummary, int, error) {
+
+	dos := []ArticleCardWithSummaryDO{}
+
+	filter := impl.db.LikeQuery(fieldTitle)
+	option := mysql.PaginationOpt{
+		CurPage:  opt.CurPage.CurPage(),
+		PageSize: opt.PageSize.PageSize(),
+	}
+
+	total, err := impl.db.GetRecordsByPagination(&ArticleDO{}, filter, &dos, option, "%"+word.Text()+"%")
+	if err != nil {
+		if cmdmerror.IsNotFound(err) {
+			return nil, 0, nil
+		}
+
+		return nil, 0, err
+	}
+
+	articlesSearch := make([]entity.ArticleCardWithSummary, len(dos))
+	for i := range articlesSearch {
+		if articlesSearch[i], err = dos[i].toArticleCardWithSummary(); err != nil {
+			return nil, 0, err
+		}
+	}
+
+	return articlesSearch, total, nil
+}
+
 func (impl *articleRepoImpl) Delete(user cmprimitive.Username, id cmprimitive.Id) error {
 	articleDo := &ArticleDO{}
 	articleDo.Owner = user.Username()

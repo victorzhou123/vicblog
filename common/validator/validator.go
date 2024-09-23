@@ -14,6 +14,7 @@ const (
 	regexPassword = `^.{8,14}$` // #nosec G101
 	regexEmail    = `^\w+(-+.\w+)*@\w+(-.\w+)*.\w+(-.\w+)*$`
 	regexTitle    = `^.{3,255}$` // #nosec G101
+	regexKeyWord  = `^.{1,16}$`  // #nosec G101
 
 	articleContentLengthLimit = 40000
 	articleSummaryLengthLimit = 140
@@ -32,6 +33,8 @@ var (
 	regexCompEmail = regexp.MustCompile(regexEmail)
 
 	regexCompTitle = regexp.MustCompile(regexTitle)
+
+	regexCompKeyWord = regexp.MustCompile(regexKeyWord)
 
 	allowedPictureExts = []string{".jpg", ".jpeg", ".png"}
 )
@@ -56,6 +59,10 @@ func IsEmail(v string) error {
 
 func IsTitle(v string) error {
 	return validate(&validateCmd{v, regexCompTitle, "title"})
+}
+
+func IsKeyWord(v string) error {
+	return validate(&validateCmd{v, regexCompKeyWord, "title"})
 }
 
 func IsArticleContent(v string) error {

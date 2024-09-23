@@ -274,16 +274,16 @@ func (cmd *GetArticleCardListByTagIdCmd) Validate() error {
 type ArticleCardListDto struct {
 	cmappdto.PaginationDto
 
-	ArticleCards []ArticleCardsDto `json:"articleCards"`
+	ArticleCards []ArticleCardDto `json:"articleCards"`
 }
 
 func ToArticleCardListDto(ps cment.PaginationStatus,
 	articleCards []entity.ArticleCard,
 ) ArticleCardListDto {
 
-	articleCadDtos := make([]ArticleCardsDto, len(articleCards))
+	articleCadDtos := make([]ArticleCardDto, len(articleCards))
 	for i := range articleCards {
-		articleCadDtos[i] = ToArticleCardsDto(articleCards[i])
+		articleCadDtos[i] = ToArticleCardDto(articleCards[i])
 	}
 
 	return ArticleCardListDto{
@@ -292,7 +292,7 @@ func ToArticleCardListDto(ps cment.PaginationStatus,
 	}
 }
 
-type ArticleCardsDto struct {
+type ArticleCardDto struct {
 	Id        uint   `json:"id"`
 	Title     string `json:"title"`
 	Cover     string `json:"cover"`
@@ -301,8 +301,8 @@ type ArticleCardsDto struct {
 	CreatedAt string `json:"createdAt"`
 }
 
-func ToArticleCardsDto(articleCard entity.ArticleCard) ArticleCardsDto {
-	return ArticleCardsDto{
+func ToArticleCardDto(articleCard entity.ArticleCard) ArticleCardDto {
+	return ArticleCardDto{
 		Id:        articleCard.Id.IdNum(),
 		Title:     articleCard.Title.Text(),
 		Cover:     articleCard.Cover.Urlx(),
@@ -320,6 +320,39 @@ type ArticlesClassifiedByMonthDto struct {
 }
 
 type ArticleCreatedInSameMonth struct {
-	Date     string            `json:"date"` // yy-mm
-	Articles []ArticleCardsDto `json:"articles"`
+	Date     string           `json:"date"` // yy-mm
+	Articles []ArticleCardDto `json:"articles"`
+}
+
+// search article
+type SearchArticlesCmd struct {
+	cmappdto.PaginationCmd
+
+	Word cmprimitive.Text
+}
+
+type ArticleCardWithSummaryDto struct {
+	ArticleCardDto
+
+	Summary string
+}
+
+type ArticleCardsWithSummaryDto struct {
+	cmappdto.PaginationDto
+
+	ArticleCardsWithSummary []ArticleCardWithSummaryDto `json:"searchResults"`
+}
+
+func ToArticleCardsWithSummaryDto(sa articledmsvc.ArticleCardWithSummaryDto) ArticleCardsWithSummaryDto {
+
+	articleCardsWithSummary := make([]ArticleCardWithSummaryDto, len(sa.ArticleCardsWithSummary))
+	for i := range articleCardsWithSummary {
+		articleCardsWithSummary[i].ArticleCardDto = ToArticleCardDto(sa.ArticleCardsWithSummary[i].ArticleCard)
+		articleCardsWithSummary[i].Summary = sa.ArticleCardsWithSummary[i].Summary.ArticleSummary()
+	}
+
+	return ArticleCardsWithSummaryDto{
+		PaginationDto:           cmappdto.ToPaginationDto(sa.PaginationStatus),
+		ArticleCardsWithSummary: articleCardsWithSummary,
+	}
 }

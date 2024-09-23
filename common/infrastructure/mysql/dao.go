@@ -33,6 +33,7 @@ type Impl interface {
 
 	// Helper
 	EqualQuery(field string) string
+	LikeQuery(field string) string
 	NotEqualQuery(field string) string
 	GreaterQuery(field string) string
 	LessQuery(field string) string
@@ -182,6 +183,10 @@ func (dao *daoImpl) DeleteByPrimaryKey(model, row any) error {
 // helper
 func (dao *daoImpl) EqualQuery(field string) string {
 	return fmt.Sprintf(`%s = ?`, field)
+}
+
+func (dao *daoImpl) LikeQuery(field string) string {
+	return fmt.Sprintf(`%s like ?`, field)
 }
 
 func (dao *daoImpl) NotEqualQuery(field string) string {
