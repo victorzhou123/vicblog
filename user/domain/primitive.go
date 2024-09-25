@@ -22,22 +22,3 @@ func NewPassword(v string) (Password, error) {
 func (e password) Password() string {
 	return string(e)
 }
-
-// email
-type email string
-
-type Email interface {
-	Email() string
-}
-
-func NewEmail(v string) (Email, error) {
-	if err := validator.IsEmail(v); err != nil {
-		return nil, err
-	}
-
-	return email(v), nil
-}
-
-func (e email) Email() string {
-	return string(e)
-}

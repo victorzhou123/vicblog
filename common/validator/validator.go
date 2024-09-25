@@ -13,8 +13,9 @@ const (
 	regexUsername = `^[a-zA-Z0-9_]{3,8}$`
 	regexPassword = `^.{8,14}$` // #nosec G101
 	regexEmail    = `^\w+(-+.\w+)*@\w+(-.\w+)*.\w+(-.\w+)*$`
-	regexTitle    = `^.{3,255}$` // #nosec G101
-	regexKeyWord  = `^.{1,16}$`  // #nosec G101
+	regexTitle    = `^.{3,255}$`      // #nosec G101
+	regexKeyWord  = `^.{1,16}$`       // #nosec G101
+	regexQQNumber = `^[1-9]\d{4,11}$` // #nosec G101
 
 	articleContentLengthLimit = 40000
 	articleSummaryLengthLimit = 140
@@ -35,6 +36,8 @@ var (
 	regexCompTitle = regexp.MustCompile(regexTitle)
 
 	regexCompKeyWord = regexp.MustCompile(regexKeyWord)
+
+	regexCompQQNumber = regexp.MustCompile(regexQQNumber)
 
 	allowedPictureExts = []string{".jpg", ".jpeg", ".png"}
 )
@@ -63,6 +66,10 @@ func IsTitle(v string) error {
 
 func IsKeyWord(v string) error {
 	return validate(&validateCmd{v, regexCompKeyWord, "title"})
+}
+
+func IsQQNumber(v string) error {
+	return validate(&validateCmd{v, regexCompQQNumber, "qq number"})
 }
 
 func IsArticleContent(v string) error {

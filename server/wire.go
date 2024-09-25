@@ -18,6 +18,10 @@ import (
 	blogctl "github.com/victorzhou123/vicblog/blog/controller"
 	blogsvc "github.com/victorzhou123/vicblog/blog/domain/service"
 	blogrepoimpl "github.com/victorzhou123/vicblog/blog/infrastructure/repositoryimpl"
+	commentappsvc "github.com/victorzhou123/vicblog/comment/app/service"
+	commentctl "github.com/victorzhou123/vicblog/comment/controller"
+	qqinfosvc "github.com/victorzhou123/vicblog/comment/domain/qqinfo/service"
+	qqinfoimpl "github.com/victorzhou123/vicblog/comment/infrastructure/qqinfoimpl"
 	cmapp "github.com/victorzhou123/vicblog/common/app"
 	cminfraauthimpl "github.com/victorzhou123/vicblog/common/infrastructure/authimpl"
 	"github.com/victorzhou123/vicblog/common/infrastructure/eventimpl"
@@ -47,6 +51,7 @@ func setRouters(engine *gin.Engine, cfg *mconfig.Config) {
 	transactionImpl := cminframysql.NewTransaction()
 	m2h := md2htmlimpl.NewMd2Html()
 	publisher := eventimpl.NewPublisher(mq)
+	qqInfoImpl := qqinfoimpl.NewQQInfoImpl(cfg.Comment.QQInfo)
 
 	// repo: following are the dependencies of service
 	ossRepo := articlerepoimpl.NewPictureImpl(oss.Client())
@@ -67,6 +72,7 @@ func setRouters(engine *gin.Engine, cfg *mconfig.Config) {
 	pictureService := picturesvc.NewFileService(ossRepo)
 	blogService := blogsvc.NewBlogService(blogRepo)
 	articleVisitsService := statssvc.NewArticleVisitsService(statsRepo)
+	qqInfoService := qqinfosvc.NewQQInfoService(qqInfoImpl)
 
 	// app: following are app services
 	authMiddleware := cmapp.NewAuthMiddleware(auth)
@@ -77,6 +83,7 @@ func setRouters(engine *gin.Engine, cfg *mconfig.Config) {
 	blogAppService := blogappsvc.NewBlogAppService(blogService)
 	dashboardAppService := statsappsvc.NewDashboardAppService(articleService, tagService, categoryService, articleVisitsService)
 	articleVisitsAppService := statsappsvc.NewArticleVisitsAppService(articleVisitsService)
+	qqInfoAppService := commentappsvc.NewQQInfoAppService(qqInfoService)
 
 	// subscriber
 	articleSubscriber := articleappevent.NewArticleSubscriber(articleService)
@@ -113,6 +120,10 @@ func setRouters(engine *gin.Engine, cfg *mconfig.Config) {
 
 		statsctl.AddRouterForStatisticsController(
 			v1, dashboardAppService, articleVisitsAppService,
+		)
+
+		commentctl.AddRouterForQQInfoController(
+			v1, qqInfoAppService,
 		)
 	}
 

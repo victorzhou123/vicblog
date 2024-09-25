@@ -45,3 +45,6 @@ blog:
     gitee_homepage: "https://github.com/victorzhou123"
     csdn_homepage: "https://github.com/victorzhou123"
     zhihu_homepage: "https://github.com/victorzhou123"
+comment:
+  qq_info:
+    url: "https://api.qjqq.cn/api/qqinfo"

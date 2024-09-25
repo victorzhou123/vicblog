@@ -23,7 +23,7 @@ func (do *UserDO) toUser() (user domain.User, err error) {
 		return
 	}
 
-	if user.Email, err = domain.NewEmail(do.Email); err != nil {
+	if user.Email, err = cmprimitive.NewEmail(do.Email); err != nil {
 		return
 	}
 
