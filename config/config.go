@@ -2,6 +2,7 @@ package config
 
 import (
 	"github.com/victorzhou123/vicblog/blog"
+	"github.com/victorzhou123/vicblog/comment"
 	"github.com/victorzhou123/vicblog/common"
 	"github.com/victorzhou123/vicblog/common/util"
 )
@@ -17,9 +18,10 @@ func LoadConfig(path string, cfg *Config) error {
 }
 
 type Config struct {
-	Server Server        `json:"server"`
-	Common common.Config `json:"common"`
-	Blog   blog.Config   `json:"blog"`
+	Server  Server         `json:"server"`
+	Common  common.Config  `json:"common"`
+	Blog    blog.Config    `json:"blog"`
+	Comment comment.Config `json:"comment"`
 }
 
 func (cfg *Config) configItems() []interface{} {
@@ -27,6 +29,7 @@ func (cfg *Config) configItems() []interface{} {
 		&cfg.Common,
 		&cfg.Server,
 		&cfg.Blog,
+		&cfg.Comment,
 	}
 }
 

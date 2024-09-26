@@ -635,6 +635,69 @@ const docTemplate = `{
                 }
             }
         },
+        "/v1/comment": {
+            "post": {
+                "description": "add a comment",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Comment"
+                ],
+                "summary": "add comment",
+                "parameters": [
+                    {
+                        "description": "body of add comment",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.reqCommentInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    }
+                }
+            }
+        },
+        "/v1/comment/:articleId": {
+            "get": {
+                "description": "get all comments and sort them as tree like format",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Comment"
+                ],
+                "summary": "Get Comments Tree",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "router url",
+                        "name": "articleId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.CommentTreeDto"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ResponseData"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/login": {
             "post": {
                 "description": "login",
@@ -661,6 +724,41 @@ const docTemplate = `{
                         "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/app.UserAndTokenDto"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/qqinfo/:qqNum": {
+            "get": {
+                "description": "get qq information by qq number",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Comment"
+                ],
+                "summary": "Get qq information",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "qq number",
+                        "name": "qqNum",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.QQInfoDto"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ResponseData"
                         }
                     }
                 }
@@ -822,6 +920,40 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "controller.reqCommentInfo": {
+            "type": "object",
+            "required": [
+                "articleId",
+                "content",
+                "nickname"
+            ],
+            "properties": {
+                "ParentCommentId": {
+                    "type": "integer"
+                },
+                "articleId": {
+                    "type": "integer"
+                },
+                "avatar": {
+                    "type": "string"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "nickname": {
+                    "type": "string"
+                },
+                "replyCommentId": {
+                    "type": "integer"
+                },
+                "website": {
                     "type": "string"
                 }
             }
@@ -1198,6 +1330,53 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.CommentDto": {
+            "type": "object",
+            "properties": {
+                "avatar": {
+                    "type": "string"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "nickname": {
+                    "type": "string"
+                },
+                "replyNickname": {
+                    "description": "TODO show reply nickname",
+                    "type": "string"
+                },
+                "subComments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.CommentDto"
+                    }
+                },
+                "website": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.CommentTreeDto": {
+            "type": "object",
+            "properties": {
+                "comments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.CommentDto"
+                    }
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
         "dto.DashboardDataDto": {
             "type": "object",
             "properties": {
@@ -1223,6 +1402,20 @@ const docTemplate = `{
                     "additionalProperties": {
                         "type": "integer"
                     }
+                }
+            }
+        },
+        "dto.QQInfoDto": {
+            "type": "object",
+            "properties": {
+                "avatar": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "nickname": {
+                    "type": "string"
                 }
             }
         },

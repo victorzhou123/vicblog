@@ -10,13 +10,16 @@ import (
 )
 
 const (
-	regexUsername = `^[a-zA-Z0-9_]{3,8}$`
-	regexPassword = `^.{8,14}$` // #nosec G101
-	regexEmail    = `^\w+(-+.\w+)*@\w+(-.\w+)*.\w+(-.\w+)*$`
-	regexTitle    = `^.{3,255}$` // #nosec G101
-	regexKeyWord  = `^.{1,16}$`  // #nosec G101
+	regexUsername        = `^[a-zA-Z0-9_]{3,8}$`
+	regexPassword        = `^.{8,14}$` // #nosec G101
+	regexEmail           = `^\w+(-+.\w+)*@\w+(-.\w+)*.\w+(-.\w+)*$`
+	regexTitle           = `^.{3,255}$`      // #nosec G101
+	regexKeyWord         = `^.{1,16}$`       // #nosec G101
+	regexQQNumber        = `^[1-9]\d{4,11}$` // #nosec G101
+	regexCommentNickname = `^.{1,20}$`       // #nosec G101
 
 	articleContentLengthLimit = 40000
+	commentContentLengthLimit = 10000
 	articleSummaryLengthLimit = 140
 	categoryNameLengthLimit   = 60
 	tagNameLengthLimit        = 60
@@ -35,6 +38,10 @@ var (
 	regexCompTitle = regexp.MustCompile(regexTitle)
 
 	regexCompKeyWord = regexp.MustCompile(regexKeyWord)
+
+	regexCompQQNumber = regexp.MustCompile(regexQQNumber)
+
+	regexCompCommentNickname = regexp.MustCompile(regexCommentNickname)
 
 	allowedPictureExts = []string{".jpg", ".jpeg", ".png"}
 )
@@ -65,9 +72,25 @@ func IsKeyWord(v string) error {
 	return validate(&validateCmd{v, regexCompKeyWord, "title"})
 }
 
+func IsQQNumber(v string) error {
+	return validate(&validateCmd{v, regexCompQQNumber, "qq number"})
+}
+
+func IsCommentNickname(v string) error {
+	return validate(&validateCmd{v, regexCompCommentNickname, "qq nickname"})
+}
+
 func IsArticleContent(v string) error {
 	if len(v) > articleContentLengthLimit {
 		return fmt.Errorf("article content must less than %d", articleContentLengthLimit)
+	}
+
+	return nil
+}
+
+func IsCommentContent(v string) error {
+	if len(v) > commentContentLengthLimit {
+		return fmt.Errorf("comment content must less than %d", commentContentLengthLimit)
 	}
 
 	return nil

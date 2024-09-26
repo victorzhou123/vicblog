@@ -39,6 +39,29 @@ definitions:
       name:
         type: string
     type: object
+  controller.reqCommentInfo:
+    properties:
+      ParentCommentId:
+        type: integer
+      articleId:
+        type: integer
+      avatar:
+        type: string
+      content:
+        type: string
+      email:
+        type: string
+      nickname:
+        type: string
+      replyCommentId:
+        type: integer
+      website:
+        type: string
+    required:
+    - articleId
+    - content
+    - nickname
+    type: object
   controller.reqLogin:
     properties:
       password:
@@ -282,6 +305,37 @@ definitions:
       relatedArticleAmount:
         type: integer
     type: object
+  dto.CommentDto:
+    properties:
+      avatar:
+        type: string
+      content:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: integer
+      nickname:
+        type: string
+      replyNickname:
+        description: TODO show reply nickname
+        type: string
+      subComments:
+        items:
+          $ref: '#/definitions/dto.CommentDto'
+        type: array
+      website:
+        type: string
+    type: object
+  dto.CommentTreeDto:
+    properties:
+      comments:
+        items:
+          $ref: '#/definitions/dto.CommentDto'
+        type: array
+      total:
+        type: integer
+    type: object
   dto.DashboardDataDto:
     properties:
       articleCounts:
@@ -299,6 +353,15 @@ definitions:
         additionalProperties:
           type: integer
         type: object
+    type: object
+  dto.QQInfoDto:
+    properties:
+      avatar:
+        type: string
+      email:
+        type: string
+      nickname:
+        type: string
     type: object
   dto.TagDto:
     properties:
@@ -767,6 +830,47 @@ paths:
       summary: List category amount limit
       tags:
       - Category
+  /v1/comment:
+    post:
+      consumes:
+      - application/json
+      description: add a comment
+      parameters:
+      - description: body of add comment
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/controller.reqCommentInfo'
+      responses:
+        "201":
+          description: Created
+      summary: add comment
+      tags:
+      - Comment
+  /v1/comment/:articleId:
+    get:
+      consumes:
+      - application/json
+      description: get all comments and sort them as tree like format
+      parameters:
+      - description: router url
+        in: path
+        name: articleId
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.CommentTreeDto'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controller.ResponseData'
+      summary: Get Comments Tree
+      tags:
+      - Comment
   /v1/login:
     post:
       consumes:
@@ -787,6 +891,29 @@ paths:
       summary: Login
       tags:
       - Login
+  /v1/qqinfo/:qqNum:
+    get:
+      consumes:
+      - application/json
+      description: get qq information by qq number
+      parameters:
+      - description: qq number
+        in: path
+        name: qqNum
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.QQInfoDto'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controller.ResponseData'
+      summary: Get qq information
+      tags:
+      - Comment
   /v1/statistics/dashboard:
     get:
       consumes:
