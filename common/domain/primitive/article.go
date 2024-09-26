@@ -42,6 +42,16 @@ func NewArticleContent(v string) (Text, error) {
 	return text(v), nil
 }
 
+func NewCommentContent(v string) (Text, error) {
+	v = util.XssEscape(v)
+
+	if err := validator.IsCommentContent(v); err != nil {
+		return nil, err
+	}
+
+	return text(v), nil
+}
+
 // be careful!: this function can only be used in output article content build
 func NewOutPutArticleContent(v string) Text {
 	return text(v)

@@ -18,6 +18,7 @@ const (
 	regexQQNumber = `^[1-9]\d{4,11}$` // #nosec G101
 
 	articleContentLengthLimit = 40000
+	commentContentLengthLimit = 10000
 	articleSummaryLengthLimit = 140
 	categoryNameLengthLimit   = 60
 	tagNameLengthLimit        = 60
@@ -75,6 +76,14 @@ func IsQQNumber(v string) error {
 func IsArticleContent(v string) error {
 	if len(v) > articleContentLengthLimit {
 		return fmt.Errorf("article content must less than %d", articleContentLengthLimit)
+	}
+
+	return nil
+}
+
+func IsCommentContent(v string) error {
+	if len(v) > commentContentLengthLimit {
+		return fmt.Errorf("comment content must less than %d", commentContentLengthLimit)
 	}
 
 	return nil

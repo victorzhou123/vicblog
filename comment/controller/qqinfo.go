@@ -25,7 +25,7 @@ type qqInfoController struct {
 
 // @Summary  Get qq information
 // @Description  get qq information by qq number
-// @Tags     Article
+// @Tags     Comment
 // @Accept   json
 // @Param	qqNum	path	string	true	"qq number"
 // @Success  200   {object}  dto.QQInfoDto
