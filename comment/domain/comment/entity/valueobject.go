@@ -1,6 +1,10 @@
 package entity
 
-import "errors"
+import (
+	"errors"
+
+	"github.com/victorzhou123/vicblog/common/validator"
+)
 
 const (
 	numAuditWaiting = iota + 1
@@ -66,4 +70,23 @@ func (r commentStatus) IsAuditPassed() bool {
 
 func (r commentStatus) IsAuditReject() bool {
 	return r.CommentStatus() == numAuditReject
+}
+
+// comment nickname
+type CommentNickname interface {
+	CommentNickname() string
+}
+
+type commentNickname string
+
+func NewCommentNickname(v string) (CommentNickname, error) {
+	if err := validator.IsCommentNickname(v); err != nil {
+		return nil, err
+	}
+
+	return commentNickname(v), nil
+}
+
+func (r commentNickname) CommentNickname() string {
+	return string(r)
 }

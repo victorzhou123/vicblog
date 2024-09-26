@@ -1,6 +1,8 @@
 package entity
 
-import cmprimitive "github.com/victorzhou123/vicblog/common/domain/primitive"
+import (
+	cmprimitive "github.com/victorzhou123/vicblog/common/domain/primitive"
+)
 
 type Comment struct {
 	CommentInfo
@@ -17,14 +19,14 @@ type CommentInfo struct {
 
 	Content         cmprimitive.Text
 	Website         cmprimitive.Urlx
-	RouterUrl       cmprimitive.Urlx
+	ArticleId       cmprimitive.Id
 	ReplyCommentId  cmprimitive.Id
 	ParentCommentId cmprimitive.Id
 }
 
 type CommentUserInfo struct {
 	Avatar   cmprimitive.Urlx
-	NickName string
+	NickName CommentNickname
 	Email    cmprimitive.Email
 }
 
@@ -42,6 +44,6 @@ func (r *Comment) SetDefaultForCreateAction() {
 
 // func (c *Comment) IsCommentInput() bool {
 // 	return c.Id == nil && c.Content != nil && c.Avatar != nil &&
-// 		c.NickName != nil && c.Email != nil && c.RouterUrl != nil &&
+// 		c.NickName != nil && c.Email != nil && c.ArticleId != nil &&
 // 		c.Status == nil && c.CreatedAt == nil && c.UpdatedAt == nil
 // }

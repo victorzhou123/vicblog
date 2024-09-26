@@ -29,7 +29,7 @@ func (s *qqInfoAppService) GetQQInfo(qqNum entity.QQNumber) (dto.QQInfoDto, erro
 
 	return dto.QQInfoDto{
 		Avatar:   userInfo.Avatar.Urlx(),
-		NickName: userInfo.NickName,
+		NickName: userInfo.NickName.CommentNickname(),
 		Email:    userInfo.Email.Email(),
 	}, nil
 }

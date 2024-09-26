@@ -36,6 +36,11 @@ func (impl *qqInfoImpl) GetQQInfo(num entity.QQNumber) (commentent.CommentUserIn
 		return commentent.CommentUserInfo{}, err
 	}
 
+	nickname, err := commentent.NewCommentNickname(qqInfo.Name)
+	if err != nil {
+		return commentent.CommentUserInfo{}, err
+	}
+
 	email, err := cmprimitive.NewEmail(qqInfo.Mail)
 	if err != nil {
 		return commentent.CommentUserInfo{}, err
@@ -44,7 +49,7 @@ func (impl *qqInfoImpl) GetQQInfo(num entity.QQNumber) (commentent.CommentUserIn
 	return commentent.CommentUserInfo{
 		Avatar:   avatar,
 		Email:    email,
-		NickName: qqInfo.Name,
+		NickName: nickname,
 	}, nil
 
 }

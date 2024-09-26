@@ -8,7 +8,7 @@ type CommentCmd struct {
 	Email           cmprimitive.Email
 	Content         cmprimitive.Text
 	Website         cmprimitive.Urlx
-	RouterUrl       cmprimitive.Urlx
+	ArticleId       cmprimitive.Urlx
 	ReplyCommentId  cmprimitive.Id
 	ParentCommentId cmprimitive.Id
 }
