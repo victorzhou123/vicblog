@@ -28,21 +28,39 @@ func ToCommentTreeDto(comments []entity.Comment) CommentTreeDto {
 			// find all sub comments
 			var childrenComments []CommentDto
 			for j := i + 1; j < len(comments); j++ {
-				if comments[j].ParentCommentId.IdNum() == comments[i].Id.IdNum() {
-					childrenComments = append(childrenComments, toCommentDto(comments[j]))
+
+				if comments[j].IsSubComment(comments[i]) {
+
+					// if the comments[j] reply parent comment
+					if comments[j].IsReplyParentComment() {
+						childrenComments = append(childrenComments, toCommentDto(comments[j], ""))
+						continue
+					}
+
+					// find reply nick name of comments[j]
+					for k := i; k < j; k++ {
+
+						if comments[j].IsReply(comments[k]) {
+
+							childrenComments = append(childrenComments,
+								toCommentDto(comments[j], comments[k].NickName.CommentNickname()))
+
+							break
+						}
+					}
 				}
 			}
 
 			// set commentDto into cs
 			if len(childrenComments) != 0 {
-				dto := toCommentDto(comments[i])
+				dto := toCommentDto(comments[i], "")
 				dto.SubComments = childrenComments
 				cs = append(cs, dto)
 
 				continue
 			}
 
-			cs = append(cs, toCommentDto(comments[i]))
+			cs = append(cs, toCommentDto(comments[i], ""))
 		}
 	}
 
@@ -60,16 +78,17 @@ type CommentDto struct {
 	Content       string       `json:"content"`
 	CreatedAt     string       `json:"createdAt"`
 	SubComments   []CommentDto `json:"subComments,omitempty"`
-	ReplyNickname string       `json:"replyNickname,omitempty"` //TODO show reply nickname
+	ReplyNickname string       `json:"replyNickname,omitempty"`
 }
 
-func toCommentDto(comment entity.Comment) CommentDto {
+func toCommentDto(comment entity.Comment, replyNickname string) CommentDto {
 	return CommentDto{
-		Id:        comment.Id.IdNum(),
-		Avatar:    comment.Avatar.Urlx(),
-		Nickname:  comment.NickName.CommentNickname(),
-		WebSite:   comment.Website.Urlx(),
-		Content:   comment.Content.Text(),
-		CreatedAt: comment.CreatedAt.TimeYearToSecond(),
+		Id:            comment.Id.IdNum(),
+		Avatar:        comment.Avatar.Urlx(),
+		Nickname:      comment.NickName.CommentNickname(),
+		WebSite:       comment.Website.Urlx(),
+		Content:       comment.Content.Text(),
+		ReplyNickname: replyNickname,
+		CreatedAt:     comment.CreatedAt.TimeYearToSecond(),
 	}
 }
