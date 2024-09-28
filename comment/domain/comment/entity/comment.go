@@ -42,8 +42,17 @@ func (r *Comment) SetDefaultForCreateAction() {
 	r.IsDeleted = false
 }
 
-// func (c *Comment) IsCommentInput() bool {
-// 	return c.Id == nil && c.Content != nil && c.Avatar != nil &&
-// 		c.NickName != nil && c.Email != nil && c.ArticleId != nil &&
-// 		c.Status == nil && c.CreatedAt == nil && c.UpdatedAt == nil
-// }
+// IsReplyParentComment to judge if the comment reply parent comment
+func (r *Comment) IsReplyParentComment() bool {
+	return r.ParentCommentId.IdNum() == r.ReplyCommentId.IdNum()
+}
+
+// IsSubComment to judge if c is parent comment of r
+func (r *Comment) IsSubComment(c Comment) bool {
+	return r.ParentCommentId.IdNum() == c.Id.IdNum()
+}
+
+// IsReply to judge if r is the reply comment of c
+func (r *Comment) IsReply(c Comment) bool {
+	return r.ReplyCommentId.IdNum() == c.Id.IdNum()
+}
