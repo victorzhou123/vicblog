@@ -3,6 +3,8 @@ package service
 import (
 	"github.com/victorzhou123/vicblog/comment/domain/comment/entity"
 	"github.com/victorzhou123/vicblog/comment/domain/comment/repository"
+	"github.com/victorzhou123/vicblog/common/domain/audit"
+	cmerr "github.com/victorzhou123/vicblog/common/domain/error"
 	cmprimitive "github.com/victorzhou123/vicblog/common/domain/primitive"
 )
 
@@ -12,16 +14,22 @@ type CommentService interface {
 }
 
 type commentService struct {
-	repo repository.Comment
+	repo  repository.Comment
+	audit audit.Audit
 }
 
-func NewCommentService(repo repository.Comment) CommentService {
+func NewCommentService(repo repository.Comment, audit audit.Audit) CommentService {
 	return &commentService{
-		repo: repo,
+		repo:  repo,
+		audit: audit,
 	}
 }
 
 func (s *commentService) AddComment(c *entity.CommentInfo) error {
+
+	if s.audit.Check(c.Content.Text()) {
+		return cmerr.NewInvalidParam("input comment not valid")
+	}
 
 	comment := entity.Comment{
 		CommentInfo: *c,
