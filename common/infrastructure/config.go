@@ -1,6 +1,7 @@
 package infrastructure
 
 import (
+	"github.com/victorzhou123/vicblog/common/infrastructure/auditimpl"
 	"github.com/victorzhou123/vicblog/common/infrastructure/authimpl"
 	"github.com/victorzhou123/vicblog/common/infrastructure/mqimpl"
 	"github.com/victorzhou123/vicblog/common/infrastructure/mysql"
@@ -8,10 +9,11 @@ import (
 )
 
 type Config struct {
-	Auth  authimpl.Config `json:"auth"`
-	Mysql mysql.Config    `json:"mysql"`
-	Mq    mqimpl.Config   `json:"mq"`
-	Oss   oss.Config      `json:"oss"`
+	Auth  authimpl.Config  `json:"auth"`
+	Mysql mysql.Config     `json:"mysql"`
+	Mq    mqimpl.Config    `json:"mq"`
+	Oss   oss.Config       `json:"oss"`
+	Audit auditimpl.Config `json:"audit"`
 }
 
 func (cfg *Config) configItems() []interface{} {
@@ -20,6 +22,7 @@ func (cfg *Config) configItems() []interface{} {
 		&cfg.Mysql,
 		&cfg.Mq,
 		&cfg.Oss,
+		&cfg.Audit,
 	}
 }
 

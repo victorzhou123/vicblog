@@ -34,6 +34,9 @@ common:
       bucket: "victor-bucket"
       root_dir: "project/vicblog"
       picture_folder_name: "user_photo"
+    audit:
+      addr: "${AUDIT_ADDR}"
+      expire_time: 10
 blog:
   blog_info:
     logo: "https://img.quanxiaoha.com/quanxiaoha/f97361c0429d4bb1bc276ab835843065.jpg"

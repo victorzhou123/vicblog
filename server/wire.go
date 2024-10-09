@@ -25,6 +25,7 @@ import (
 	qqinfoimpl "github.com/victorzhou123/vicblog/comment/infrastructure/qqinfoimpl"
 	commentrepoimpl "github.com/victorzhou123/vicblog/comment/infrastructure/repositoryimpl"
 	cmapp "github.com/victorzhou123/vicblog/common/app"
+	"github.com/victorzhou123/vicblog/common/infrastructure/auditimpl"
 	cminfraauthimpl "github.com/victorzhou123/vicblog/common/infrastructure/authimpl"
 	"github.com/victorzhou123/vicblog/common/infrastructure/eventimpl"
 	"github.com/victorzhou123/vicblog/common/infrastructure/md2htmlimpl"
@@ -44,7 +45,7 @@ import (
 	userrepoimpl "github.com/victorzhou123/vicblog/user/infrastructure/repositoryimpl"
 )
 
-func setRouters(engine *gin.Engine, cfg *mconfig.Config) {
+func setRouters(engine *gin.Engine, cfg *mconfig.Config) error {
 
 	// infrastructure: following are the instance of infrastructure components
 	mq := mqimpl.MQ()
@@ -54,6 +55,10 @@ func setRouters(engine *gin.Engine, cfg *mconfig.Config) {
 	m2h := md2htmlimpl.NewMd2Html()
 	publisher := eventimpl.NewPublisher(mq)
 	qqInfoImpl := qqinfoimpl.NewQQInfoImpl(cfg.Comment.QQInfo)
+	auditImpl, err := auditimpl.NewAuditImpl(&cfg.Common.Infra.Audit)
+	if err != nil {
+		return err
+	}
 
 	// repo: following are the dependencies of service
 	ossRepo := articlerepoimpl.NewPictureImpl(oss.Client())
@@ -76,7 +81,7 @@ func setRouters(engine *gin.Engine, cfg *mconfig.Config) {
 	blogService := blogsvc.NewBlogService(blogRepo)
 	articleVisitsService := statssvc.NewArticleVisitsService(statsRepo)
 	qqInfoService := qqinfosvc.NewQQInfoService(qqInfoImpl)
-	commentService := commentsvc.NewCommentService(commentRepo)
+	commentService := commentsvc.NewCommentService(commentRepo, auditImpl)
 
 	// app: following are app services
 	authMiddleware := cmapp.NewAuthMiddleware(auth)
@@ -142,6 +147,8 @@ func setRouters(engine *gin.Engine, cfg *mconfig.Config) {
 	// watch
 	mqWatcher := smqdriven.NewWatcher(mq, distributer)
 	go mqWatcher.Watch()
+
+	return nil
 }
 
 func addRouterForSwaggo(rg *gin.RouterGroup) {

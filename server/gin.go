@@ -19,7 +19,9 @@ func StartWebServer(cfg *mconfig.Config) error {
 
 	engine.UseRawPath = true
 
-	setRouters(engine, cfg)
+	if err := setRouters(engine, cfg); err != nil {
+		return err
+	}
 
 	server := &http.Server{
 		Addr:              fmt.Sprintf(":%d", cfg.Server.Port),
