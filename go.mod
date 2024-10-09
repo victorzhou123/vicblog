@@ -1,6 +1,6 @@
 module github.com/victorzhou123/vicblog
 
-go 1.21.5
+go 1.21
 
 require (
 	github.com/aliyun/aliyun-oss-go-sdk v3.0.2+incompatible
