@@ -67,24 +67,32 @@ func (s *articleAppService) GetArticleById(articleId cmprimitive.Id) (dto.Articl
 	// get article (has parsed content to html)
 	article, err := s.article.GetArticleByIdWithContentParsed(articleId)
 	if err != nil {
+		log.Errorf("get parsed article failed, err: %s", err.Error())
+
 		return dto.ArticleWithTagCateDto{}, err
 	}
 
 	// get tags by article id
 	tags, err := s.tag.GetArticleTag(articleId)
 	if err != nil {
+		log.Errorf("get article tag failed, err: %s", err.Error())
+
 		return dto.ArticleWithTagCateDto{}, err
 	}
 
 	// get categories by article id
 	cates, err := s.cate.GetArticleCategory(articleId)
 	if err != nil {
+		log.Errorf("get article category failed, err: %s", err.Error())
+
 		return dto.ArticleWithTagCateDto{}, err
 	}
 
 	// get prev and next article
 	preNextArticle, err := s.article.GetPrevAndNextArticle(articleId)
 	if err != nil {
+		log.Errorf("get prev and next failed, err: %s", err.Error())
+
 		return dto.ArticleWithTagCateDto{}, err
 	}
 
