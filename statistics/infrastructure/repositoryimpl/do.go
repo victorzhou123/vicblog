@@ -20,7 +20,7 @@ type ArticleDailyVisitsDO struct {
 	gorm.Model
 
 	Total int       `gorm:"column:total"`
-	Date  time.Time `gorm:"colum:date;unique"`
+	Date  time.Time `gorm:"column:date;unique"`
 }
 
 func (do *ArticleDailyVisitsDO) TableName() string {

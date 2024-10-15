@@ -38,7 +38,7 @@ type ArticleDO struct {
 	Title     string `gorm:"column:title;index:title_index;size:255"`
 	Content   string `gorm:"column:content;type:text;size:40000"`
 	Cover     string `gorm:"column:cover;size:255"`
-	ReadTimes int    `gorm:"column:read_times;size:11"`
+	ReadTimes int    `gorm:"column:read_times"`
 	IsPublish bool   `gorm:"column:is_publish"`
 	IsTop     bool   `gorm:"column:is_top"`
 }
