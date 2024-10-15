@@ -14,6 +14,14 @@ common:
       local_time: true
       compress: false
       std_print: true
+    sql_writer:
+      file_path: "../log/sql/sql.log"
+      max_size: 100
+      max_age: 7
+      max_backups: 15
+      local_time: true
+      compress: false
+      std_print: true
   infra:
     auth:
       secret_key: "~&bBD(92$8~JE^XZ"

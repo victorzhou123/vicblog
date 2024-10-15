@@ -36,7 +36,7 @@ func main() {
 	log.Init(&cfg.Common.Log, exitSig)
 
 	// mysql
-	if err := mysql.Init(&cfg.Common.Infra.Mysql); err != nil {
+	if err := mysql.Init(&cfg.Common.Infra.Mysql, &cfg.Common.Log.SqlWriter); err != nil {
 		log.Warnf("mysql init failed, error: %s", err.Error())
 	}
 

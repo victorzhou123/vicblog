@@ -5,12 +5,17 @@ import (
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+
+	"github.com/victorzhou123/vicblog/common/log"
 )
 
 var db *gorm.DB
 
-func Init(cfg *Config) error {
-	dbInst, err := gorm.Open(mysql.Open(cfg.toDSN()), &gorm.Config{TranslateError: true})
+func Init(cfg *Config, logCfg *log.WriterConfig) error {
+	dbInst, err := gorm.Open(mysql.Open(cfg.toDSN()), &gorm.Config{
+		TranslateError: true,
+		Logger:         log.NewSqlLog(logCfg),
+	})
 	if err != nil {
 		return err
 	}

@@ -6,6 +6,7 @@ type Config struct {
 
 	InterfaceWriter WriterConfig `json:"interface_writer"`
 	RunWriter       WriterConfig `json:"run_writer"`
+	SqlWriter       WriterConfig `json:"sql_writer"`
 }
 
 func (cfg *Config) SetDefault() {
@@ -14,6 +15,7 @@ func (cfg *Config) SetDefault() {
 
 	cfg.InterfaceWriter.setDefault()
 	cfg.RunWriter.setDefault()
+	cfg.SqlWriter.setDefault()
 }
 
 type WriterConfig struct {
