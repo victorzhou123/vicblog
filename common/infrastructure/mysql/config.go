@@ -6,15 +6,21 @@ import (
 )
 
 type Config struct {
-	Host     string `json:"host"`
-	Port     string `json:"port"`
-	Username string `json:"username"`
-	Password string `json:"password"`
+	Master  Connect `json:"master"`
+	Slave01 Connect `json:"slave01"`
+	Slave02 Connect `json:"slave02"`
 
 	DbName       string `json:"db_name"`
 	MaxLifeTime  int    `json:"max_life_time"` // unit is second
 	MaxOpenConns int    `json:"max_open_conns"`
 	MaxIdleConns int    `json:"max_idle_conns"`
+}
+
+type Connect struct {
+	Host     string `json:"host"`
+	Port     string `json:"port"`
+	Username string `json:"username"`
+	Password string `json:"password"`
 }
 
 func (cfg *Config) SetDefault() {
@@ -31,10 +37,24 @@ func (cfg *Config) SetDefault() {
 	}
 }
 
-func (cfg *Config) toDSN() string {
+func (cfg *Config) toMasterDSN() string {
 	return fmt.Sprintf(
 		"%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
-		cfg.Username, cfg.Password, cfg.Host, cfg.Port, cfg.DbName,
+		cfg.Master.Username, cfg.Master.Password, cfg.Master.Host, cfg.Master.Port, cfg.DbName,
+	)
+}
+
+func (cfg *Config) toSlave01DSN() string {
+	return fmt.Sprintf(
+		"%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+		cfg.Slave01.Username, cfg.Slave01.Password, cfg.Slave01.Host, cfg.Slave01.Port, cfg.DbName,
+	)
+}
+
+func (cfg *Config) toSlave02DSN() string {
+	return fmt.Sprintf(
+		"%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+		cfg.Slave02.Username, cfg.Slave02.Password, cfg.Slave02.Host, cfg.Slave02.Port, cfg.DbName,
 	)
 }
 
