@@ -21,19 +21,13 @@ func Init(cfg *Config) error {
 		Sources:  []gorm.Dialector{mysql.Open(cfg.toMasterDSN())},
 		Replicas: []gorm.Dialector{mysql.Open(cfg.toSlave01DSN()), mysql.Open(cfg.toSlave02DSN())},
 		Policy:   dbresolver.RandomPolicy{},
-	}))
+	}).
+		SetConnMaxLifetime(cfg.maxLifTime()).
+		SetMaxOpenConns(cfg.MaxOpenConns).
+		SetMaxIdleConns(cfg.MaxIdleConns))
 	if err != nil {
 		return err
 	}
-
-	sqlDb, err := dbInst.DB()
-	if err != nil {
-		return err
-	}
-
-	sqlDb.SetConnMaxLifetime(cfg.maxLifTime())
-	sqlDb.SetMaxOpenConns(cfg.MaxOpenConns)
-	sqlDb.SetMaxIdleConns(cfg.MaxIdleConns)
 
 	db = dbInst
 

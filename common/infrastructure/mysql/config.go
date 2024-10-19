@@ -29,11 +29,11 @@ func (cfg *Config) SetDefault() {
 	}
 
 	if cfg.MaxIdleConns == 0 {
-		cfg.MaxIdleConns = 250
+		cfg.MaxIdleConns = 1000
 	}
 
 	if cfg.MaxOpenConns == 0 {
-		cfg.MaxOpenConns = 500
+		cfg.MaxOpenConns = 2000
 	}
 }
 
