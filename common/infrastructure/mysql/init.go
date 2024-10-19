@@ -17,11 +17,14 @@ func Init(cfg *Config) error {
 	}
 
 	// use master-slave replication
-	dbInst.Use(dbresolver.Register(dbresolver.Config{
+	err = dbInst.Use(dbresolver.Register(dbresolver.Config{
 		Sources:  []gorm.Dialector{mysql.Open(cfg.toMasterDSN())},
 		Replicas: []gorm.Dialector{mysql.Open(cfg.toSlave01DSN()), mysql.Open(cfg.toSlave02DSN())},
 		Policy:   dbresolver.RandomPolicy{},
 	}))
+	if err != nil {
+		return err
+	}
 
 	sqlDb, err := dbInst.DB()
 	if err != nil {
