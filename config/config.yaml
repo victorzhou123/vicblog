@@ -29,11 +29,6 @@ common:
         port: ${MYSQL_PORT_SLAVE01}
         username: "${MYSQL_USERNAME}"
         password: "${MYSQL_PASSWORD}"
-      slave02:
-        host: "${MYSQL_HOST_SLAVE02}"
-        port: ${MYSQL_PORT_SLAVE02}
-        username: "${MYSQL_USERNAME}"
-        password: "${MYSQL_PASSWORD}"
       db_name: "${MYSQL_DB_NAME}"
       max_life_time: 120
       max_open_conns: 2000

@@ -19,7 +19,7 @@ func Init(cfg *Config) error {
 	// use master-slave replication
 	err = dbInst.Use(dbresolver.Register(dbresolver.Config{
 		Sources:  []gorm.Dialector{mysql.Open(cfg.toMasterDSN())},
-		Replicas: []gorm.Dialector{mysql.Open(cfg.toSlave01DSN()), mysql.Open(cfg.toSlave02DSN())},
+		Replicas: []gorm.Dialector{mysql.Open(cfg.toSlave01DSN())},
 		Policy:   dbresolver.RandomPolicy{},
 	}).
 		SetConnMaxLifetime(cfg.maxLifTime()).
