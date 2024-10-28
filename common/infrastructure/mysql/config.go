@@ -8,7 +8,6 @@ import (
 type Config struct {
 	Master  Connect `json:"master"`
 	Slave01 Connect `json:"slave01"`
-	Slave02 Connect `json:"slave02"`
 
 	DbName       string `json:"db_name"`
 	MaxLifeTime  int    `json:"max_life_time"` // unit is second
@@ -48,13 +47,6 @@ func (cfg *Config) toSlave01DSN() string {
 	return fmt.Sprintf(
 		"%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
 		cfg.Slave01.Username, cfg.Slave01.Password, cfg.Slave01.Host, cfg.Slave01.Port, cfg.DbName,
-	)
-}
-
-func (cfg *Config) toSlave02DSN() string {
-	return fmt.Sprintf(
-		"%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
-		cfg.Slave02.Username, cfg.Slave02.Password, cfg.Slave02.Host, cfg.Slave02.Port, cfg.DbName,
 	)
 }
 
