@@ -3,7 +3,7 @@ name: CI
 on:
   workflow_dispatch:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "user_server" ]
   pull_request:
     branches: [ "main" ]
 
@@ -34,3 +34,5 @@ jobs:
           docker login --username=${{ secrets.DOCKER_USERNAME }} --password=${{ secrets.DOCKER_PASSWORD }} registry.cn-hangzhou.aliyuncs.com
           docker build . --file Dockerfile --tag registry.cn-hangzhou.aliyuncs.com/vicblog/vicblog:latest
           docker push registry.cn-hangzhou.aliyuncs.com/vicblog/vicblog:latest
+          docker build . --file ./user-server/Dockerfile --tag registry.cn-hangzhou.aliyuncs.com/vicblog/vicblog-user-server:latest
+          docker push registry.cn-hangzhou.aliyuncs.com/vicblog/vicblog-user-server:latest
