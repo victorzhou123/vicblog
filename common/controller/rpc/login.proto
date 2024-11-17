@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package login;
+
+option go_package = "github.com/victorzhou123/vicblog/common/controller/rpc";
+
+service LoginService {
+  rpc Login (ReqLogin) returns (RespLogin) {}
+}
+
+message ReqLogin {
+  string username = 1;
+  string password = 2;
+}
+
+message RespLogin {
+  ResponseInfo info = 1;
+  UserAndToken data = 2;
+}
+
+message UserAndToken {
+  string username = 1;
+  string email = 2;
+  string token = 3;
+}
+
+message ResponseInfo {
+  string code = 1;
+  string msg = 2;
+}
