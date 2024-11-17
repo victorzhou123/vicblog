@@ -38,17 +38,20 @@ func main() {
 	// mysql
 	if err := mysql.Init(&cfg.Common.Infra.Mysql); err != nil {
 		log.Warnf("mysql init failed, error: %s", err.Error())
+		return
 	}
 
 	// object storage
 	if err := oss.Init(&cfg.Common.Infra.Oss); err != nil {
 		log.Warnf("object storage init failed, error: %s", err.Error())
+		return
 	}
 
 	// mq
 	err, close := mqimpl.Init(&cfg.Common.Infra.Mq)
 	if err != nil {
 		log.Warnf("message queue init failed, error: %s", err.Error())
+		return
 	}
 	defer close()
 

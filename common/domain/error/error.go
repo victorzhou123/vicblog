@@ -3,6 +3,8 @@ package error
 import "strings"
 
 const (
+	ErrorCodeInternalError = "internal_error"
+
 	errorCodeNoPermission = "no_permission"
 
 	ErrorCodeUserNotFound = "user_not_found"
@@ -56,6 +58,8 @@ type notfoudError struct {
 func NewNotFound(code string, msg string) notfoudError {
 	return notfoudError{New(code, msg)}
 }
+
+func (e notfoudError) NotFound() {}
 
 func IsNotFound(err error) bool {
 	if err == nil {
