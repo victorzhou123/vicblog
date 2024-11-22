@@ -7,7 +7,6 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/victorzhou123/vicblog/article/domain/article/entity"
-	categoryent "github.com/victorzhou123/vicblog/article/domain/category/entity"
 	tagent "github.com/victorzhou123/vicblog/article/domain/tag/entity"
 	cmprimitive "github.com/victorzhou123/vicblog/common/domain/primitive"
 )
@@ -146,30 +145,6 @@ func (do *ArticleCardWithSummaryDO) toArticleCardWithSummary() (as entity.Articl
 	}
 
 	return
-}
-
-// category
-type CategoryDO struct {
-	gorm.Model
-
-	Name string `gorm:"column:name;unique;size:60"`
-}
-
-func (do *CategoryDO) toCategory() (category categoryent.Category, err error) {
-
-	if category.Name, err = categoryent.NewCategoryName(do.Name); err != nil {
-		return
-	}
-
-	category.Id = cmprimitive.NewIdByUint(do.ID)
-
-	category.CreatedAt = cmprimitive.NewTimeXWithUnix(do.CreatedAt.Unix())
-
-	return
-}
-
-func (do *CategoryDO) TableName() string {
-	return tableNameCategory
 }
 
 // tag
