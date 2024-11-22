@@ -1,7 +1,7 @@
 package dto
 
 import (
-	"github.com/victorzhou123/vicblog/article/domain/category/entity"
+	"github.com/victorzhou123/vicblog/category-server/domain/category/entity"
 	cmappdto "github.com/victorzhou123/vicblog/common/app/dto"
 	cment "github.com/victorzhou123/vicblog/common/domain/entity"
 )

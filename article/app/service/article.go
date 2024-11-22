@@ -3,7 +3,7 @@ package service
 import (
 	"github.com/victorzhou123/vicblog/article/app/dto"
 	articledmsvc "github.com/victorzhou123/vicblog/article/domain/article/service"
-	categorydmsvc "github.com/victorzhou123/vicblog/article/domain/category/service"
+	categorydmsvc "github.com/victorzhou123/vicblog/category-server/domain/category/service"
 	tagdmsvc "github.com/victorzhou123/vicblog/article/domain/tag/service"
 	cmappdto "github.com/victorzhou123/vicblog/common/app/dto"
 	cmappevent "github.com/victorzhou123/vicblog/common/app/event"

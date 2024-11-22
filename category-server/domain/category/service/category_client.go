@@ -14,11 +14,12 @@ import (
 
 type categoryClient struct {
 	expire time.Duration
-	rpcSvc rpc.CategoryServiceServer
+	rpcSvc rpc.CategoryServiceClient
 }
 
-func NewCategoryServer(rpcSvc rpc.CategoryServiceServer) CategoryService {
+func NewCategoryServer(expire time.Duration, rpcSvc rpc.CategoryServiceClient) CategoryService {
 	return &categoryClient{
+		expire: expire,
 		rpcSvc: rpcSvc,
 	}
 }

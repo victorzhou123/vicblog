@@ -2,6 +2,12 @@ server:
   port: ${SERVER_PORT}
   read_timeout: 10000
   read_header_timeout: 2000
+article:
+  domain:
+    category:
+      host: "${CATEGORY_SERVER_HOST}"
+      port: "${CATEGORY_SERVER_PORT}"
+      expire_time: 10
 common:
   log:
     level: "DEBUG"

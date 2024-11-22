@@ -2,8 +2,8 @@ package service
 
 import (
 	articlesvc "github.com/victorzhou123/vicblog/article/domain/article/service"
-	categorysvc "github.com/victorzhou123/vicblog/article/domain/category/service"
 	tagsvc "github.com/victorzhou123/vicblog/article/domain/tag/service"
+	categorysvc "github.com/victorzhou123/vicblog/category-server/domain/category/service"
 	"github.com/victorzhou123/vicblog/statistics/app/dto"
 	dmsvc "github.com/victorzhou123/vicblog/statistics/domain/service"
 )

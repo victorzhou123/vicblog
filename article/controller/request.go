@@ -3,37 +3,10 @@ package controller
 import (
 	"github.com/victorzhou123/vicblog/article/app/dto"
 	articleent "github.com/victorzhou123/vicblog/article/domain/article/entity"
-	"github.com/victorzhou123/vicblog/article/domain/category/entity"
 	tagent "github.com/victorzhou123/vicblog/article/domain/tag/entity"
 	cmctl "github.com/victorzhou123/vicblog/common/controller"
 	cmprimitive "github.com/victorzhou123/vicblog/common/domain/primitive"
 )
-
-type reqCategory struct {
-	Name string `json:"name"`
-}
-
-func (req *reqCategory) toCategoryName() (entity.CategoryName, error) {
-	return entity.NewCategoryName(req.Name)
-}
-
-type reqCategoryList struct {
-	cmctl.ReqList
-}
-
-func (req *reqCategoryList) toCmd() (cmd dto.ListCategoryCmd, err error) {
-
-	listCmd, err := req.ReqList.ToCmd()
-	if err != nil {
-		return
-	}
-
-	cmd = dto.ListCategoryCmd{
-		PaginationCmd: listCmd,
-	}
-
-	return
-}
 
 type reqTag struct {
 	Names []string `json:"names"`

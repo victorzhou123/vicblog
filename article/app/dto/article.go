@@ -5,8 +5,8 @@ import (
 
 	"github.com/victorzhou123/vicblog/article/domain/article/entity"
 	articledmsvc "github.com/victorzhou123/vicblog/article/domain/article/service"
-	cateent "github.com/victorzhou123/vicblog/article/domain/category/entity"
 	tagent "github.com/victorzhou123/vicblog/article/domain/tag/entity"
+	cateent "github.com/victorzhou123/vicblog/category-server/domain/category/entity"
 	cmappdto "github.com/victorzhou123/vicblog/common/app/dto"
 	cment "github.com/victorzhou123/vicblog/common/domain/entity"
 	cmprimitive "github.com/victorzhou123/vicblog/common/domain/primitive"

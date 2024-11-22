@@ -10,7 +10,7 @@ import (
 	articleappsvc "github.com/victorzhou123/vicblog/article/app/service"
 	articlectl "github.com/victorzhou123/vicblog/article/controller"
 	articlesvc "github.com/victorzhou123/vicblog/article/domain/article/service"
-	categorysvc "github.com/victorzhou123/vicblog/article/domain/category/service"
+	catesvc "github.com/victorzhou123/vicblog/article/domain/category"
 	picturesvc "github.com/victorzhou123/vicblog/article/domain/picture/service"
 	tagsvc "github.com/victorzhou123/vicblog/article/domain/tag/service"
 	articlerepoimpl "github.com/victorzhou123/vicblog/article/infrastructure/repositoryimpl"
@@ -65,8 +65,6 @@ func setRouters(engine *gin.Engine, cfg *mconfig.Config) error {
 	auth := cminfraauthimpl.NewSignJwt(&timeCreator, &cfg.Common.Infra.Auth)
 	userRepo := userrepoimpl.NewUserRepo(mysqlImpl)
 	articleRepo := articlerepoimpl.NewArticleRepo(mysqlImpl, transactionImpl)
-	categoryRepo := articlerepoimpl.NewCategoryRepo(mysqlImpl)
-	categoryArticleRepo := articlerepoimpl.NewCategoryArticleRepo(mysqlImpl, transactionImpl)
 	tagRepo := articlerepoimpl.NewTagRepo(mysqlImpl)
 	tagArticleRepo := articlerepoimpl.NewTagArticleRepo(mysqlImpl, transactionImpl)
 	blogRepo := blogrepoimpl.NewBlogInfoImpl(&cfg.Blog.BlogInfo)
@@ -76,7 +74,10 @@ func setRouters(engine *gin.Engine, cfg *mconfig.Config) error {
 	// domain: following are domain services
 	tagService := tagsvc.NewTagService(tagRepo, tagArticleRepo)
 	articleService := articlesvc.NewArticleService(articleRepo, m2h, &timeCreator)
-	categoryService := categorysvc.NewCategoryService(categoryRepo, categoryArticleRepo)
+	categoryService, err := catesvc.NewCategoryServer(&cfg.Article.Domain.Category)
+	if err != nil {
+		return err
+	}
 	pictureService := picturesvc.NewFileService(ossRepo)
 	blogService := blogsvc.NewBlogService(blogRepo)
 	articleVisitsService := statssvc.NewArticleVisitsService(statsRepo)
@@ -87,7 +88,6 @@ func setRouters(engine *gin.Engine, cfg *mconfig.Config) error {
 	authMiddleware := cmapp.NewAuthMiddleware(auth)
 	loginService := userapp.NewLoginService(userRepo, auth)
 	articleAppService := articleappsvc.NewArticleAppService(transactionImpl, articleService, categoryService, tagService, publisher)
-	cateAppService := articleappsvc.NewCategoryAppService(categoryService)
 	tagAppService := articleappsvc.NewTagAppService(tagService)
 	blogAppService := blogappsvc.NewBlogAppService(blogService)
 	dashboardAppService := statsappsvc.NewDashboardAppService(articleService, tagService, categoryService, articleVisitsService)
@@ -110,10 +110,6 @@ func setRouters(engine *gin.Engine, cfg *mconfig.Config) error {
 
 		articlectl.AddRouterForArticleController(
 			v1, authMiddleware, articleService, articleAppService,
-		)
-
-		articlectl.AddRouterForCategoryController(
-			v1, authMiddleware, cateAppService,
 		)
 
 		articlectl.AddRouterForTagController(
