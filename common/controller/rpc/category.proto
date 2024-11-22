@@ -1,0 +1,72 @@
+syntax = "proto3";
+
+package category;
+
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/victorzhou123/vicblog/common/controller/rpc";
+
+service CategoryService {
+    rpc AddCategory(CategoryName) returns (google.protobuf.Empty) {};
+    rpc ListCategoryByPagination(Pagination) returns (CategoryList) {};
+    rpc ListCategories(Amount) returns (CategoriesWithRelatedArticleAmount) {};
+    rpc GetArticleCategory(Id) returns (Category) {};
+    rpc GetTotalNumberOfCategories(google.protobuf.Empty) returns (Amount) {};
+    rpc DelCategory(Id) returns (google.protobuf.Empty) {};
+    rpc GetRelationWithArticle(Id) returns (Id) {};
+    rpc GetRelatedArticleIdsThroughCateId(Id) returns (RespGetRelatedArticleIdsThroughCateId) {};
+    rpc BuildRelationWithArticle(ReqBuildRelationWithArticle) returns (google.protobuf.Empty) {};
+    rpc RemoveRelationWithArticle(Id) returns (google.protobuf.Empty) {};
+}
+
+message CategoryName {
+    string name = 1;
+}
+
+message Id {
+    string id = 1;
+}
+
+message Amount {
+    int64 amount = 1;
+}
+
+message Pagination {
+    string curPage = 1;
+    string pageSize = 2;
+}
+
+message PaginationStatus {
+    Pagination pagination = 1;
+    int64 total = 2;
+    int64 pageCount = 3;
+}
+
+message Category {
+    string id = 1;
+    string name = 2;
+    int64 createdAt = 3;
+}
+
+message CategoryWithRelatedArticleAmount {
+    Category category = 1;
+    int64 relatedArticleAmount = 2;
+}
+
+message CategoriesWithRelatedArticleAmount {
+    repeated CategoryWithRelatedArticleAmount categories = 1;
+}
+
+message CategoryList {
+    PaginationStatus paginationStatus = 1;
+    repeated CategoryWithRelatedArticleAmount categories = 2;
+}
+
+message RespGetRelatedArticleIdsThroughCateId {
+    repeated Id ids = 1;
+}
+
+message ReqBuildRelationWithArticle {
+    Id articleId = 1;
+    Id cateId = 2;
+}
