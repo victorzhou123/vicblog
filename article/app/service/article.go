@@ -4,7 +4,6 @@ import (
 	"github.com/victorzhou123/vicblog/article/app/dto"
 	articledmsvc "github.com/victorzhou123/vicblog/article/domain/article/service"
 	categorydmsvc "github.com/victorzhou123/vicblog/category-server/domain/category/service"
-	tagdmsvc "github.com/victorzhou123/vicblog/article/domain/tag/service"
 	cmappdto "github.com/victorzhou123/vicblog/common/app/dto"
 	cmappevent "github.com/victorzhou123/vicblog/common/app/event"
 	"github.com/victorzhou123/vicblog/common/domain/entity"
@@ -13,6 +12,7 @@ import (
 	cmrepo "github.com/victorzhou123/vicblog/common/domain/repository"
 	"github.com/victorzhou123/vicblog/common/infrastructure/mysql"
 	"github.com/victorzhou123/vicblog/common/log"
+	tagdmsvc "github.com/victorzhou123/vicblog/tag-server/domain/tag/service"
 )
 
 const (

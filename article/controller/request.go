@@ -3,50 +3,9 @@ package controller
 import (
 	"github.com/victorzhou123/vicblog/article/app/dto"
 	articleent "github.com/victorzhou123/vicblog/article/domain/article/entity"
-	tagent "github.com/victorzhou123/vicblog/article/domain/tag/entity"
 	cmctl "github.com/victorzhou123/vicblog/common/controller"
 	cmprimitive "github.com/victorzhou123/vicblog/common/domain/primitive"
 )
-
-type reqTag struct {
-	Names []string `json:"names"`
-}
-
-func (req *reqTag) toTagNames() ([]tagent.TagName, error) {
-	tagNames := make([]tagent.TagName, len(req.Names))
-
-	var err error
-	for i := range req.Names {
-		tagNames[i], err = tagent.NewTagName(req.Names[i])
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	return tagNames, nil
-}
-
-type reqTagList struct {
-	cmctl.ReqList
-}
-
-func (req *reqTagList) emptyValue() bool {
-	return req.ReqList.EmptyValue()
-}
-
-func (req *reqTagList) toCmd() (cmd dto.ListTagCmd, err error) {
-
-	listCmd, err := req.ReqList.ToCmd()
-	if err != nil {
-		return
-	}
-
-	cmd = dto.ListTagCmd{
-		PaginationCmd: listCmd,
-	}
-
-	return
-}
 
 type reqArticle struct {
 	Title    string `json:"title"`

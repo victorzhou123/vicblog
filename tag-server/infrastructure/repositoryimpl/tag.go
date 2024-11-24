@@ -12,7 +12,7 @@ import (
 
 func NewTagRepo(db mysql.Impl) repository.Tag {
 
-	if err := mysql.AutoMigrate(&TagDO{}); err != nil {
+	if err := mysql.AutoMigrate(&TagDO{}, &TagArticleDO{}); err != nil {
 		return nil
 	}
 
