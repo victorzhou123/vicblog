@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package tag;
+
+import "google/protobuf/empty.proto";
+import "common.proto";
+
+option go_package = "github.com/victorzhou123/vicblog/common/controller/rpc";
+
+service TagService {
+    rpc AddTags(TagNames) returns (google.protobuf.Empty) {};
+    rpc ListTagByPagination(common.Pagination) returns (TagList) {};
+    rpc ListTags(common.Amount) returns (TagsWithRelatedArticleAmount) {};
+    rpc GetArticleTag(common.Id) returns (Tags) {};
+    rpc GetTotalNumberOfTags(google.protobuf.Empty) returns (common.Amount) {};
+    rpc Delete(common.Id) returns (google.protobuf.Empty) {};
+    rpc GetRelationWithArticle(common.Id) returns (common.Ids) {};
+    rpc GetRelatedArticleIdsThroughTagId(common.Id) returns (common.Ids) {};
+    rpc BuildRelationWithArticle(ArticleIdAndTagIds) returns (google.protobuf.Empty) {};
+    rpc RemoveRelationWithArticle(common.Id) returns (google.protobuf.Empty) {};
+}
+
+message TagName {
+    string name = 1;
+}
+
+message TagNames {
+    repeated TagName names = 2;
+}
+
+message Tag {
+    string id = 1;
+    string name = 2;
+    int64 createdAt = 3;
+}
+
+message Tags {
+    repeated Tag tags = 1;
+}
+
+message TagWithRelatedArticleAmount {
+    Tag tag = 1;
+    int64 relatedArticleAmount = 2;
+}
+
+message TagsWithRelatedArticleAmount {
+    repeated TagWithRelatedArticleAmount tags = 1;
+}
+
+message TagList {
+    common.PaginationStatus paginationStatus = 1;
+    repeated TagWithRelatedArticleAmount tags = 2;
+}
+
+message ArticleIdAndTagIds {
+    common.Id articleId = 1;
+    repeated common.Id tagIds = 2;
+}

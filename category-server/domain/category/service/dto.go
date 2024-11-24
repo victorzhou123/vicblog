@@ -5,6 +5,7 @@ import (
 
 	"github.com/victorzhou123/vicblog/category-server/domain/category/entity"
 	"github.com/victorzhou123/vicblog/common/controller/rpc"
+	cmdto "github.com/victorzhou123/vicblog/common/domain/dto"
 	cment "github.com/victorzhou123/vicblog/common/domain/entity"
 	cmprimitive "github.com/victorzhou123/vicblog/common/domain/primitive"
 )
@@ -93,25 +94,13 @@ func toCategoryListDto(categoryList *rpc.CategoryList) (CategoryListDto, error) 
 		}
 	}
 
-	curPage, err := cmprimitive.NewCurPageWithString(categoryList.PaginationStatus.GetPagination().GetCurPage())
-	if err != nil {
-		return CategoryListDto{}, err
-	}
-
-	pageSize, err := cmprimitive.NewPageSizeWithString(categoryList.PaginationStatus.GetPagination().GetPageSize())
+	paginationStatus, err := cmdto.ToPaginationStatus(categoryList.GetPaginationStatus())
 	if err != nil {
 		return CategoryListDto{}, err
 	}
 
 	return CategoryListDto{
-		PaginationStatus: cment.PaginationStatus{
-			Pagination: cment.Pagination{
-				CurPage:  curPage,
-				PageSize: pageSize,
-			},
-			Total:     int(categoryList.GetPaginationStatus().GetTotal()),
-			PageCount: int(categoryList.GetPaginationStatus().GetPageCount()),
-		},
-		Categories: categories,
+		PaginationStatus: paginationStatus,
+		Categories:       categories,
 	}, nil
 }

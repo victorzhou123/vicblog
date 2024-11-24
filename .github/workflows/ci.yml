@@ -3,7 +3,7 @@ name: CI
 on:
   workflow_dispatch:
   push:
-    branches: [ "main", "user_server", "category_server", "main_server" ]
+    branches: [ "main", "main_server", "user_server", "category_server", "tag_server" ]
   pull_request:
     branches: [ "main" ]
 
@@ -38,3 +38,5 @@ jobs:
           docker push registry.cn-hangzhou.aliyuncs.com/vicblog/vicblog-user-server:latest
           docker build . --file ./category-server/Dockerfile --tag registry.cn-hangzhou.aliyuncs.com/vicblog/vicblog-category-server:latest
           docker push registry.cn-hangzhou.aliyuncs.com/vicblog/vicblog-category-server:latest
+          docker build . --file ./tag-server/Dockerfile --tag registry.cn-hangzhou.aliyuncs.com/vicblog/vicblog-tag-server:latest
+          docker push registry.cn-hangzhou.aliyuncs.com/vicblog/vicblog-tag-server:latest

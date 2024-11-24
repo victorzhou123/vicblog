@@ -151,7 +151,7 @@ func (s *categoryClient) BuildRelationWithArticle(articleId, cateId cmprimitive.
 	ctx, cancel := context.WithTimeout(context.Background(), s.expire)
 	defer cancel()
 
-	_, err := s.rpcSvc.BuildRelationWithArticle(ctx, &rpc.ReqBuildRelationWithArticle{
+	_, err := s.rpcSvc.BuildRelationWithArticle(ctx, &rpc.ArticleIdAndCateId{
 		ArticleId: &rpc.Id{Id: articleId.Id()},
 		CateId:    &rpc.Id{Id: cateId.Id()},
 	})
