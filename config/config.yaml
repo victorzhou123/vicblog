@@ -8,6 +8,10 @@ article:
       host: "${CATEGORY_SERVER_HOST}"
       port: "${CATEGORY_SERVER_PORT}"
       expire_time: 10
+    tag:
+      host: "${TAG_SERVER_HOST}"
+      port: "${TAG_SERVER_PORT}"
+      expire_time: 10
 common:
   log:
     level: "DEBUG"

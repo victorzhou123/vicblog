@@ -11,7 +11,7 @@ import (
 
 func NewCategoryRepo(db mysql.Impl) repository.Category {
 
-	if err := mysql.AutoMigrate(&CategoryDO{}); err != nil {
+	if err := mysql.AutoMigrate(&CategoryDO{}, &CategoryArticleDO{}); err != nil {
 		return nil
 	}
 

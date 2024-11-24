@@ -5,12 +5,12 @@ import (
 
 	"github.com/victorzhou123/vicblog/article/domain/article/entity"
 	articledmsvc "github.com/victorzhou123/vicblog/article/domain/article/service"
-	tagent "github.com/victorzhou123/vicblog/article/domain/tag/entity"
 	cateent "github.com/victorzhou123/vicblog/category-server/domain/category/entity"
 	cmappdto "github.com/victorzhou123/vicblog/common/app/dto"
 	cment "github.com/victorzhou123/vicblog/common/domain/entity"
 	cmprimitive "github.com/victorzhou123/vicblog/common/domain/primitive"
 	"github.com/victorzhou123/vicblog/common/util"
+	tagent "github.com/victorzhou123/vicblog/tag-server/domain/tag/entity"
 )
 
 // add article

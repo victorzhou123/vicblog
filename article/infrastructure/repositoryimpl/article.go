@@ -17,8 +17,6 @@ func NewArticleRepo(db mysql.Impl, tx mysql.Transaction) repository.Article {
 
 	if err := mysql.AutoMigrate(
 		&ArticleDO{},
-		&CategoryArticleDO{},
-		&TagArticleDO{},
 	); err != nil {
 		return nil
 	}
