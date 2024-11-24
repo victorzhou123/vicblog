@@ -4,6 +4,7 @@ import (
 	"github.com/victorzhou123/vicblog/common/controller/rpc"
 	cmdto "github.com/victorzhou123/vicblog/common/domain/dto"
 	cment "github.com/victorzhou123/vicblog/common/domain/entity"
+	cmprimitive "github.com/victorzhou123/vicblog/common/domain/primitive"
 	"github.com/victorzhou123/vicblog/tag-server/domain/tag/entity"
 )
 
@@ -24,6 +25,39 @@ func (dto *TagListDto) toProto() *rpc.TagList {
 		PaginationStatus: cmdto.ToProtoPaginationStatus(dto.PaginationStatus),
 		Tags:             tags,
 	}
+}
+
+func toTagListDto(tagList *rpc.TagList) (TagListDto, error) {
+
+	paginationStatus, err := cmdto.ToPaginationStatus(tagList.PaginationStatus)
+	if err != nil {
+		return TagListDto{}, err
+	}
+
+	tas := make([]entity.TagWithRelatedArticleAmount, len(tagList.GetTags()))
+	for i := range tas {
+		tas[i], err = toTagWithRelatedArticleAmount(tagList.Tags[i])
+		if err != nil {
+			return TagListDto{}, err
+		}
+	}
+
+	return TagListDto{
+		PaginationStatus: paginationStatus,
+		Tags:             tas,
+	}, nil
+}
+
+func toTagWithRelatedArticleAmount(ta *rpc.TagWithRelatedArticleAmount) (entity.TagWithRelatedArticleAmount, error) {
+
+	tag, err := toTag(ta.GetTag())
+	if err != nil {
+		return entity.TagWithRelatedArticleAmount{}, err
+	}
+
+	return entity.TagWithRelatedArticleAmount{
+		Tag: tag,
+	}, nil
 }
 
 func toProtoTagWithRelatedArticleAmount(ta entity.TagWithRelatedArticleAmount) *rpc.TagWithRelatedArticleAmount {
@@ -51,4 +85,18 @@ func toProtoTagNames(names *rpc.TagNames) ([]entity.TagName, error) {
 	}
 
 	return tagNames, nil
+}
+
+func toTag(tag *rpc.Tag) (entity.Tag, error) {
+
+	tagName, err := entity.NewTagName(tag.GetName())
+	if err != nil {
+		return entity.Tag{}, err
+	}
+
+	return entity.Tag{
+		Id:        cmprimitive.NewId(tag.GetId()),
+		Name:      tagName,
+		CreatedAt: cmprimitive.NewTimeXWithUnix(tag.GetCreatedAt()),
+	}, nil
 }
