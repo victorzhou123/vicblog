@@ -1,1 +1,6 @@
 2024-11-22 11:26:51.407|WARN||vicBlog||||main.go:30|mysql init failed, error: dial tcp :0: connectex: The requested address is not valid in its context.|
+2024-11-24 15:55:48.420|WARN||vicBlog||||main.go:30|mysql init failed, error: dial tcp 192.168.22.215:30309: connect: connection refused|
+2024-11-24 16:04:24.891|FATAL||vicBlog||||main.go:36|start web server error: listen tcp :50051: bind: address already in use|
+2024-11-24 16:07:49.897|FATAL||vicBlog||||main.go:36|start web server error: listen tcp :50051: bind: address already in use|
+2024-11-24 16:15:16.624|FATAL||vicBlog||||main.go:36|start web server error: listen tcp :50051: bind: address already in use|
+2024-11-24 16:46:53.880|WARN||vicBlog||||main.go:30|mysql init failed, error: dial tcp 192.168.22.215:30309: connect: connection refused|

@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package common;
+
+option go_package = "github.com/victorzhou123/vicblog/common/controller/rpc";
+
+message Id {
+    string id = 1;
+}
+
+message Ids {
+    repeated common.Id ids = 1;
+}
+
+message Amount {
+    int64 amount = 1;
+}
+
+message Pagination {
+    string curPage = 1;
+    string pageSize = 2;
+}
+
+message PaginationStatus {
+    Pagination pagination = 1;
+    int64 total = 2;
+    int64 pageCount = 3;
+}

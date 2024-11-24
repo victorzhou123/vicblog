@@ -1,0 +1,37 @@
+server:
+  port: ${SERVER_PORT}
+  read_timeout: 10000
+  read_header_timeout: 2000
+rpc_server:
+  port: 50051
+  read_timeout: 10000
+  read_header_timeout: 2000
+auth:
+  secret_key: "~&bBD(92$8~JE^XZ"
+  expire_time: 300
+mysql:
+  master:
+    host: "${MYSQL_HOST}"
+    port: ${MYSQL_PORT}
+    username: "${MYSQL_USERNAME}"
+    password: "${MYSQL_PASSWORD}"
+  slave01:
+    host: "${MYSQL_HOST_SLAVE01}"
+    port: ${MYSQL_PORT_SLAVE01}
+    username: "${MYSQL_USERNAME}"
+    password: "${MYSQL_PASSWORD}"
+  db_name: "${MYSQL_DB_NAME}"
+  max_life_time: 120
+  max_open_conns: 2000
+  max_idle_conns: 1000
+log:
+  level: "DEBUG"
+  flush_time: 5
+  run_writer:
+    file_path: "../log/run/run.log"
+    max_size: 100
+    max_age: 7
+    max_backups: 15
+    local_time: true
+    compress: false
+    std_print: true

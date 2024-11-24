@@ -3,43 +3,25 @@ syntax = "proto3";
 package category;
 
 import "google/protobuf/empty.proto";
+import "common.proto";
 
 option go_package = "github.com/victorzhou123/vicblog/common/controller/rpc";
 
 service CategoryService {
     rpc AddCategory(CategoryName) returns (google.protobuf.Empty) {};
-    rpc ListCategoryByPagination(Pagination) returns (CategoryList) {};
-    rpc ListCategories(Amount) returns (CategoriesWithRelatedArticleAmount) {};
-    rpc GetArticleCategory(Id) returns (Category) {};
-    rpc GetTotalNumberOfCategories(google.protobuf.Empty) returns (Amount) {};
-    rpc DelCategory(Id) returns (google.protobuf.Empty) {};
-    rpc GetRelationWithArticle(Id) returns (Id) {};
-    rpc GetRelatedArticleIdsThroughCateId(Id) returns (RespGetRelatedArticleIdsThroughCateId) {};
-    rpc BuildRelationWithArticle(ReqBuildRelationWithArticle) returns (google.protobuf.Empty) {};
-    rpc RemoveRelationWithArticle(Id) returns (google.protobuf.Empty) {};
+    rpc ListCategoryByPagination(common.Pagination) returns (CategoryList) {};
+    rpc ListCategories(common.Amount) returns (CategoriesWithRelatedArticleAmount) {};
+    rpc GetArticleCategory(common.Id) returns (Category) {};
+    rpc GetTotalNumberOfCategories(google.protobuf.Empty) returns (common.Amount) {};
+    rpc DelCategory(common.Id) returns (google.protobuf.Empty) {};
+    rpc GetRelationWithArticle(common.Id) returns (common.Id) {};
+    rpc GetRelatedArticleIdsThroughCateId(common.Id) returns (RespGetRelatedArticleIdsThroughCateId) {};
+    rpc BuildRelationWithArticle(ArticleIdAndCateId) returns (google.protobuf.Empty) {};
+    rpc RemoveRelationWithArticle(common.Id) returns (google.protobuf.Empty) {};
 }
 
 message CategoryName {
     string name = 1;
-}
-
-message Id {
-    string id = 1;
-}
-
-message Amount {
-    int64 amount = 1;
-}
-
-message Pagination {
-    string curPage = 1;
-    string pageSize = 2;
-}
-
-message PaginationStatus {
-    Pagination pagination = 1;
-    int64 total = 2;
-    int64 pageCount = 3;
 }
 
 message Category {
@@ -58,15 +40,15 @@ message CategoriesWithRelatedArticleAmount {
 }
 
 message CategoryList {
-    PaginationStatus paginationStatus = 1;
+    common.PaginationStatus paginationStatus = 1;
     repeated CategoryWithRelatedArticleAmount categories = 2;
 }
 
 message RespGetRelatedArticleIdsThroughCateId {
-    repeated Id ids = 1;
+    repeated common.Id ids = 1;
 }
 
-message ReqBuildRelationWithArticle {
-    Id articleId = 1;
-    Id cateId = 2;
+message ArticleIdAndCateId {
+    common.Id articleId = 1;
+    common.Id cateId = 2;
 }

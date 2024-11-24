@@ -132,7 +132,7 @@ func (s *categoryServer) GetRelatedArticleIdsThroughCateId(ctx context.Context, 
 	}, nil
 }
 
-func (s *categoryServer) BuildRelationWithArticle(ctx context.Context, req *rpc.ReqBuildRelationWithArticle) (*emptypb.Empty, error) {
+func (s *categoryServer) BuildRelationWithArticle(ctx context.Context, req *rpc.ArticleIdAndCateId) (*emptypb.Empty, error) {
 	return nil, s.category.BuildRelationWithArticle(
 		cmprimitive.NewId(req.GetArticleId().GetId()),
 		cmprimitive.NewId(req.GetCateId().GetId()),
