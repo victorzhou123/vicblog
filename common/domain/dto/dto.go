@@ -40,6 +40,13 @@ func toPagination(page *rpc.Pagination) (entity.Pagination, error) {
 	}, nil
 }
 
+func ToProtoPagination(pagination entity.Pagination) *rpc.Pagination {
+	return &rpc.Pagination{
+		CurPage:  strconv.Itoa(pagination.CurPage.CurPage()),
+		PageSize: strconv.Itoa(pagination.PageSize.PageSize()),
+	}
+}
+
 func ToProtoPaginationStatus(paginationStatus entity.PaginationStatus) *rpc.PaginationStatus {
 	return &rpc.PaginationStatus{
 		Pagination: toProtoPagination(paginationStatus.Pagination),
