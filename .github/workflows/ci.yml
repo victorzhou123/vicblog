@@ -27,16 +27,33 @@ jobs:
           args: ./...
       - name: Code Test
         run: go test -v -coverprofile=profile.cov ./...
-      - name: Build the Docker image
-        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+      - name: Build and Push Docker Images
+        if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
         run: |
           docker version
-          docker login --username=${{ secrets.DOCKER_USERNAME }} --password=${{ secrets.DOCKER_PASSWORD }} registry.cn-hangzhou.aliyuncs.com
-          docker build . --file Dockerfile --tag registry.cn-hangzhou.aliyuncs.com/vicblog/vicblog:latest
-          docker push registry.cn-hangzhou.aliyuncs.com/vicblog/vicblog:latest
-          docker build . --file ./user-server/Dockerfile --tag registry.cn-hangzhou.aliyuncs.com/vicblog/vicblog-user-server:latest
-          docker push registry.cn-hangzhou.aliyuncs.com/vicblog/vicblog-user-server:latest
-          docker build . --file ./category-server/Dockerfile --tag registry.cn-hangzhou.aliyuncs.com/vicblog/vicblog-category-server:latest
-          docker push registry.cn-hangzhou.aliyuncs.com/vicblog/vicblog-category-server:latest
-          docker build . --file ./tag-server/Dockerfile --tag registry.cn-hangzhou.aliyuncs.com/vicblog/vicblog-tag-server:latest
-          docker push registry.cn-hangzhou.aliyuncs.com/vicblog/vicblog-tag-server:latest
+          echo "Logging in to Docker registry..."
+          docker login --username ${{ secrets.DOCKER_USERNAME }} --password ${{ secrets.DOCKER_PASSWORD }} registry.cn-hangzhou.aliyuncs.com
+          
+          # Determine the branch name
+          BRANCH_NAME="${GITHUB_REF#refs/heads/}"
+          
+          # Build and push images based on the branch name
+          if [ "$BRANCH_NAME" == "main" ] || [ "$BRANCH_NAME" == "main_server" ]; then
+            docker build . --file Dockerfile --tag registry.cn-hangzhou.aliyuncs.com/vicblog/vicblog:latest
+            docker push registry.cn-hangzhou.aliyuncs.com/vicblog/vicblog:latest
+          fi
+          
+          if [ "$BRANCH_NAME" == "user_server" ]; then
+            docker build . --file ./user-server/Dockerfile --tag registry.cn-hangzhou.aliyuncs.com/vicblog/vicblog-user-server:latest
+            docker push registry.cn-hangzhou.aliyuncs.com/vicblog/vicblog-user-server:latest
+          fi
+          
+          if [ "$BRANCH_NAME" == "category_server" ]; then
+            docker build . --file ./category-server/Dockerfile --tag registry.cn-hangzhou.aliyuncs.com/vicblog/vicblog-category-server:latest
+            docker push registry.cn-hangzhou.aliyuncs.com/vicblog/vicblog-category-server:latest
+          fi
+          
+          if [ "$BRANCH_NAME" == "tag_server" ]; then
+            docker build . --file ./tag-server/Dockerfile --tag registry.cn-hangzhou.aliyuncs.com/vicblog/vicblog-tag-server:latest
+            docker push registry.cn-hangzhou.aliyuncs.com/vicblog/vicblog-tag-server:latest
+          fi
