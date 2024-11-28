@@ -40,9 +40,6 @@ import (
 	statsctl "github.com/victorzhou123/vicblog/statistics/controller"
 	statssvc "github.com/victorzhou123/vicblog/statistics/domain/service"
 	statsimpl "github.com/victorzhou123/vicblog/statistics/infrastructure/repositoryimpl"
-	userapp "github.com/victorzhou123/vicblog/user/app"
-	userctl "github.com/victorzhou123/vicblog/user/controller"
-	userrepoimpl "github.com/victorzhou123/vicblog/user/infrastructure/repositoryimpl"
 )
 
 func setRouters(engine *gin.Engine, cfg *mconfig.Config) error {
@@ -63,7 +60,6 @@ func setRouters(engine *gin.Engine, cfg *mconfig.Config) error {
 	// repo: following are the dependencies of service
 	ossRepo := articlerepoimpl.NewPictureImpl(oss.Client())
 	auth := cminfraauthimpl.NewSignJwt(&timeCreator, &cfg.Common.Infra.Auth)
-	userRepo := userrepoimpl.NewUserRepo(mysqlImpl)
 	articleRepo := articlerepoimpl.NewArticleRepo(mysqlImpl, transactionImpl)
 	blogRepo := blogrepoimpl.NewBlogInfoImpl(&cfg.Blog.BlogInfo)
 	statsRepo := statsimpl.NewArticleVisitsRepo(mysqlImpl, &timeCreator)
@@ -88,7 +84,6 @@ func setRouters(engine *gin.Engine, cfg *mconfig.Config) error {
 
 	// app: following are app services
 	authMiddleware := cmapp.NewAuthMiddleware(auth)
-	loginService := userapp.NewLoginService(userRepo, auth)
 	articleAppService := articleappsvc.NewArticleAppService(transactionImpl, articleService, categoryService, tagService, publisher)
 	blogAppService := blogappsvc.NewBlogAppService(blogService)
 	dashboardAppService := statsappsvc.NewDashboardAppService(articleService, tagService, categoryService, articleVisitsService)
@@ -104,10 +99,6 @@ func setRouters(engine *gin.Engine, cfg *mconfig.Config) error {
 	v1 := engine.Group(BasePath)
 	{
 		addRouterForSwaggo(v1)
-
-		userctl.AddRouterForLoginController(
-			v1, loginService,
-		)
 
 		articlectl.AddRouterForArticleController(
 			v1, authMiddleware, articleService, articleAppService,
