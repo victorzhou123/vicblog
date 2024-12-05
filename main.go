@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/victorzhou123/vicblog/common/infrastructure/mqimpl"
+	kafka "github.com/victorzhou123/vicblog/common/infrastructure/kafkaimpl"
 	"github.com/victorzhou123/vicblog/common/infrastructure/mysql"
 	"github.com/victorzhou123/vicblog/common/infrastructure/oss"
 	"github.com/victorzhou123/vicblog/common/log"
@@ -48,14 +48,10 @@ func main() {
 	}
 
 	// mq
-	err, close := mqimpl.Init(&cfg.Common.Infra.Mq)
-	if err != nil {
-		log.Warnf("message queue init failed, error: %s", err.Error())
-		return
-	}
-	defer close()
+	mq := kafka.NewKafka(&cfg.Common.Infra.Kafka)
+	defer mq.Close()
 
-	if err := server.StartWebServer(cfg); err != nil {
+	if err := server.StartWebServer(cfg, mq); err != nil {
 		log.Fatalf("start web server error: %s", err.Error())
 	}
 }

@@ -3,7 +3,7 @@ package infrastructure
 import (
 	"github.com/victorzhou123/vicblog/common/infrastructure/auditimpl"
 	"github.com/victorzhou123/vicblog/common/infrastructure/authimpl"
-	"github.com/victorzhou123/vicblog/common/infrastructure/mqimpl"
+	"github.com/victorzhou123/vicblog/common/infrastructure/kafkaimpl"
 	"github.com/victorzhou123/vicblog/common/infrastructure/mysql"
 	"github.com/victorzhou123/vicblog/common/infrastructure/oss"
 )
@@ -11,7 +11,7 @@ import (
 type Config struct {
 	Auth  authimpl.Config  `json:"auth"`
 	Mysql mysql.Config     `json:"mysql"`
-	Mq    mqimpl.Config    `json:"mq"`
+	Kafka kafkaimpl.Config `json:"kafka"`
 	Oss   oss.Config       `json:"oss"`
 	Audit auditimpl.Config `json:"audit"`
 }
@@ -20,7 +20,7 @@ func (cfg *Config) configItems() []interface{} {
 	return []interface{}{
 		&cfg.Auth,
 		&cfg.Mysql,
-		&cfg.Mq,
+		&cfg.Kafka,
 		&cfg.Oss,
 		&cfg.Audit,
 	}
