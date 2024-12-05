@@ -7,19 +7,20 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	"github.com/victorzhou123/vicblog/common/domain/mq"
 	mconfig "github.com/victorzhou123/vicblog/config"
 	_ "github.com/victorzhou123/vicblog/docs"
 )
 
 const BasePath = "/api"
 
-func StartWebServer(cfg *mconfig.Config) error {
+func StartWebServer(cfg *mconfig.Config, mq mq.MQ) error {
 	engine := gin.New()
 	engine.Use(gin.Recovery())
 
 	engine.UseRawPath = true
 
-	if err := setRouters(engine, cfg); err != nil {
+	if err := setRouters(engine, cfg, mq); err != nil {
 		return err
 	}
 

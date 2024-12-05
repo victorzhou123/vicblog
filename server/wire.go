@@ -5,7 +5,6 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
-	smqdriven "github.com/victorzhou123/simplemq-driven/driven"
 	articleappevent "github.com/victorzhou123/vicblog/article/app/event"
 	articleappsvc "github.com/victorzhou123/vicblog/article/app/service"
 	articlectl "github.com/victorzhou123/vicblog/article/controller"
@@ -25,11 +24,10 @@ import (
 	qqinfoimpl "github.com/victorzhou123/vicblog/comment/infrastructure/qqinfoimpl"
 	commentrepoimpl "github.com/victorzhou123/vicblog/comment/infrastructure/repositoryimpl"
 	cmapp "github.com/victorzhou123/vicblog/common/app"
+	"github.com/victorzhou123/vicblog/common/domain/mq"
 	"github.com/victorzhou123/vicblog/common/infrastructure/auditimpl"
 	cminfraauthimpl "github.com/victorzhou123/vicblog/common/infrastructure/authimpl"
-	"github.com/victorzhou123/vicblog/common/infrastructure/eventimpl"
 	"github.com/victorzhou123/vicblog/common/infrastructure/md2htmlimpl"
-	"github.com/victorzhou123/vicblog/common/infrastructure/mqimpl"
 	cminframysql "github.com/victorzhou123/vicblog/common/infrastructure/mysql"
 	"github.com/victorzhou123/vicblog/common/infrastructure/oss"
 	cmutil "github.com/victorzhou123/vicblog/common/util"
@@ -42,15 +40,13 @@ import (
 	statsimpl "github.com/victorzhou123/vicblog/statistics/infrastructure/repositoryimpl"
 )
 
-func setRouters(engine *gin.Engine, cfg *mconfig.Config) error {
+func setRouters(engine *gin.Engine, cfg *mconfig.Config, mq mq.MQ) error {
 
 	// infrastructure: following are the instance of infrastructure components
-	mq := mqimpl.MQ()
 	timeCreator := cmutil.NewTimerCreator()
 	mysqlImpl := cminframysql.DAO()
 	transactionImpl := cminframysql.NewTransaction()
 	m2h := md2htmlimpl.NewMd2Html()
-	publisher := eventimpl.NewPublisher(mq)
 	qqInfoImpl := qqinfoimpl.NewQQInfoImpl(cfg.Comment.QQInfo)
 	auditImpl, err := auditimpl.NewAuditImpl(&cfg.Common.Infra.Audit)
 	if err != nil {
@@ -84,7 +80,7 @@ func setRouters(engine *gin.Engine, cfg *mconfig.Config) error {
 
 	// app: following are app services
 	authMiddleware := cmapp.NewAuthMiddleware(auth)
-	articleAppService := articleappsvc.NewArticleAppService(transactionImpl, articleService, categoryService, tagService, publisher)
+	articleAppService := articleappsvc.NewArticleAppService(transactionImpl, articleService, categoryService, tagService, mq)
 	blogAppService := blogappsvc.NewBlogAppService(blogService)
 	dashboardAppService := statsappsvc.NewDashboardAppService(articleService, tagService, categoryService, articleVisitsService)
 	articleVisitsAppService := statsappsvc.NewArticleVisitsAppService(articleVisitsService)
@@ -94,6 +90,8 @@ func setRouters(engine *gin.Engine, cfg *mconfig.Config) error {
 	// subscriber
 	articleSubscriber := articleappevent.NewArticleSubscriber(articleService)
 	statsSubscriber := statsappevent.NewArticleVisitsSubscriber(articleVisitsService)
+	mq.Subscribe(articleSubscriber.Consume, articleSubscriber.Topics())
+	mq.Subscribe(statsSubscriber.Consume, statsSubscriber.Topics())
 
 	// controller: add routers
 	v1 := engine.Group(BasePath)
@@ -125,14 +123,7 @@ func setRouters(engine *gin.Engine, cfg *mconfig.Config) error {
 		)
 	}
 
-	// distributer to distribute message
-	distributer := newDistributer(articleSubscriber, statsSubscriber)
-
-	// watch
-	mqWatcher := smqdriven.NewWatcher(mq, distributer)
-	go mqWatcher.Watch()
-
-	return nil
+	return mq.Run()
 }
 
 func addRouterForSwaggo(rg *gin.RouterGroup) {

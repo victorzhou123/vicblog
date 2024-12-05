@@ -44,8 +44,8 @@ common:
       max_open_conns: 2000
       max_idle_conns: 1000
     mq:
-      address: "${MQ_ADDR}"
-      expire: 10
+      address: "${KAFKA_ADDR}"
+      partition: 0
     oss:
       id: "LTAI5tFnKogF9bTcvoJxrZor"
       secret: "W1veUccsXDy3mciIzAnNF1IpJ0u0CG"
