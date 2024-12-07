@@ -9,18 +9,17 @@ import (
 	"github.com/victorzhou123/vicblog/tag-server/domain/tag/repository"
 )
 
-func NewTagArticleRepo(db mysql.Impl, tx mysql.Transaction) repository.TagArticle {
+func NewTagArticleRepo(db mysql.Impl) repository.TagArticle {
 
 	if err := mysql.AutoMigrate(&TagArticleDO{}); err != nil {
 		return nil
 	}
 
-	return &tagArticleImpl{db, tx}
+	return &tagArticleImpl{db}
 }
 
 type tagArticleImpl struct {
 	db mysql.Impl
-	tx mysql.Transaction
 }
 
 func (impl *tagArticleImpl) GetRelationWithArticle(articleId cmprimitive.Id) ([]cmprimitive.Id, error) {
@@ -114,7 +113,7 @@ func (impl *tagArticleImpl) BuildRelationWithArticle(
 		}
 	}
 
-	return impl.tx.Insert(&TagArticleDO{}, &dos)
+	return impl.db.Add(&TagArticleDO{}, &dos)
 }
 
 func (impl *tagArticleImpl) RemoveAllRowsByArticleId(articleId cmprimitive.Id) error {
@@ -122,5 +121,5 @@ func (impl *tagArticleImpl) RemoveAllRowsByArticleId(articleId cmprimitive.Id) e
 		ArticleId: articleId.IdNum(),
 	}
 
-	return impl.tx.Delete(&TagArticleDO{}, &do)
+	return impl.db.Delete(&TagArticleDO{}, &do)
 }
