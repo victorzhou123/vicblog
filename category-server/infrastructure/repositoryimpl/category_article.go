@@ -9,18 +9,17 @@ import (
 	"github.com/victorzhou123/vicblog/common/infrastructure/mysql"
 )
 
-func NewCategoryArticleRepo(db mysql.Impl, tx mysql.Transaction) repository.CategoryArticle {
+func NewCategoryArticleRepo(db mysql.Impl) repository.CategoryArticle {
 
 	if err := mysql.AutoMigrate(&CategoryArticleDO{}); err != nil {
 		return nil
 	}
 
-	return &categoryArticleImpl{db, tx}
+	return &categoryArticleImpl{db}
 }
 
 type categoryArticleImpl struct {
 	db mysql.Impl
-	tx mysql.Transaction
 }
 
 func (impl *categoryArticleImpl) GetRelationWithArticle(articleId cmprimitive.Id) (cmprimitive.Id, error) {
@@ -102,7 +101,7 @@ func (impl *categoryArticleImpl) BuildRelationWithArticle(articleId, cateId cmpr
 		ArticleId:  articleId.IdNum(),
 	}
 
-	return impl.tx.Insert(&CategoryArticleDO{}, &do)
+	return impl.db.Add(&CategoryArticleDO{}, &do)
 }
 
 func (impl *categoryArticleImpl) RemoveAllRowsByArticleId(articleId cmprimitive.Id) error {
@@ -110,5 +109,5 @@ func (impl *categoryArticleImpl) RemoveAllRowsByArticleId(articleId cmprimitive.
 		ArticleId: articleId.IdNum(),
 	}
 
-	return impl.tx.Delete(&CategoryArticleDO{}, &do)
+	return impl.db.Delete(&CategoryArticleDO{}, &do)
 }
