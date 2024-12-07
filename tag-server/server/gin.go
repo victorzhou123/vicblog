@@ -64,12 +64,11 @@ func setRouters(engine *gin.Engine, grpcServer *grpc.Server, cfg *config.Config)
 	// infrastructure: following are the instance of infrastructure components
 	timeCreator := cmutil.NewTimerCreator()
 	mysqlImpl := cminframysql.DAO()
-	transactionImpl := cminframysql.NewTransaction()
 
 	// repo: following are the dependencies of service
 	auth := cminfraauthimpl.NewSignJwt(&timeCreator, &cfg.Auth)
 	tagRepo := repositoryimpl.NewTagRepo(mysqlImpl)
-	tagArticleRepo := repositoryimpl.NewTagArticleRepo(mysqlImpl, transactionImpl)
+	tagArticleRepo := repositoryimpl.NewTagArticleRepo(mysqlImpl)
 
 	// domain: following are domain services
 	tagService := dmsvc.NewTagService(tagRepo, tagArticleRepo)
