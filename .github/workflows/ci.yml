@@ -3,7 +3,7 @@ name: CI
 on:
   workflow_dispatch:
   push:
-    branches: [ "main", "main_server", "user_server", "category_server", "tag_server" ]
+    branches: [ "main", "main_server", "user_server", "category_server", "tag_server", "dev" ]
   pull_request:
     branches: [ "main" ]
 
@@ -38,7 +38,7 @@ jobs:
           BRANCH_NAME="${GITHUB_REF#refs/heads/}"
           
           # Build and push images based on the branch name
-          if [ "$BRANCH_NAME" == "main" ] || [ "$BRANCH_NAME" == "main_server" ]; then
+          if [ "$BRANCH_NAME" == "main" ] || [ "$BRANCH_NAME" == "main_server" ] || [ "$BRANCH_NAME" == "dev" ]; then
             docker build . --file Dockerfile --tag registry.cn-hangzhou.aliyuncs.com/vicblog/vicblog:latest
             docker push registry.cn-hangzhou.aliyuncs.com/vicblog/vicblog:latest
           fi

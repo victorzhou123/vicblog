@@ -7,7 +7,7 @@ import (
 	cmappdto "github.com/victorzhou123/vicblog/common/app/dto"
 	cmappevent "github.com/victorzhou123/vicblog/common/app/event"
 	"github.com/victorzhou123/vicblog/common/domain/entity"
-	cmevent "github.com/victorzhou123/vicblog/common/domain/event"
+	"github.com/victorzhou123/vicblog/common/domain/mq"
 	cmprimitive "github.com/victorzhou123/vicblog/common/domain/primitive"
 	cmrepo "github.com/victorzhou123/vicblog/common/domain/repository"
 	"github.com/victorzhou123/vicblog/common/infrastructure/mysql"
@@ -43,7 +43,7 @@ type articleAppService struct {
 	article   articledmsvc.ArticleService
 	cate      categorydmsvc.CategoryService
 	tag       tagdmsvc.TagService
-	publisher cmevent.EventPublisher
+	publisher mq.MQ
 }
 
 func NewArticleAppService(
@@ -51,7 +51,7 @@ func NewArticleAppService(
 	article articledmsvc.ArticleService,
 	cate categorydmsvc.CategoryService,
 	tag tagdmsvc.TagService,
-	publisher cmevent.EventPublisher,
+	publisher mq.MQ,
 ) ArticleAppService {
 	return &articleAppService{
 		tx:        tx,
@@ -97,12 +97,13 @@ func (s *articleAppService) GetArticleById(articleId cmprimitive.Id) (dto.Articl
 	}
 
 	// publish message
-	event, err := s.publisher.NewEvent(
-		topicAddArticleReadTimes, map[string]string{fieldArticleId: article.Id.Id()})
+	msg, err := cmappevent.ToMessage(map[string]string{fieldArticleId: article.Id.Id()})
 	if err != nil {
-		log.Errorf("new event failed, err: %s", err.Error())
+		log.Errorf("new message failed, err: %s", err.Error())
 	}
-	s.publisher.Publish(event)
+	if err = s.publisher.Publish(topicAddArticleReadTimes, &msg); err != nil {
+		log.Errorf("publish in GetArticleById failed, err: %s", err.Error())
+	}
 
 	return dto.ToArticleWithTagCateDto(article, tags, cates, preNextArticle.Prev, preNextArticle.Next), nil
 }
