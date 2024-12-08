@@ -2,7 +2,7 @@ package mq
 
 type MQ interface {
 	Publish(topic string, m *Message) error
-	Subscribe(h Handler, topics []string)
+	Subscribe(Consumer)
 
 	Close() error
 	Run() error

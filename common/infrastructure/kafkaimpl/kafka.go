@@ -2,7 +2,6 @@ package kafkaimpl
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/segmentio/kafka-go"
 	"github.com/segmentio/kafka-go/protocol"
@@ -12,19 +11,22 @@ import (
 )
 
 type kafkaImpl struct {
-	address   string
-	partition int
+	address string
 
 	writer       *kafka.Writer
-	topicHandler map[*mq.Handler][]string
+	topicHandler map[*topicHandlerKey][]string
+}
+
+type topicHandlerKey struct {
+	name    string
+	handler mq.Handler
 }
 
 func NewKafka(cfg *Config) mq.MQ {
 
 	impl := &kafkaImpl{
 		address:      cfg.Address,
-		partition:    cfg.Partition,
-		topicHandler: make(map[*mq.Handler][]string),
+		topicHandler: make(map[*topicHandlerKey][]string),
 	}
 
 	impl.writer = &kafka.Writer{
@@ -59,17 +61,20 @@ func (impl *kafkaImpl) Publish(topic string, m *mq.Message) error {
 	})
 }
 
-func (impl *kafkaImpl) Subscribe(h mq.Handler, topics []string) {
-	impl.topicHandler[&h] = topics
+func (impl *kafkaImpl) Subscribe(c mq.Consumer) {
+	impl.topicHandler[&topicHandlerKey{
+		name:    c.Name(),
+		handler: c.Consume,
+	}] = c.Topics()
 }
 
 func (impl *kafkaImpl) Run() error {
 
-	f := func(ctx context.Context, topics []string, handler mq.Handler) error {
+	f := func(ctx context.Context, topics []string, handler mq.Handler, handlerName string) error {
 
 		r := kafka.NewReader(kafka.ReaderConfig{
 			Brokers:     []string{impl.address},
-			GroupID:     fmt.Sprintf("vicblog-%p", handler),
+			GroupID:     handlerName,
 			GroupTopics: topics,
 			MaxBytes:    10e6,
 		})
@@ -92,7 +97,7 @@ func (impl *kafkaImpl) Run() error {
 	}
 
 	for handler, topics := range impl.topicHandler {
-		go f(context.Background(), topics, *handler)
+		go f(context.Background(), topics, handler.handler, handler.name)
 	}
 
 	return nil

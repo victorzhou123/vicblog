@@ -88,8 +88,8 @@ func setRouters(engine *gin.Engine, cfg *mconfig.Config, mq mq.MQ) error {
 	// subscriber
 	articleSubscriber := articleappevent.NewArticleSubscriber(articleService)
 	statsSubscriber := statsappevent.NewArticleVisitsSubscriber(articleVisitsService)
-	mq.Subscribe(articleSubscriber.Consume, articleSubscriber.Topics())
-	mq.Subscribe(statsSubscriber.Consume, statsSubscriber.Topics())
+	mq.Subscribe(articleSubscriber)
+	mq.Subscribe(statsSubscriber)
 
 	// controller: add routers
 	v1 := engine.Group(BasePath)
