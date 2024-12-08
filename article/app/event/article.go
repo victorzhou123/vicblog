@@ -15,6 +15,7 @@ const (
 	topicAddArticleReadTimes = cmappevent.TopicAddArticleReadTimes
 
 	fieldArticleId = cmappevent.FieldArticleId
+	consumerName   = "articleSubscriber"
 )
 
 type articleSubscriber struct {
@@ -23,7 +24,7 @@ type articleSubscriber struct {
 
 func NewArticleSubscriber(
 	article articledmsvc.ArticleService,
-) *articleSubscriber {
+) mq.Consumer {
 	return &articleSubscriber{article}
 }
 
@@ -58,4 +59,8 @@ func (s *articleSubscriber) Consume(e mq.Event) error {
 
 func (s *articleSubscriber) Topics() []string {
 	return []string{topicAddArticleReadTimes}
+}
+
+func (s *articleSubscriber) Name() string {
+	return consumerName
 }
