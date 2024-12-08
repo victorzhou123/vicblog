@@ -45,7 +45,6 @@ func setRouters(engine *gin.Engine, cfg *mconfig.Config, mq mq.MQ) error {
 	// infrastructure: following are the instance of infrastructure components
 	timeCreator := cmutil.NewTimerCreator()
 	mysqlImpl := cminframysql.DAO()
-	transactionImpl := cminframysql.NewTransaction()
 	m2h := md2htmlimpl.NewMd2Html()
 	qqInfoImpl := qqinfoimpl.NewQQInfoImpl(cfg.Comment.QQInfo)
 	auditImpl, err := auditimpl.NewAuditImpl(&cfg.Common.Infra.Audit)
@@ -56,7 +55,7 @@ func setRouters(engine *gin.Engine, cfg *mconfig.Config, mq mq.MQ) error {
 	// repo: following are the dependencies of service
 	ossRepo := articlerepoimpl.NewPictureImpl(oss.Client())
 	auth := cminfraauthimpl.NewSignJwt(&timeCreator, &cfg.Common.Infra.Auth)
-	articleRepo := articlerepoimpl.NewArticleRepo(mysqlImpl, transactionImpl)
+	articleRepo := articlerepoimpl.NewArticleRepo(mysqlImpl)
 	blogRepo := blogrepoimpl.NewBlogInfoImpl(&cfg.Blog.BlogInfo)
 	statsRepo := statsimpl.NewArticleVisitsRepo(mysqlImpl, &timeCreator)
 	commentRepo := commentrepoimpl.NewCommentRepo(mysqlImpl)
@@ -79,7 +78,7 @@ func setRouters(engine *gin.Engine, cfg *mconfig.Config, mq mq.MQ) error {
 
 	// app: following are app services
 	authMiddleware := cmapp.NewAuthMiddleware(auth)
-	articleAppService := articleappsvc.NewArticleAppService(transactionImpl, articleService, categoryService, tagService, mq)
+	articleAppService := articleappsvc.NewArticleAppService(articleService, categoryService, tagService, mq)
 	blogAppService := blogappsvc.NewBlogAppService(blogService)
 	dashboardAppService := statsappsvc.NewDashboardAppService(articleService, tagService, categoryService, articleVisitsService)
 	articleVisitsAppService := statsappsvc.NewArticleVisitsAppService(articleVisitsService)

@@ -13,7 +13,7 @@ import (
 	"github.com/victorzhou123/vicblog/common/infrastructure/mysql"
 )
 
-func NewArticleRepo(db mysql.Impl, tx mysql.Transaction) repository.Article {
+func NewArticleRepo(db mysql.Impl) repository.Article {
 
 	if err := mysql.AutoMigrate(
 		&ArticleDO{},
@@ -21,12 +21,11 @@ func NewArticleRepo(db mysql.Impl, tx mysql.Transaction) repository.Article {
 		return nil
 	}
 
-	return &articleRepoImpl{db, tx}
+	return &articleRepoImpl{db}
 }
 
 type articleRepoImpl struct {
 	db mysql.Impl
-	tx mysql.Transaction
 }
 
 func (impl *articleRepoImpl) GetArticleById(articleId cmprimitive.Id) (entity.Article, error) {
@@ -287,7 +286,7 @@ func (impl *articleRepoImpl) Delete(user cmprimitive.Username, id cmprimitive.Id
 	articleDo.Owner = user.Username()
 	articleDo.ID = id.IdNum()
 
-	return impl.tx.Delete(&ArticleDO{}, &articleDo)
+	return impl.db.Delete(&ArticleDO{}, &articleDo)
 }
 
 func (impl *articleRepoImpl) AddArticle(info *entity.ArticleInfo) (cmprimitive.Id, error) {
@@ -299,7 +298,7 @@ func (impl *articleRepoImpl) AddArticle(info *entity.ArticleInfo) (cmprimitive.I
 		Cover:   info.Cover.Urlx(),
 	}
 
-	if err := impl.tx.Insert(&ArticleDO{}, &do); err != nil {
+	if err := impl.db.Add(&ArticleDO{}, &do); err != nil {
 		return nil, err
 	}
 
@@ -329,5 +328,5 @@ func (impl *articleRepoImpl) Update(
 		Cover:   articleInfo.Cover.Urlx(),
 	}
 
-	return impl.tx.Update(&ArticleDO{}, &filterDo, &do)
+	return impl.db.Update(&ArticleDO{}, &filterDo, &do)
 }

@@ -9,8 +9,6 @@ import (
 	"github.com/victorzhou123/vicblog/common/domain/entity"
 	"github.com/victorzhou123/vicblog/common/domain/mq"
 	cmprimitive "github.com/victorzhou123/vicblog/common/domain/primitive"
-	cmrepo "github.com/victorzhou123/vicblog/common/domain/repository"
-	"github.com/victorzhou123/vicblog/common/infrastructure/mysql"
 	"github.com/victorzhou123/vicblog/common/log"
 	tagdmsvc "github.com/victorzhou123/vicblog/tag-server/domain/tag/service"
 )
@@ -39,7 +37,6 @@ type ArticleAppService interface {
 }
 
 type articleAppService struct {
-	tx        cmrepo.Transaction
 	article   articledmsvc.ArticleService
 	cate      categorydmsvc.CategoryService
 	tag       tagdmsvc.TagService
@@ -47,14 +44,12 @@ type articleAppService struct {
 }
 
 func NewArticleAppService(
-	tx mysql.Transaction,
 	article articledmsvc.ArticleService,
 	cate categorydmsvc.CategoryService,
 	tag tagdmsvc.TagService,
 	publisher mq.MQ,
 ) ArticleAppService {
 	return &articleAppService{
-		tx:        tx,
 		article:   article,
 		cate:      cate,
 		tag:       tag,
@@ -264,14 +259,6 @@ func (s *articleAppService) SearchArticle(cmd *dto.SearchArticlesCmd) (dto.Artic
 
 func (s *articleAppService) AddArticle(cmd *dto.AddArticleCmd) error {
 
-	// transaction begin
-	if err := s.tx.Begin(); err != nil {
-
-		log.Errorf("transaction begin error, err: %s", err.Error())
-
-		return err
-	}
-
 	// new article
 	articleId, err := s.article.AddArticle(cmd.ToArticleInfo())
 	if err != nil {
@@ -296,28 +283,12 @@ func (s *articleAppService) AddArticle(cmd *dto.AddArticleCmd) error {
 		return err
 	}
 
-	// transaction commit
-	if err := s.tx.Commit(); err != nil {
-
-		log.Errorf("transaction commit error, err: %s", err.Error())
-
-		return err
-	}
-
 	log.Infof("user %s add article success", cmd.Owner.Username())
 
 	return nil
 }
 
 func (s *articleAppService) DeleteArticle(user cmprimitive.Username, articleId cmprimitive.Id) error {
-
-	// transaction begin
-	if err := s.tx.Begin(); err != nil {
-
-		log.Errorf("transaction begin error, err: %s", err.Error())
-
-		return err
-	}
 
 	// delete article
 	if err := s.article.Delete(user, articleId); err != nil {
@@ -346,28 +317,12 @@ func (s *articleAppService) DeleteArticle(user cmprimitive.Username, articleId c
 		return err
 	}
 
-	// transaction commit
-	if err := s.tx.Commit(); err != nil {
-
-		log.Errorf("transaction commit error, err: %s", err.Error())
-
-		return err
-	}
-
 	log.Infof("user %s delete article %s success", user.Username(), articleId.Id())
 
 	return nil
 }
 
 func (s *articleAppService) UpdateArticle(cmd *dto.UpdateArticleCmd) error {
-
-	// transaction begin
-	if err := s.tx.Begin(); err != nil {
-
-		log.Errorf("transaction begin error, err: %s", err.Error())
-
-		return err
-	}
 
 	// update article
 	if err := s.article.UpdateArticle(cmd.Id, cmd.ToArticleInfo()); err != nil {
@@ -410,14 +365,6 @@ func (s *articleAppService) UpdateArticle(cmd *dto.UpdateArticleCmd) error {
 
 		log.Errorf("user %s build category relation with article failed, err: %s",
 			cmd.AddArticleCmd.Owner.Username(), err.Error())
-
-		return err
-	}
-
-	// transaction commit
-	if err := s.tx.Commit(); err != nil {
-
-		log.Errorf("transaction commit error, err: %s", err.Error())
 
 		return err
 	}
