@@ -12,8 +12,6 @@ import (
 )
 
 type tagServer struct {
-	rpc.UnimplementedTagServiceServer
-
 	tag TagService
 }
 
@@ -121,7 +119,7 @@ func (s *tagServer) GetRelationWithArticle(ctx context.Context, id *rpc.Id) (*rp
 	return &rpc.Ids{Ids: ids}, nil
 }
 
-func (s *tagServer) GetRelatedArticleIdsThroughCateId(ctx context.Context, id *rpc.Id) (*rpc.RespGetRelatedArticleIdsThroughCateId, error) {
+func (s *tagServer) GetRelatedArticleIdsThroughTagId(ctx context.Context, id *rpc.Id) (*rpc.Ids, error) {
 
 	articleIds, err := s.tag.GetRelatedArticleIdsThroughTagId(cmprimitive.NewId(id.GetId()))
 	if err != nil {
@@ -135,7 +133,7 @@ func (s *tagServer) GetRelatedArticleIdsThroughCateId(ctx context.Context, id *r
 		}
 	}
 
-	return &rpc.RespGetRelatedArticleIdsThroughCateId{
+	return &rpc.Ids{
 		Ids: ids,
 	}, nil
 }
