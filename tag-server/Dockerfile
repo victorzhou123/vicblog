@@ -11,4 +11,4 @@ WORKDIR /opt/app/
 COPY --from=BUILDER /go/src/github.com/victorzhou123/vicblog/tag-server /opt/app
 COPY --from=BUILDER /go/src/github.com/victorzhou123/vicblog/tag-server/config/config.yaml /opt/app/config/
 
-ENTRYPOINT ["/opt/app/tag-server"]
+ENTRYPOINT ["/opt/app/start.sh"]

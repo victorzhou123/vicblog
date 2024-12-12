@@ -3,7 +3,7 @@ syntax = "proto3";
 package category;
 
 import "google/protobuf/empty.proto";
-import "common.proto";
+import "common/controller/rpc/common.proto";
 
 option go_package = "github.com/victorzhou123/vicblog/common/controller/rpc";
 
