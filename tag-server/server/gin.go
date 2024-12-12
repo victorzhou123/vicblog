@@ -15,6 +15,7 @@ import (
 	"github.com/victorzhou123/vicblog/common/controller/rpc"
 	cminfraauthimpl "github.com/victorzhou123/vicblog/common/infrastructure/authimpl"
 	cminframysql "github.com/victorzhou123/vicblog/common/infrastructure/mysql"
+	"github.com/victorzhou123/vicblog/common/log"
 	cmutil "github.com/victorzhou123/vicblog/common/util"
 	_ "github.com/victorzhou123/vicblog/docs"
 	appsvc "github.com/victorzhou123/vicblog/tag-server/app/service"
@@ -43,7 +44,11 @@ func StartWebServer(cfg *config.Config) error {
 		return err
 	}
 
-	go grpcServer.Serve(lis)
+	go func() {
+		if err := grpcServer.Serve(lis); err != nil {
+			log.Errorf("grpc server start failed, err: %s", err.Error())
+		}
+	}()
 
 	server := &http.Server{
 		Addr:              fmt.Sprintf(":%d", cfg.Server.Port),
