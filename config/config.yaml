@@ -57,11 +57,11 @@ common:
       expire_time: 10
 blog:
   blog_info:
-    logo: "https://img.quanxiaoha.com/quanxiaoha/f97361c0429d4bb1bc276ab835843065.jpg"
+    logo: "${BLOG_LOGO}"
     name: "vicblog"
     author: "victor"
     introduction: "这是一段介绍"
-    avatar: "https://img.quanxiaoha.com/quanxiaoha/f97361c0429d4bb1bc276ab835843065.jpg"
+    avatar: "${BLOG_AVATAR}"
     github_homepage: "https://github.com/victorzhou123"
     gitee_homepage: "https://github.com/victorzhou123"
     csdn_homepage: "https://github.com/victorzhou123"
