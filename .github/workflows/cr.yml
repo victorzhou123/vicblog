@@ -20,5 +20,5 @@ jobs:
           LANGUAGE: Chinese
           OPENAI_API_ENDPOINT: https://oneapi.gptnb.ai/v1
           MODEL: gpt-3.5-turbo # https://platform.openai.com/docs/models
-          PROMPT: $PROMPT
+          PROMPT: ${{ vars.PROMPT }}
           IGNORE_PATTERNS: /node_modules,*.md # Regex pattern to ignore files, separated by comma
