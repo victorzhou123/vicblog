@@ -32,6 +32,8 @@ func main() {
 		return
 	}
 
+	fmt.Printf("cfg: %+v\n", cfg)
+
 	// log
 	log.Init(&cfg.Common.Log, exitSig)
 

@@ -23,6 +23,7 @@ type Connect struct {
 }
 
 func (cfg *Config) SetDefault() {
+	fmt.Printf("\"mysql set default\": %v\n", "mysql set default")
 	if cfg.MaxLifeTime == 0 {
 		cfg.MaxLifeTime = 120
 	}

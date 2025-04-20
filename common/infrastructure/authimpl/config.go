@@ -10,7 +10,7 @@ type Config struct {
 	ExpireTime int    `json:"expire_time"` // unit is minute
 }
 
-func (cfg *Config) Validate() error {
+func (cfg Config) Validate() error {
 	if cfg.SecretKey == "" {
 		return fmt.Errorf("secretKey can not be empty")
 	}
