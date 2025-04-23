@@ -46,10 +46,10 @@ common:
     kafka:
       address: "${KAFKA_ADDR}"
     oss:
-      id: "LTAI5tFnKogF9bTcvoJxrZor"
-      secret: "W1veUccsXDy3mciIzAnNF1IpJ0u0CG"
+      id: "${OSS_ID}"
+      secret: "${OSS_SECRET}"
       endpoint: "oss-cn-shanghai.aliyuncs.com"
-      bucket: "victor-bucket"
+      bucket: "${OSS_BUCKET}"
       root_dir: "project/vicblog"
       picture_folder_name: "user_photo"
     audit:
