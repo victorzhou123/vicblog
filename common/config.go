@@ -19,6 +19,10 @@ type Config struct {
 }
 
 func SetDefaultAndValidate(val reflect.Value) error {
+	if !val.IsValid() {
+		return errors.New("SetDefaultAndValidate got a nil input")
+	}
+
 	// check if not struct
 	if valToElem(val).Kind() != reflect.Struct {
 		return nil
