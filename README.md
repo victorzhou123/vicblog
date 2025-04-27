@@ -2,7 +2,7 @@
 VicBlog sharing IT technology
 
 ## Architecture Diagram
-[![architecture diagram](https://i0.hdslb.com/bfs/article/e58ef7d5156b2754866faf0a250d2be0391490864.jpg)](https://github.com/victorzhou123/vicblog)
+[![architecture diagram](https://i0.hdslb.com/bfs/article/25109453a74462b32b1f9e25702bdff6391490864.png)](https://github.com/victorzhou123/vicblog)
 
 ## Transaction
 about transaction of project: 
@@ -70,3 +70,20 @@ func (impl *categoryArticleImpl) BindCategoryAndArticle(articleId, cateId cmprim
 
 
 ```
+
+## Development List
+
+| task                                    | done | note                             |
+| ----------------------------------------- | :----: | ---------------------------------- |
+| kuberentes cluster                      |  √  |                                  |
+| vicblog                                 |  √  |                                  |
+| micro service framework                 |  √  |                                  |
+| micro service (user, category, tag)     |  √  |                                  |
+| mysql master-slave replication          |  √  |                                  |
+| cyclic mysql data backup                |  √  | backup nfs data of mysql         |
+| GPU scheduler of kubernetes             |  √  | allocate GPU power in kubernetes |
+| deepseek in kubernetes                  |  √  | based ollama                     |
+| kafka cluster                           |      |                                  |
+| upgrade of sensitive-world-check-server |      |                                  |
+| replace oss with own object storage     |      |                                  |
+| own message queue implement             |      |                                  |
