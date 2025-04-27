@@ -1,6 +1,9 @@
 # The Personal Blog, VicBlog
 VicBlog sharing IT technology
 
+## Architecture Diagram
+[![architecture diagram](https://i0.hdslb.com/bfs/article/e58ef7d5156b2754866faf0a250d2be0391490864.jpg)](https://github.com/victorzhou123/vicblog)
+
 ## Transaction
 about transaction of project: 
 * if you want begin a transaction operation
