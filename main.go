@@ -1,7 +1,10 @@
 package main
 
 import (
+	"flag"
 	"fmt"
+	"net/http"
+	_ "net/http/pprof"//#nosec G108
 
 	kafka "github.com/victorzhou123/vicblog/common/infrastructure/kafkaimpl"
 	"github.com/victorzhou123/vicblog/common/infrastructure/mysql"
@@ -10,6 +13,13 @@ import (
 	"github.com/victorzhou123/vicblog/config"
 	"github.com/victorzhou123/vicblog/server"
 )
+
+var env string
+
+func init() {
+	flag.StringVar(&env, "e", "dev", "env params")
+	flag.Parse()
+}
 
 // @title            vicBlog server API
 // @version        1.0
@@ -24,6 +34,11 @@ func main() {
 	defer func() {
 		exitSig <- struct{}{}
 	}()
+
+	// pprof
+	if env == "dev" {
+		go http.ListenAndServe("localhost:6060", nil)//#nosec G114
+	}
 
 	// config
 	cfg := new(config.Config)
