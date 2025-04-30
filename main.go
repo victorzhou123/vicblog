@@ -4,7 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"net/http"
-	_ "net/http/pprof"//#nosec G108
+	_ "net/http/pprof" //#nosec G108
 
 	kafka "github.com/victorzhou123/vicblog/common/infrastructure/kafkaimpl"
 	"github.com/victorzhou123/vicblog/common/infrastructure/mysql"
@@ -37,7 +37,7 @@ func main() {
 
 	// pprof
 	if env == "dev" {
-		go http.ListenAndServe("localhost:6060", nil)//#nosec G114
+		go http.ListenAndServe("0.0.0.0:6060", nil) //#nosec G114
 	}
 
 	// config
