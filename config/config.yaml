@@ -1,4 +1,5 @@
 server:
+  env: ${SERVER_ENV}
   port: ${SERVER_PORT}
   read_timeout: 10000
   read_header_timeout: 2000
@@ -48,7 +49,7 @@ common:
     oss:
       id: "${OSS_ID}"
       secret: "${OSS_SECRET}"
-      endpoint: "oss-cn-shanghai.aliyuncs.com"
+      endpoint: "${OSS_ENDPOINT}"
       bucket: "${OSS_BUCKET}"
       root_dir: "project/vicblog"
       picture_folder_name: "user_photo"

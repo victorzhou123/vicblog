@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"net/http"
 	_ "net/http/pprof" //#nosec G108
@@ -13,13 +12,6 @@ import (
 	"github.com/victorzhou123/vicblog/config"
 	"github.com/victorzhou123/vicblog/server"
 )
-
-var env string
-
-func init() {
-	flag.StringVar(&env, "e", "dev", "env params")
-	flag.Parse()
-}
 
 // @title            vicBlog server API
 // @version        1.0
@@ -35,16 +27,16 @@ func main() {
 		exitSig <- struct{}{}
 	}()
 
-	// pprof
-	if env == "dev" {
-		go http.ListenAndServe("0.0.0.0:6060", nil) //#nosec G114
-	}
-
 	// config
 	cfg := new(config.Config)
 	if err := config.LoadConfig("./config/config.yaml", cfg); err != nil {
 		fmt.Printf("load config error: %s", err.Error())
 		return
+	}
+
+	// pprof
+	if cfg.Server.ENV == "dev" {
+		go http.ListenAndServe("0.0.0.0:6060", nil) //#nosec G114
 	}
 
 	// log
