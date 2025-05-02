@@ -35,7 +35,7 @@ func main() {
 	}
 
 	// pprof
-	if cfg.Server.ENV == "dev" {
+	if cfg.Server.Env == "dev" {
 		go http.ListenAndServe("0.0.0.0:6060", nil) //#nosec G114
 	}
 

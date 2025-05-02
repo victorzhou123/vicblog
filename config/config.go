@@ -32,7 +32,7 @@ func (cfg *Config) SetDefaultAndValidate() error {
 
 // server config
 type Server struct {
-	ENV               string `json:"env"`
+	Env               string `json:"env"`
 	Port              int    `json:"port"`
 	ReadTimeout       int    `json:"read_timeout"`        // unit Millisecond
 	ReadHeaderTimeout int    `json:"read_header_timeout"` // unit Millisecond
