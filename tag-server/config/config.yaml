@@ -22,8 +22,8 @@ mysql:
     password: "${MYSQL_PASSWORD}"
   db_name: "${MYSQL_DB_NAME}"
   max_life_time: 120
-  max_open_conns: 2000
-  max_idle_conns: 1000
+  max_open_conns: 80
+  max_idle_conns: 30
 log:
   level: "DEBUG"
   flush_time: 5
