@@ -38,22 +38,46 @@ jobs:
           BRANCH_NAME="${GITHUB_REF#refs/heads/}"
           
           # Build and push images based on the branch name
-          if [ "$BRANCH_NAME" == "main" ] || [ "$BRANCH_NAME" == "main_server" ] || [ "$BRANCH_NAME" == "dev" ]; then
+          ## vicblog-server
+          if [ "$BRANCH_NAME" == "main" ] || [ "$BRANCH_NAME" == "main_server" ]; then
             docker build . --file Dockerfile --tag registry.cn-hangzhou.aliyuncs.com/vicblog/vicblog:latest
             docker push registry.cn-hangzhou.aliyuncs.com/vicblog/vicblog:latest
           fi
+
+          if [ "$BRANCH_NAME" == "dev" ]; then
+            docker build . --file Dockerfile --tag registry.cn-hangzhou.aliyuncs.com/vicblog/vicblog-dev-server:latest
+            docker push registry.cn-hangzhou.aliyuncs.com/vicblog/vicblog-dev-server:latest
+          fi
           
+          ## user-server
           if [ "$BRANCH_NAME" == "user_server" ]; then
             docker build . --file ./user-server/Dockerfile --tag registry.cn-hangzhou.aliyuncs.com/vicblog/vicblog-user-server:latest
             docker push registry.cn-hangzhou.aliyuncs.com/vicblog/vicblog-user-server:latest
           fi
+
+          if [ "$BRANCH_NAME" == "user_dev_server" ]; then
+            docker build . --file ./user-server/Dockerfile --tag registry.cn-hangzhou.aliyuncs.com/vicblog/vicblog-user-dev-server:latest
+            docker push registry.cn-hangzhou.aliyuncs.com/vicblog/vicblog-user-dev-server:latest
+          fi
           
+          ## category-server
           if [ "$BRANCH_NAME" == "category_server" ]; then
             docker build . --file ./category-server/Dockerfile --tag registry.cn-hangzhou.aliyuncs.com/vicblog/vicblog-category-server:latest
             docker push registry.cn-hangzhou.aliyuncs.com/vicblog/vicblog-category-server:latest
           fi
-          
+
+          if [ "$BRANCH_NAME" == "category_dev_server" ]; then
+            docker build . --file ./category-server/Dockerfile --tag registry.cn-hangzhou.aliyuncs.com/vicblog/vicblog-category-dev-server:latest
+            docker push registry.cn-hangzhou.aliyuncs.com/vicblog/vicblog-category-dev-server:latest
+          fi
+
+          ## tag-server
           if [ "$BRANCH_NAME" == "tag_server" ]; then
             docker build . --file ./tag-server/Dockerfile --tag registry.cn-hangzhou.aliyuncs.com/vicblog/vicblog-tag-server:latest
             docker push registry.cn-hangzhou.aliyuncs.com/vicblog/vicblog-tag-server:latest
+          fi
+
+          if [ "$BRANCH_NAME" == "tag_dev_server" ]; then
+            docker build . --file ./tag-server/Dockerfile --tag registry.cn-hangzhou.aliyuncs.com/vicblog/vicblog-tag-dev-server:latest
+            docker push registry.cn-hangzhou.aliyuncs.com/vicblog/vicblog-tag-dev-server:latest
           fi
