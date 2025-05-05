@@ -99,7 +99,9 @@ func (impl *kafkaImpl) Run() error {
 	for handler, topics := range impl.topicHandler {
 		go func(h *topicHandlerKey, tps []string) {
 			if err := f(context.Background(), tps, h.handler, h.name); err != nil {
-				log.Fatalf("subscribe failed %s", err)
+				log.Fatalf("consumer %s subscribe failed, err: %s", h.name, err)
+			} else {
+				log.Debugf("consumer %s subscribe success", h.name)
 			}
 		}(handler, topics)
 	}

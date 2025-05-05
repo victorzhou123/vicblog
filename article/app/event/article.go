@@ -32,6 +32,8 @@ func (s *articleSubscriber) Consume(e mq.Event) error {
 
 	var body map[string]string
 
+	log.Debugf("consume begin, topic: %s", e.Topic())
+
 	if err := json.Unmarshal(e.Message().Body, &body); err != nil {
 		log.Errorf("article subscriber unmarshal message failed, err: %s", err.Error())
 
@@ -53,6 +55,8 @@ func (s *articleSubscriber) Consume(e mq.Event) error {
 	if err := s.article.AddArticleReadTimes(cmprimitive.NewId(articleId), amountOne); err != nil {
 		log.Errorf("article %s AddArticleReadTimes failed, err: %s", articleId, err.Error())
 	}
+
+	log.Debugf("consume success, topic: %s", e.Topic())
 
 	return nil
 }

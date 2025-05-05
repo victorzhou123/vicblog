@@ -31,6 +31,8 @@ func (s *articleVisitsSubscriber) Consume(e mq.Event) error {
 
 	var body map[string]string
 
+	log.Debugf("consume begin, topic: %s", e.Topic())
+
 	if err := json.Unmarshal(e.Message().Body, &body); err != nil {
 		log.Errorf("article visits subscriber unmarshal message failed, err: %s", err.Error())
 
@@ -52,6 +54,8 @@ func (s *articleVisitsSubscriber) Consume(e mq.Event) error {
 		log.Errorf("increase visits of today failed, err: %s", err.Error())
 		return err
 	}
+
+	log.Debugf("consume success, topic: %s", e.Topic())
 
 	return nil
 }
