@@ -11,19 +11,19 @@ auth:
   expire_time: 300
 mysql:
   master:
-    host: "${MYSQL_HOST}"
-    port: ${MYSQL_PORT}
-    username: "${MYSQL_USERNAME}"
-    password: "${MYSQL_PASSWORD}"
+    host: "${CATEGORY_MYSQL_HOST}"
+    port: ${CATEGORY_MYSQL_PORT}
+    username: "${CATEGORY_MYSQL_USERNAME}"
+    password: "${CATEGORY_MYSQL_PASSWORD}"
   slave01:
-    host: "${MYSQL_HOST_SLAVE01}"
-    port: ${MYSQL_PORT_SLAVE01}
-    username: "${MYSQL_USERNAME}"
-    password: "${MYSQL_PASSWORD}"
+    host: "${CATEGORY_MYSQL_HOST}"
+    port: ${CATEGORY_MYSQL_PORT}
+    username: "${CATEGORY_MYSQL_USERNAME}"
+    password: "${CATEGORY_MYSQL_PASSWORD}"
   db_name: "${MYSQL_DB_NAME}"
   max_life_time: 120
-  max_open_conns: 2000
-  max_idle_conns: 1000
+  max_open_conns: 80
+  max_idle_conns: 30
 log:
   level: "DEBUG"
   flush_time: 5
