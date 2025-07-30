@@ -32,6 +32,7 @@ func (impl *categoryRepoImpl) AddCategory(name entity.CategoryName) error {
 func (impl *categoryRepoImpl) GetCategory(cateId cmprimitive.Id) (entity.Category, error) {
 
 	do := CategoryDO{}
+	do.ID = cateId.IdNum()
 
 	if err := impl.Impl.GetByPrimaryKey(&CategoryDO{}, &do); err != nil {
 		return entity.Category{}, err
