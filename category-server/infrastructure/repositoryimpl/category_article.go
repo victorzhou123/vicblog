@@ -22,17 +22,18 @@ type categoryArticleImpl struct {
 	db mysql.Impl
 }
 
+// GetRelationWithArticle: obtain the category associated with the article
 func (impl *categoryArticleImpl) GetRelationWithArticle(articleId cmprimitive.Id) (cmprimitive.Id, error) {
 
 	do := CategoryArticleDO{
 		ArticleId: articleId.IdNum(),
 	}
 
-	if err := impl.db.GetByPrimaryKey(&CategoryArticleDO{}, &do); err != nil {
+	if err := impl.db.GetRecord(&CategoryArticleDO{}, &do, &do); err != nil {
 		return nil, err
 	}
 
-	return cmprimitive.NewIdByUint(do.ID), nil
+	return cmprimitive.NewIdByUint(do.CategoryId), nil
 }
 
 func (impl *categoryArticleImpl) GetRelatedArticleAmount(categoryIds []cmprimitive.Id) (map[uint]cmprimitive.Amount, error) {
