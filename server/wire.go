@@ -27,7 +27,6 @@ import (
 	"github.com/victorzhou123/vicblog/common/domain/mq"
 	"github.com/victorzhou123/vicblog/common/infrastructure/auditimpl"
 	cminfraauthimpl "github.com/victorzhou123/vicblog/common/infrastructure/authimpl"
-	"github.com/victorzhou123/vicblog/common/infrastructure/md2htmlimpl"
 	cminframysql "github.com/victorzhou123/vicblog/common/infrastructure/mysql"
 	"github.com/victorzhou123/vicblog/common/infrastructure/oss"
 	cmutil "github.com/victorzhou123/vicblog/common/util"
@@ -45,7 +44,6 @@ func setRouters(engine *gin.Engine, cfg *mconfig.Config, mq mq.MQ) error {
 	// infrastructure: following are the instance of infrastructure components
 	timeCreator := cmutil.NewTimerCreator()
 	mysqlImpl := cminframysql.DAO()
-	m2h := md2htmlimpl.NewMd2Html()
 	qqInfoImpl := qqinfoimpl.NewQQInfoImpl(cfg.Comment.QQInfo)
 	auditImpl, err := auditimpl.NewAuditImpl(&cfg.Common.Infra.Audit)
 	if err != nil {
@@ -61,7 +59,7 @@ func setRouters(engine *gin.Engine, cfg *mconfig.Config, mq mq.MQ) error {
 	commentRepo := commentrepoimpl.NewCommentRepo(mysqlImpl)
 
 	// domain: following are domain services
-	articleService := articlesvc.NewArticleService(articleRepo, m2h, &timeCreator)
+	articleService := articlesvc.NewArticleService(articleRepo, &timeCreator)
 	categoryService, err := catesvc.NewCategoryServer(&cfg.Article.Domain.Category)
 	if err != nil {
 		return err
