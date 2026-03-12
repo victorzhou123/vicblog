@@ -59,10 +59,10 @@ func NewArticleAppService(
 
 func (s *articleAppService) GetArticleById(articleId cmprimitive.Id) (dto.ArticleWithTagCateDto, error) {
 
-	// get article (has parsed content to html)
-	article, err := s.article.GetArticleByIdWithContentParsed(articleId)
+	// get article
+	article, err := s.article.GetArticleById(articleId)
 	if err != nil {
-		log.Errorf("get parsed article failed, err: %s", err.Error())
+		log.Errorf("get article failed, err: %s", err.Error())
 
 		return dto.ArticleWithTagCateDto{}, err
 	}

@@ -5,7 +5,6 @@ import (
 	"github.com/victorzhou123/vicblog/article/domain/article/repository"
 	cmentt "github.com/victorzhou123/vicblog/common/domain/entity"
 	cmdmerror "github.com/victorzhou123/vicblog/common/domain/error"
-	cmdmmd2html "github.com/victorzhou123/vicblog/common/domain/md2html"
 	cmprimitive "github.com/victorzhou123/vicblog/common/domain/primitive"
 	"github.com/victorzhou123/vicblog/common/log"
 )
@@ -13,7 +12,7 @@ import (
 const msgCannotFoundTheArticle = "can not found the article"
 
 type ArticleService interface {
-	GetArticleByIdWithContentParsed(articleId cmprimitive.Id) (entity.Article, error)
+	GetArticleById(articleId cmprimitive.Id) (entity.Article, error)
 	GetArticle(*GetArticleCmd) (entity.Article, error)
 	GetArticleList(*ArticleListCmd) (ArticleListDto, error)
 	GetArticleCardList(*ArticleCardsCmd) (ArticleCardsDto, error)
@@ -38,32 +37,27 @@ type TimeCreator interface {
 
 type articleService struct {
 	repo        repository.Article
-	m2h         cmdmmd2html.Md2Html
 	timeCreator TimeCreator
 }
 
 func NewArticleService(
 	repo repository.Article,
-	m2h cmdmmd2html.Md2Html,
 	tc TimeCreator,
 ) ArticleService {
 	return &articleService{
 		repo:        repo,
-		m2h:         m2h,
 		timeCreator: tc,
 	}
 }
 
-func (s *articleService) GetArticleByIdWithContentParsed(articleId cmprimitive.Id) (entity.Article, error) {
+func (s *articleService) GetArticleById(articleId cmprimitive.Id) (entity.Article, error) {
 
 	article, err := s.repo.GetArticleById(articleId)
 	if err != nil {
 		return entity.Article{}, err
 	}
 
-	// parse md to html
-	article.Content = s.m2h.Render(article.Content)
-
+	// return raw markdown content
 	return article, nil
 }
 
