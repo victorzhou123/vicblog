@@ -51,6 +51,8 @@ common:
       secret: "${OSS_SECRET}"
       endpoint: "${OSS_ENDPOINT}"
       bucket: "${OSS_BUCKET}"
+      conn_timeout: 30
+      read_write_timeout: 300
       root_dir: "project/vicblog"
       picture_folder_name: "user_photo"
     audit:

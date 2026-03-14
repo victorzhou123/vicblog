@@ -21,6 +21,8 @@ type Oss struct {
 	EndPoint          string
 	RootDir           string
 	PictureFolderName string
+	ConnTimeout       int64
+	ReadWriteTimeout  int64
 }
 
 func Init(cfg *Config) error {
@@ -46,6 +48,8 @@ func Init(cfg *Config) error {
 		EndPoint:          cfg.Endpoint,
 		RootDir:           cfg.RootDir,
 		PictureFolderName: cfg.PictureFolderName,
+		ConnTimeout:       cfg.ConnTimeout,
+		ReadWriteTimeout:  cfg.ReadWriteTimeout,
 	}
 
 	return nil
@@ -60,7 +64,8 @@ func (o *Oss) UploadPicture(position string, file io.Reader) (string, error) {
 }
 
 func (o *Oss) uploadFile(objectName string, file io.Reader) (string, error) {
-	return o.genVisitUrl(objectName), o.Bucket.PutObject(objectName, file)
+	err := o.Bucket.PutObject(objectName, file)
+	return o.genVisitUrl(objectName), err
 }
 
 // genObjectName generate full object name with position("username/filename")
